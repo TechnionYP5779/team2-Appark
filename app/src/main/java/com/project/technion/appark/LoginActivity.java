@@ -21,5 +21,23 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        Button user2 = findViewById(R.id.button_user2);
+        user2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra("user_id",2);
+                startActivity(i);
+            }
+        });
+        Button user3 = findViewById(R.id.button_user3);
+        user3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra("user_id",3);
+                startActivity(i);
+            }
+        });
     }
 }
