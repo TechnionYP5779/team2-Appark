@@ -1,20 +1,22 @@
 package com.project.technion.appark;
 
+import android.location.Location;
+
 public class ParkingSpot {
     private Integer id;
 //    private Availability availability;
     private User seller;
     private double price;
-//    private Location location;
+    private Location location;
 
 
 
-    public ParkingSpot(Integer id, User seller, double price) {
+    public ParkingSpot(Integer id, User seller, double price,Location location) {
         this.id = id;
 //        this.availability = availability;
         this.seller = seller;
         this.price = price;
-//        this.location = location;
+        this.location = location;
     }
 
     public Integer getId() {
@@ -41,7 +43,7 @@ public class ParkingSpot {
         return "ParkingSpotImplementation [id=" + id +  ", seller=" + seller + ", price=" + price + "]";
     }
 
-//     public Location getLocation() {
-//        return this.location;
-//    }
+     public Location getLocation() {
+        return this.location;
+    }
 }
