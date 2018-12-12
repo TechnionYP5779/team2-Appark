@@ -4,14 +4,10 @@ public class XYLocation implements Location{
     private double x;
     private double y;
 
-
-
     public XYLocation(double x, double y) {
         this.x = x;
         this.y = y;
     }
-
-
 
     @Override public double calcDist(Location other) {
         if(!(other instanceof XYLocation)) {

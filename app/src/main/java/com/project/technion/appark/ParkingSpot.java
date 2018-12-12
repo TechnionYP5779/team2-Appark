@@ -1,7 +1,5 @@
 package com.project.technion.appark;
 
-import android.location.Location;
-
 public class ParkingSpot {
     private Integer id;
 //    private Availability availability;

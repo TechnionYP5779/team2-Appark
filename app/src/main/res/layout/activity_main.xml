@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <TextView
         android:id="@+id/textView_user"
@@ -13,10 +13,16 @@
         android:text="TextView" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/button_offer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=" Sell My Parking Spot" />
+        android:text="Offer My Parking Spot" />
+
+    <Button
+        android:id="@+id/button_view_offers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View my offers" />
 
     <Button
         android:id="@+id/button2"

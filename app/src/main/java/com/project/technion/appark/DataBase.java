@@ -8,6 +8,8 @@ public interface DataBase {
 
     User getUser(Integer id);
 
+    int getNextParkingSpotID();
+
     ParkingSpot getParkingSpot(Integer id) throws ParkingSpotNotInSystem;
 
     void add(User b);
@@ -21,6 +23,10 @@ public interface DataBase {
     void update(User updatedUser);
 
     void update(ParkingSpot s) throws ParkingSpotNotInSystem;
+
+    List<Integer> getParkingSpotsOfUser(Integer userId);
+
+    void add(Integer userId, Integer hisParkingSpot);
 
     List<ParkingSpot> getAllParkingSpot();
 
