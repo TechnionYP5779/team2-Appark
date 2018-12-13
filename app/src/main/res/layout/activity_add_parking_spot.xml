@@ -25,7 +25,7 @@
             android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="enter x coordinate"
+            android:hint="@string/enter_x_coordinate"
             android:inputType="number" />
         <EditText
             android:id="@+id/ps_y"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="number"
-            android:hint="enter y coordinate" />
+            android:hint="@string/enter_y_coordinate" />
     </LinearLayout>
 
     <LinearLayout
@@ -45,7 +45,7 @@
             android:id="@+id/choose_start_tnd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select start time" />
+            android:text="@string/select_start_time" />
 
         <TextView
             android:id="@+id/tnd_start_text"
@@ -65,7 +65,7 @@
             android:id="@+id/choose_end_tnd"
             android:layout_width="159dp"
             android:layout_height="wrap_content"
-            android:text="Select end time" />
+            android:text="@string/select_end_time" />
 
         <TextView
             android:id="@+id/tnd_end_text"
@@ -81,7 +81,7 @@
         android:id="@+id/button_offer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="@string/submit_button" />
 
 
 </LinearLayout>
