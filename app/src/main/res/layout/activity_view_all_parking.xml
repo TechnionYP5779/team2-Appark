@@ -6,12 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".activities.ViewAllOffersActivity">
 
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="4dp" />
+
     <TextView
-        android:id="@+id/textView_all_offers"
+        android:id="@+id/textView_no_offers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Offers"
-        android:textSize="36sp"
+        android:layout_margin="20dp"
+        android:text="no offers"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20sp"
         tools:layout_editor_absoluteX="113dp"
         tools:layout_editor_absoluteY="16dp"  />
 

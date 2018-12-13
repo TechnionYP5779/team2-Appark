@@ -7,15 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
 import com.project.technion.appark.ParkingSpot;
+import com.project.technion.appark.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 import com.project.technion.appark.exceptions.ParkingSpotNotInSystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewAllOffersActivity extends AppCompatActivity {
@@ -24,10 +27,14 @@ public class ViewAllOffersActivity extends AppCompatActivity {
     private DataBase db;
     private User mUser;
 
+    private ListView mListView;
+    private ParkingSpotsAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_parking);
+        mListView = findViewById(R.id.list_view);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,12 +49,16 @@ public class ViewAllOffersActivity extends AppCompatActivity {
         int id = getIntent().getIntExtra("user_id",-1);
         Log.d(TAG,"user id is "+id);
         mUser = db.getUser(id);
-        final TextView offerListTextView = findViewById(R.id.textView_all_offers);
-        List<ParkingSpot> AllOffersIDS = db.getAllParkingSpot();
-        if(AllOffersIDS.size() != 0)
-            offerListTextView.setText("");
-        for(ParkingSpot parking : AllOffersIDS){
-            offerListTextView.append(parking.toString());
+
+        ArrayList<ParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
+        mAdapter = new ParkingSpotsAdapter(this, spots);
+        mListView.setAdapter(mAdapter);
+        TextView noOffers = findViewById(R.id.textView_no_offers);
+        if(spots.size() == 0){
+            noOffers.setVisibility(View.VISIBLE);
+        }
+        else{
+            noOffers.setVisibility(View.INVISIBLE);
         }
     }
 
