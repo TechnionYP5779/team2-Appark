@@ -22,11 +22,11 @@
 
         <EditText
             android:id="@+id/ps_x"
-            android:layout_width="wrap_content"
+            android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number"
-            android:hint="enter x coordinate" />
+            android:hint="enter x coordinate"
+            android:inputType="number" />
         <EditText
             android:id="@+id/ps_y"
             android:layout_width="wrap_content"
@@ -36,9 +36,52 @@
             android:hint="enter x coordinate" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/choose_start_tnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select start time" />
+
+        <TextView
+            android:id="@+id/tnd_start_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start time"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/choose_end_tnd"
+            android:layout_width="159dp"
+            android:layout_height="wrap_content"
+            android:text="Select end time" />
+
+        <TextView
+            android:id="@+id/tnd_end_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="end time"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+
     <Button
         android:id="@+id/button_offer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit" />
+
+
 </LinearLayout>

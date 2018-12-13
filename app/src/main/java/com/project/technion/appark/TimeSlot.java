@@ -19,17 +19,14 @@ public class TimeSlot {
         this.end = end;
     }
 
-
     @NonNull
     public String toString() {
         return "Slot [start = " + DateToString(start) + ", end = " + DateToString(end) + "]";
     }
 
-
     public Calendar getStart() {
         return start;
     }
-
 
     public Calendar getEnd() {
         return end;
