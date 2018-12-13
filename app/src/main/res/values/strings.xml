@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Appark</string>
+    <string name="title_activity_available_parking">AvailableParkingActivity</string>
 </resources>

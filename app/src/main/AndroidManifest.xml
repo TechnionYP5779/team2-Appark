@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.AddParkingSpotActivity" />
-        <activity android:name=".activities.ViewMyOffersActivity"></activity>
+        <activity android:name=".activities.ViewMyOffersActivity" />
+        <activity android:name=".activities.ViewAllOffersActivity"/>
     </application>
 
 </manifest>

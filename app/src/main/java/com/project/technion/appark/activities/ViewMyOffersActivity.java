@@ -32,6 +32,8 @@ public class ViewMyOffersActivity extends AppCompatActivity {
 
         final TextView offerListTextView = findViewById(R.id.offer_list);
         List<Integer> myOffersIDS = db.getParkingSpotsOfUser(mUser.getId());
+        if(myOffersIDS.size() != 0)
+            offerListTextView.setText("");
         for(Integer i : myOffersIDS){
             try {
                 offerListTextView.append(db.getParkingSpot(i).toString());

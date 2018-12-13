@@ -19,13 +19,13 @@
         android:text="Offer My Parking Spot" />
 
     <Button
-        android:id="@+id/button_view_offers"
+        android:id="@+id/button_view_my_offers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="View my offers" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_view_all_offers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="view available parking spots" />

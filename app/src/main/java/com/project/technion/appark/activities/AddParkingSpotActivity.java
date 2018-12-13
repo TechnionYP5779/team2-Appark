@@ -42,6 +42,8 @@ public class AddParkingSpotActivity extends AppCompatActivity {
         offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(priceTextView.getText().toString().isEmpty() ||xTextView.getText().toString().isEmpty() || yTextView.getText().toString().isEmpty())
+                    return;
                 Double price = Double.parseDouble(priceTextView.getText().toString());
                 Double x = Double.parseDouble(xTextView.getText().toString());
                 Double y = Double.parseDouble(yTextView.getText().toString());

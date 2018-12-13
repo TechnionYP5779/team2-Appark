@@ -48,11 +48,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button viewOffersButtons = findViewById(R.id.button_view_offers);
-        viewOffersButtons.setOnClickListener(new View.OnClickListener() {
+        Button viewMyOffersButtons = findViewById(R.id.button_view_my_offers);
+        viewMyOffersButtons.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ViewMyOffersActivity.class);
+                i.putExtra("user_id",mUser.getId());
+                startActivity(i);
+            }
+        });
+
+        Button viewAllOffersButtons = findViewById(R.id.button_view_all_offers);
+        viewAllOffersButtons.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, ViewAllOffersActivity.class);
                 i.putExtra("user_id",mUser.getId());
                 startActivity(i);
             }
