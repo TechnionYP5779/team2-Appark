@@ -1,18 +1,18 @@
 package com.project.technion.appark;
 
+import java.sql.Time;
+
 public class ParkingSpot {
     private Integer id;
-//    private Availability availability;
-    private User seller;
+    private TimeSlot timeSlot;
+    private User user;
     private double price;
     private XYLocation location;
 
-
-
-    public ParkingSpot(Integer id, User seller, double price,XYLocation location) {
+    public ParkingSpot(Integer id, User user, double price,XYLocation location, TimeSlot timeSlot) {
         this.id = id;
-//        this.availability = availability;
-        this.seller = seller;
+        this.timeSlot = timeSlot;
+        this.user = user;
         this.price = price;
         this.location = location;
     }
@@ -21,16 +21,16 @@ public class ParkingSpot {
         return this.id;
     }
 
-//    public Availability getAvailability() {
-//        return this.availability;
+    public TimeSlot getTimeSlot() {
+        return this.timeSlot;
+    }
+
+//     public void subtractTimeSlot(TimeSlot otherTimeSlot) {
+//        this.timeSlot = this.timeSlot.subtraction(otherTimeSlot);
 //    }
 
-//     public void subtractAvailability(Availability otherAvailability) {
-//        this.availability = this.availability.subtraction(otherAvailability);
-//    }
-
-     public User getSeller() {
-        return this.seller;
+     public User getUser() {
+        return this.user;
     }
 
      public double getPrice() {
@@ -38,7 +38,7 @@ public class ParkingSpot {
     }
 
      public String toString() {
-        return "ParkingSpotImplementation [id=" + id +  ", seller=" + seller + ", price=" + price + "]";
+        return "ParkingSpot [id=" + id +  ", user=" + user + ", price=" + price + "]";
     }
 
      public XYLocation getLocation() {

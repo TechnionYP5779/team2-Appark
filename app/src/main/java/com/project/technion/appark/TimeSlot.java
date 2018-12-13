@@ -49,4 +49,7 @@ public class TimeSlot {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
+//    public TimeSlot subtraction(TimeSlot otherTimeSlot) {
+//    }
 }
