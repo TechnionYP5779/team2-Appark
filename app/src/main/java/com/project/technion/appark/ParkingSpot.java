@@ -4,12 +4,12 @@ import java.sql.Time;
 
 public class ParkingSpot {
     private Integer id;
-    private TimeSlot timeSlot;
     private User user;
     private double price;
     private XYLocation location;
+    private TimeSlot timeSlot;
 
-    public ParkingSpot(Integer id, User user, double price,XYLocation location, TimeSlot timeSlot) {
+    public ParkingSpot(Integer id, User user, double price, XYLocation location, TimeSlot timeSlot) {
         this.id = id;
         this.timeSlot = timeSlot;
         this.user = user;
@@ -29,19 +29,19 @@ public class ParkingSpot {
 //        this.timeSlot = this.timeSlot.subtraction(otherTimeSlot);
 //    }
 
-     public User getUser() {
+    public User getUser() {
         return this.user;
     }
 
-     public double getPrice() {
+    public double getPrice() {
         return this.price;
     }
 
-     public String toString() {
-        return "ParkingSpot [id: " + id +  ", user: " + user + ", price: " + price + ", location: "+location+"]";
+    public String toString() {
+        return "ParkingSpot [id: " + id + "\n user: " + user + "\n price: " + price + "\n location: " + location + "\n TimeSlot: " + timeSlot + "]\n";
     }
 
-     public XYLocation getLocation() {
+    public XYLocation getLocation() {
         return this.location;
     }
 }

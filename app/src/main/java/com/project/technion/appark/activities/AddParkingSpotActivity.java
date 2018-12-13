@@ -23,21 +23,26 @@ import com.project.technion.appark.User;
 import com.project.technion.appark.XYLocation;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class AddParkingSpotActivity extends AppCompatActivity {
-    private static final String  TAG = "AddParkingSpotActivity";
+    private static final String TAG = "AddParkingSpotActivity";
 
     private DataBase db;
     private ParkingSpot mParkingSpot;
     private User mUser;
 
-    private Button  pick_start, pick_end;
+    private Button pick_start, pick_end;
     private TextView text_start, text_end;
     private int dayStart, monthStart, yearStart, hourStart, minuteStart;
     private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
-    private boolean startTimeWasSet , finishTimeWasSet;
+    private boolean startTimeWasSet, finishTimeWasSet;
 
-    Calendar calendarStart  , calendarFinish;
+    Calendar calendarStart, calendarFinish;
+
+    private boolean isViewEmpty(TextView view) {
+        return view.getText().toString().isEmpty();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,8 @@ public class AddParkingSpotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_parking_spot);
 
         db = DummyDB.getInstance();
-        int id = getIntent().getIntExtra("user_id",-1);
-        Log.d(TAG,"user id is "+id);
+        int id = getIntent().getIntExtra("user_id", -1);
+        Log.d(TAG, "user id is " + id);
         mUser = db.getUser(id);
 
         final TextView priceTextView = findViewById(R.id.ps_price);
@@ -62,24 +67,22 @@ public class AddParkingSpotActivity extends AppCompatActivity {
 
                 Log.d(TAG, dayFinal + " " + monthFinal + " " + yearFinal + " " + hourFinal + " " + minuteFinal);
 
-                if (!startTimeWasSet || !finishTimeWasSet ||
-                        priceTextView.getText().toString().isEmpty() ||
-                        xTextView.getText().toString().isEmpty() || yTextView.getText().toString().isEmpty()){
-                    Snackbar.make(view, "Fill all the fields before you submit", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                return;
+                if (!startTimeWasSet || !finishTimeWasSet || isViewEmpty(priceTextView) || isViewEmpty(xTextView) || isViewEmpty(yTextView)) {
+                    Toast.makeText(AddParkingSpotActivity.this, "Fill all the fields before you submit", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 Double price = Double.parseDouble(priceTextView.getText().toString());
                 Double x = Double.parseDouble(xTextView.getText().toString());
                 Double y = Double.parseDouble(yTextView.getText().toString());
-                XYLocation location = new XYLocation(x,y);
+                XYLocation location = new XYLocation(x, y);
 
-                //TODO:change this to the real slot
-                TimeSlot slot = new TimeSlot(Calendar.getInstance(),Calendar.getInstance(),false);
+                Calendar startCal = new GregorianCalendar(yearStart,monthStart-1,dayStart,hourStart,minuteStart);
+                Calendar endCal = new GregorianCalendar(yearFinal,monthFinal-1,dayFinal,hourFinal,minuteFinal);
+                TimeSlot slot = new TimeSlot(startCal, endCal, false);
 
-                mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(),mUser, price,location,slot);
+                mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(), mUser, price, location, slot);
                 db.add(mParkingSpot);
-                Toast.makeText(AddParkingSpotActivity.this,"the offer was published",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddParkingSpotActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -88,7 +91,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
         addFinishTime();
     }
 
-    public void addStartTime(){
+    public void addStartTime() {
         pick_start = findViewById(R.id.choose_start_tnd);
         text_start = findViewById(R.id.tnd_start_text);
         pick_start.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +111,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                                         hourStart = hourOfDay;
                                         minuteStart = minute;
                                         String add_zero = "";
-                                        if(minuteStart < 10)
+                                        if (minuteStart < 10)
                                             add_zero = "0";
                                         text_start.setText(dayStart + "/" + monthStart + "/" + yearStart + " , " + hourStart + ":" + add_zero + minuteStart);
                                         startTimeWasSet = true;
@@ -122,7 +125,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
         });
     }
 
-    public void addFinishTime(){
+    public void addFinishTime() {
         pick_end = findViewById(R.id.choose_end_tnd);
         text_end = findViewById(R.id.tnd_end_text);
         pick_end.setOnClickListener(new View.OnClickListener() {
@@ -137,12 +140,12 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                                     @Override
                                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                         dayFinal = dayOfMonth;
-                                        monthFinal = month +1;
+                                        monthFinal = month + 1;
                                         yearFinal = year;
-                                        hourFinal= hourOfDay;
+                                        hourFinal = hourOfDay;
                                         minuteFinal = minute;
                                         String add_zero = "";
-                                        if(minuteFinal < 10)
+                                        if (minuteFinal < 10)
                                             add_zero = "0";
                                         text_end.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
                                         finishTimeWasSet = true;

@@ -23,7 +23,7 @@ public class TimeSlot {
 
     @NonNull
     public String toString() {
-        return "Slot [start = " + DateToString(start) + ", end = " + DateToString(end) + "]";
+        return "Slot [start: " + DateToString(start) + ", end: " + DateToString(end) + "]";
     }
 
     public Calendar getStart() {
