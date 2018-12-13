@@ -1,5 +1,6 @@
 package com.project.technion.appark.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,12 +37,15 @@ public class ViewAllOffersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_all_parking);
         mListView = findViewById(R.id.list_view);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton search_button = findViewById(R.id.search_button);
+        search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Let's search!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Intent i = new Intent(ViewAllOffersActivity.this, SearchParkingsActivity.class);
+                i.putExtra("user_id",mUser.getId());
+                startActivity(i);
             }
         });
 

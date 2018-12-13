@@ -21,13 +21,14 @@
             android:label="Appark" />
         <activity
             android:name=".activities.AddParkingSpotActivity"
-            android:label="Add new Parking Spot"/>
+            android:label="Add new Parking Spot" />
         <activity
             android:name=".activities.ViewMyOffersActivity"
-            android:label="My Offers"/>
+            android:label="My Offers" />
         <activity
             android:name=".activities.ViewAllOffersActivity"
-            android:label="Available Parking Spots"/>
+            android:label="Available Parking Spots" />
+        <activity android:name=".activities.SearchParkingsActivity" />
     </application>
 
 </manifest>
