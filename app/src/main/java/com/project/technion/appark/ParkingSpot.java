@@ -38,7 +38,7 @@ public class ParkingSpot {
     }
 
      public String toString() {
-        return "ParkingSpot [id=" + id +  ", user=" + user + ", price=" + price + "]";
+        return "ParkingSpot [id: " + id +  ", user: " + user + ", price: " + price + ", location: "+location+"]";
     }
 
      public XYLocation getLocation() {

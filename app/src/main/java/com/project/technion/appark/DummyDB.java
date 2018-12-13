@@ -25,8 +25,8 @@ public class DummyDB implements DataBase {
     }
 
     private Map<Integer, User> users = new HashMap<>();
-    Map<Integer, ParkingSpot> parkingSpots = new HashMap<>();
-    Map<Integer, List<Integer>> parkingSpotsOfUsers = new HashMap<>();
+    private Map<Integer, ParkingSpot> parkingSpots = new HashMap<>();
+    private Map<Integer, List<Integer>> parkingSpotsOfUsers = new HashMap<>();
 //    List<Reservation> reservations = new ArrayList<>();
 
     @Override
