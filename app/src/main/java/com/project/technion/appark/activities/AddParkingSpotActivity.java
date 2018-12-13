@@ -30,8 +30,8 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
     private ParkingSpot mParkingSpot;
     private User mUser;
 
-    private Button  pick_start;
-    private TextView text_start;
+    private Button  pick_start, pick_end;
+    private TextView text_start, text_end;
     private int day, month, year, hour, minute;
     private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
 
@@ -66,10 +66,9 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
             }
         });
 
+
         pick_start = findViewById(R.id.choose_start_tnd);
         text_start = findViewById(R.id.tnd_start_text);
-
-
         pick_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,13 +76,27 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
                 year = c.get(Calendar.YEAR);
                 month = c.get(Calendar.MONTH);
                 day = c.get(Calendar.DAY_OF_MONTH);
-
-
-                DatePickerDialog dpg = new DatePickerDialog(AddParkingSpotActivity.this, AddParkingSpotActivity.this, year, month, day);
+                DatePickerDialog dpg = new DatePickerDialog(AddParkingSpotActivity.this,
+                        AddParkingSpotActivity.this, year, month, day);
                 dpg.show();
             }
         });
 
+
+        pick_end = findViewById(R.id.choose_end_tnd);
+        text_end = findViewById(R.id.tnd_end_text);
+        pick_end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c = Calendar.getInstance();
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog dpg = new DatePickerDialog(AddParkingSpotActivity.this,
+                        AddParkingSpotActivity.this, year, month, day);
+                dpg.show();
+            }
+        });
     }
 
     @Override
@@ -104,8 +117,9 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         hourFinal = hourOfDay;
         minuteFinal = minute;
-
-        // "dd MMM yyyy HH:mm"
-        text_start.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + minuteFinal);
+        String add_zero = "";
+        if(minuteFinal < 10)
+            add_zero = "0";
+        text_start.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
     }
 }
