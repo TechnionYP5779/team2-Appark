@@ -2,6 +2,7 @@ package com.project.technion.appark.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -17,13 +18,13 @@ import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
+import com.project.technion.appark.TimeSlot;
 import com.project.technion.appark.User;
 import com.project.technion.appark.XYLocation;
 
 import java.util.Calendar;
 
-public class AddParkingSpotActivity extends AppCompatActivity implements
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class AddParkingSpotActivity extends AppCompatActivity {
     private static final String  TAG = "AddParkingSpotActivity";
 
     private DataBase db;
@@ -32,13 +33,12 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
 
     private Button  pick_start, pick_end;
     private TextView text_start, text_end;
-    private int day, month, year, hour, minute;
+    private int dayStart, monthStart, yearStart, hourStart, minuteStart;
     private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
-    private Double price, x,y;
+    private boolean startTimeWasSet , finishTimeWasSet;
 
-    private boolean isViewEmpty(TextView view){
-        return view.getText().toString().isEmpty();
-    }
+    Calendar calendarStart  , calendarFinish;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,85 +57,102 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
         offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isViewEmpty(priceTextView)){
-                    Toast.makeText(AddParkingSpotActivity.this, "You need to choose: price", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                price = Double.parseDouble(priceTextView.getText().toString());
-                if(isViewEmpty(xTextView)){
-                    Toast.makeText(AddParkingSpotActivity.this, "You need to choose: x", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                x = Double.parseDouble(xTextView.getText().toString());
-                if(isViewEmpty(yTextView)){
-                    Toast.makeText(AddParkingSpotActivity.this, "You need to choose: y", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                y = Double.parseDouble(yTextView.getText().toString());
 
+                Log.d(TAG, dayStart + " " + monthStart + " " + yearStart + " " + hourStart + " " + minuteStart);
 
+                Log.d(TAG, dayFinal + " " + monthFinal + " " + yearFinal + " " + hourFinal + " " + minuteFinal);
+
+                if (!startTimeWasSet || !finishTimeWasSet ||
+                        priceTextView.getText().toString().isEmpty() ||
+                        xTextView.getText().toString().isEmpty() || yTextView.getText().toString().isEmpty()){
+                    Snackbar.make(view, "Fill all the fields before you submit", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                return;
+                }
+                Double price = Double.parseDouble(priceTextView.getText().toString());
+                Double x = Double.parseDouble(xTextView.getText().toString());
+                Double y = Double.parseDouble(yTextView.getText().toString());
                 XYLocation location = new XYLocation(x,y);
-                mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(),mUser, price,location);
+
+                //TODO:change this to the real slot
+                TimeSlot slot = new TimeSlot(Calendar.getInstance(),Calendar.getInstance(),false);
+
+                mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(),mUser, price,location,slot);
                 db.add(mParkingSpot);
                 Toast.makeText(AddParkingSpotActivity.this,"the offer was published",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
 
+        addStartTime();
+        addFinishTime();
+    }
 
+    public void addStartTime(){
         pick_start = findViewById(R.id.choose_start_tnd);
         text_start = findViewById(R.id.tnd_start_text);
         pick_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
-                day = c.get(Calendar.DAY_OF_MONTH);
+                final Calendar calendar = Calendar.getInstance();
                 DatePickerDialog dpg = new DatePickerDialog(AddParkingSpotActivity.this,
-                        AddParkingSpotActivity.this, year, month, day);
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, final int year, final int month, final int dayOfMonth) {
+                                TimePickerDialog tpg = new TimePickerDialog(AddParkingSpotActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                                    @Override
+                                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                        dayStart = dayOfMonth;
+                                        monthStart = month + 1;
+                                        yearStart = year;
+                                        hourStart = hourOfDay;
+                                        minuteStart = minute;
+                                        String add_zero = "";
+                                        if(minuteStart < 10)
+                                            add_zero = "0";
+                                        text_start.setText(dayStart + "/" + monthStart + "/" + yearStart + " , " + hourStart + ":" + add_zero + minuteStart);
+                                        startTimeWasSet = true;
+                                    }
+                                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
+                                tpg.show();
+                            }
+                        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dpg.show();
             }
         });
+    }
 
-
+    public void addFinishTime(){
         pick_end = findViewById(R.id.choose_end_tnd);
         text_end = findViewById(R.id.tnd_end_text);
         pick_end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
-                day = c.get(Calendar.DAY_OF_MONTH);
+                final Calendar calendar = Calendar.getInstance();
                 DatePickerDialog dpg = new DatePickerDialog(AddParkingSpotActivity.this,
-                        AddParkingSpotActivity.this, year, month, day);
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, final int year, final int month, final int dayOfMonth) {
+                                TimePickerDialog tpg = new TimePickerDialog(AddParkingSpotActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                                    @Override
+                                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                        dayFinal = dayOfMonth;
+                                        monthFinal = month +1;
+                                        yearFinal = year;
+                                        hourFinal= hourOfDay;
+                                        minuteFinal = minute;
+                                        String add_zero = "";
+                                        if(minuteFinal < 10)
+                                            add_zero = "0";
+                                        text_end.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
+                                        finishTimeWasSet = true;
+                                    }
+                                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
+                                tpg.show();
+                            }
+                        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dpg.show();
             }
         });
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        yearFinal = year;
-        monthFinal = month + 1;
-        dayFinal = dayOfMonth;
-
-        Calendar c = Calendar.getInstance();
-        hour = c.get(Calendar.HOUR_OF_DAY);
-        minute = c.get(Calendar.MINUTE);
-
-        TimePickerDialog tpg = new TimePickerDialog(AddParkingSpotActivity.this, AddParkingSpotActivity.this, hour, minute, DateFormat.is24HourFormat(this));
-        tpg.show();
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        hourFinal = hourOfDay;
-        minuteFinal = minute;
-        String add_zero = "";
-        if(minuteFinal < 10)
-            add_zero = "0";
-        text_start.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
     }
 }

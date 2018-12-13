@@ -53,7 +53,7 @@ public class DummyDB implements DataBase {
     @Override
     public void add(ParkingSpot s) {
         parkingSpots.put(s.getId(), s);
-        add(s.getSeller().getId(),s.getId());
+        add(s.getUser().getId(),s.getId());
     }
 
     @Override
