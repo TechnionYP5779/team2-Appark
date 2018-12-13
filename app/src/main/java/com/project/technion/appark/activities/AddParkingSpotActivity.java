@@ -1,6 +1,5 @@
 package com.project.technion.appark.activities;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +10,6 @@ import android.widget.Toast;
 
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
-import com.project.technion.appark.Location;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
@@ -47,7 +45,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                 Double price = Double.parseDouble(priceTextView.getText().toString());
                 Double x = Double.parseDouble(xTextView.getText().toString());
                 Double y = Double.parseDouble(yTextView.getText().toString());
-                Location location = new XYLocation(x,y);
+                XYLocation location = new XYLocation(x,y);
                 mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(),mUser, price,location);
                 db.add(mParkingSpot);
                 Toast.makeText(AddParkingSpotActivity.this,"the offer was published",Toast.LENGTH_SHORT).show();

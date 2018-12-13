@@ -5,11 +5,11 @@ public class ParkingSpot {
 //    private Availability availability;
     private User seller;
     private double price;
-    private Location location;
+    private XYLocation location;
 
 
 
-    public ParkingSpot(Integer id, User seller, double price,Location location) {
+    public ParkingSpot(Integer id, User seller, double price,XYLocation location) {
         this.id = id;
 //        this.availability = availability;
         this.seller = seller;
@@ -41,7 +41,7 @@ public class ParkingSpot {
         return "ParkingSpotImplementation [id=" + id +  ", seller=" + seller + ", price=" + price + "]";
     }
 
-     public Location getLocation() {
+     public XYLocation getLocation() {
         return this.location;
     }
 }
