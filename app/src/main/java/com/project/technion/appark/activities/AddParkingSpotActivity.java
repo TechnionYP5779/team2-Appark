@@ -34,7 +34,11 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
     private TextView text_start, text_end;
     private int day, month, year, hour, minute;
     private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
+    private Double price, x,y;
 
+    private boolean isViewEmpty(TextView view){
+        return view.getText().toString().isEmpty();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +57,23 @@ public class AddParkingSpotActivity extends AppCompatActivity implements
         offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(priceTextView.getText().toString().isEmpty() ||xTextView.getText().toString().isEmpty() || yTextView.getText().toString().isEmpty())
+                if(isViewEmpty(priceTextView)){
+                    Toast.makeText(AddParkingSpotActivity.this, "You need to choose: price", Toast.LENGTH_SHORT).show();
                     return;
-                Double price = Double.parseDouble(priceTextView.getText().toString());
-                Double x = Double.parseDouble(xTextView.getText().toString());
-                Double y = Double.parseDouble(yTextView.getText().toString());
+                }
+                price = Double.parseDouble(priceTextView.getText().toString());
+                if(isViewEmpty(xTextView)){
+                    Toast.makeText(AddParkingSpotActivity.this, "You need to choose: x", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                x = Double.parseDouble(xTextView.getText().toString());
+                if(isViewEmpty(yTextView)){
+                    Toast.makeText(AddParkingSpotActivity.this, "You need to choose: y", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                y = Double.parseDouble(yTextView.getText().toString());
+
+
                 XYLocation location = new XYLocation(x,y);
                 mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(),mUser, price,location);
                 db.add(mParkingSpot);

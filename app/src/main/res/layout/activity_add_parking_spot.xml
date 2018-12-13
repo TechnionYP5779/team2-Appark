@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="number"
-            android:hint="enter x coordinate" />
+            android:hint="enter y coordinate" />
     </LinearLayout>
 
     <LinearLayout
