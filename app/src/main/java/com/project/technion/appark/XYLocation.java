@@ -1,6 +1,6 @@
 package com.project.technion.appark;
 
-public class XYLocation implements Location{
+public class XYLocation{
     private double x;
     private double y;
 
@@ -9,7 +9,7 @@ public class XYLocation implements Location{
         this.y = y;
     }
 
-    @Override public double calcDist(Location other) {
+    public double calcDist(XYLocation other) {
         if(!(other instanceof XYLocation)) {
             throw new IllegalArgumentException("Location must be of type LocationImplementation");
         }

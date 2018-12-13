@@ -16,10 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.AddParkingSpotActivity" />
-        <activity android:name=".activities.ViewMyOffersActivity" />
-        <activity android:name=".activities.ViewAllOffersActivity"/>
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="Appark" />
+        <activity
+            android:name=".activities.AddParkingSpotActivity"
+            android:label="Add new Parking Spot"/>
+        <activity
+            android:name=".activities.ViewMyOffersActivity"
+            android:label="My Offers"/>
+        <activity
+            android:name=".activities.ViewAllOffersActivity"
+            android:label="Available Parking Spots"/>
     </application>
 
 </manifest>
