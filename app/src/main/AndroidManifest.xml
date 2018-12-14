@@ -28,6 +28,9 @@
         <activity
             android:name=".activities.ViewAllOffersActivity"
             android:label="Available Parking Spots" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="Registering new user" />
         <activity android:name=".activities.SearchParkingsActivity" />
         <activity
             android:name=".activities.MasterActivity"
