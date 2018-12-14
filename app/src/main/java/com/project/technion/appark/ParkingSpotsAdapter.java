@@ -19,7 +19,7 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ParkingSpot parkingSpot = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.parking_spots_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.all_offers_list_item, parent, false);
         }
         TextView textViewLocation = convertView.findViewById(R.id.textView_location);
         TextView textViewPrice = convertView.findViewById(R.id.textView_price);

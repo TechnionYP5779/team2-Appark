@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity {
         user1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, MasterActivity.class);
                 i.putExtra("user_id",1);
                 startActivity(i);
             }
@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         user2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, MasterActivity.class);
                 i.putExtra("user_id",2);
                 startActivity(i);
             }
@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         user3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                Intent i = new Intent(LoginActivity.this, MasterActivity.class);
                 i.putExtra("user_id",3);
                 startActivity(i);
             }

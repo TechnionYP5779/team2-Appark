@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -17,10 +16,8 @@ import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
-import com.project.technion.appark.exceptions.ParkingSpotNotInSystem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ViewAllOffersActivity extends AppCompatActivity {
     private static final String  TAG = "ViewAllOffersActivity";
@@ -34,7 +31,7 @@ public class ViewAllOffersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_all_parking);
+        setContentView(R.layout.activity_view_all_offers);
         mListView = findViewById(R.id.list_view);
 
         FloatingActionButton search_button = findViewById(R.id.search_button);

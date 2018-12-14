@@ -29,6 +29,10 @@
             android:name=".activities.ViewAllOffersActivity"
             android:label="Available Parking Spots" />
         <activity android:name=".activities.SearchParkingsActivity" />
+        <activity
+            android:name=".activities.MasterActivity"
+            android:label="@string/title_activity_master"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
