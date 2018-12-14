@@ -9,7 +9,7 @@
     <TextView
         android:layout_marginTop="40dp"
         android:textSize="40sp"
-        android:text="@string/app_name"
+        android:text="Appark Sign Up"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -34,10 +34,10 @@
     <Button
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
-        android:id="@+id/loginButton"
+        android:id="@+id/registerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log In" />
+        android:text="Sign Up" />
 
     <Button
         android:visibility="gone"
@@ -47,44 +47,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log Out" />
-    
+
     <TextView
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewSignup"
-        android:text="Not Registered? Sign up here"/>
+        android:id="@+id/textViewSignin"
+        android:text="Have an account? Sign in here"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_user1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
-            android:layout_margin="20dp"
-            android:text="User1" />
-
-        <Button
-            android:id="@+id/button_user2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
-            android:layout_margin="20dp"
-            android:text="User2" />
-
-        <Button
-            android:id="@+id/button_user3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
-            android:layout_margin="20dp"
-            android:text="User3" />
-    </LinearLayout>
 </LinearLayout>

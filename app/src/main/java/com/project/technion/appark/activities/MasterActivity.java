@@ -1,5 +1,6 @@
 package com.project.technion.appark.activities;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,8 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.project.technion.appark.R;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
 
@@ -38,11 +41,23 @@ public class MasterActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master);
+
+        mAuth = FirebaseAuth.getInstance();
+        //TODO: this prevents unauthorized users reach the master page:
+        /*
+        if(mAuth.getCurrentUser() == null){
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        */
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,6 +102,10 @@ public class MasterActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //meanwhile use this as logout
+            mAuth.signOut();
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
             return true;
         }
 
