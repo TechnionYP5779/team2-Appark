@@ -1,29 +1,37 @@
 package com.project.technion.appark.fragments;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
-
+import com.project.technion.appark.DataBase;
+import com.project.technion.appark.DummyDB;
+import com.project.technion.appark.ParkingSpot;
+import com.project.technion.appark.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
-import com.project.technion.appark.activities.MasterActivity;
+import com.project.technion.appark.activities.SearchParkingsActivity;
+import java.util.ArrayList;
 
 
 public class ViewAllOffersFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
+    private static final String  TAG = "ViewAllOffersActivity";
+    private DataBase db;
+    private ListView mListView;
+    private ParkingSpotsAdapter mAdapter;
     public ViewAllOffersFragment() {
     }
 
-    public static ViewAllOffersFragment newInstance(int sectionNumber) {
+    public static ViewAllOffersFragment newInstance() {
         ViewAllOffersFragment fragment = new ViewAllOffersFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,9 +39,36 @@ public class ViewAllOffersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_master, container, false);
-        TextView textView = rootView.findViewById(R.id.section_label);
-        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+        View rootView = inflater.inflate(R.layout.fragment_view_all_offers, container, false);
+        setup(rootView);
+
         return rootView;
+    }
+
+    public void setup(View rootView){
+        mListView = rootView.findViewById(R.id.list_view);
+
+        FloatingActionButton search_button = rootView.findViewById(R.id.search_button);
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Let's search!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                Intent i = new Intent(getContext(), SearchParkingsActivity.class);
+                startActivity(i);
+            }
+        });
+
+        db = DummyDB.getInstance();
+        ArrayList<ParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
+        mAdapter = new ParkingSpotsAdapter(getContext(), spots);
+        mListView.setAdapter(mAdapter);
+        TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+        if(spots.size() == 0){
+            noOffers.setVisibility(View.VISIBLE);
+        }
+        else{
+            noOffers.setVisibility(View.INVISIBLE);
+        }
     }
 }
