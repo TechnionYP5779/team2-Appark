@@ -21,4 +21,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_parking_spots">no parking spots</string>
+    <string name="number_of_offers">Number of offers:</string>
+    <string name="location">Location</string>
+    <string name="price">Price</string>
+    <string name="offer">Offer</string>
 </resources>
