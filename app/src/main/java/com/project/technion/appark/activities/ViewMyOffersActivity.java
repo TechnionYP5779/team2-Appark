@@ -41,12 +41,9 @@ public class ViewMyOffersActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Intent i = new Intent(ViewMyOffersActivity.this, AddParkingSpotActivity.class);
                 i.putExtra("user_id",mUser.getId());
                 startActivity(i);
-
             }
         });
 
@@ -77,8 +74,5 @@ public class ViewMyOffersActivity extends AppCompatActivity {
                 parkingSpotNotInSystem.printStackTrace();
             }
         }
-
-
-
     }
 }

@@ -18,7 +18,6 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.activities.SearchParkingsActivity;
 import java.util.ArrayList;
 
-
 public class ViewAllOffersFragment extends Fragment {
 
     private static final String  TAG = "ViewAllOffersActivity";
@@ -47,17 +46,6 @@ public class ViewAllOffersFragment extends Fragment {
 
     public void setup(View rootView){
         mListView = rootView.findViewById(R.id.list_view);
-
-        FloatingActionButton search_button = rootView.findViewById(R.id.search_button);
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Let's search!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                Intent i = new Intent(getContext(), SearchParkingsActivity.class);
-                startActivity(i);
-            }
-        });
 
         db = DummyDB.getInstance();
         ArrayList<ParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
