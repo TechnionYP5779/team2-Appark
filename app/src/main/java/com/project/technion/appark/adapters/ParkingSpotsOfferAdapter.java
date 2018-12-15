@@ -8,26 +8,27 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.project.technion.appark.DummyParkingSpot;
+import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
 
 import java.util.ArrayList;
 
 
-public class ParkingSpotsOfferAdapter extends ArrayAdapter<DummyParkingSpot> {
-    public ParkingSpotsOfferAdapter(Context context, ArrayList<DummyParkingSpot> dummyParkingSpots){
-        super(context,0, dummyParkingSpots);
+public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
+    public ParkingSpotsOfferAdapter(Context context, ArrayList<Offer> offers){
+        super(context,0, offers);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        DummyParkingSpot dummyParkingSpot = getItem(position);
+        Offer offer = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.all_offers_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.parking_spots_offers_list_item, parent, false);
         }
-        TextView textViewLocation = convertView.findViewById(R.id.textView_location);
-        TextView textViewPrice = convertView.findViewById(R.id.textView_price);
-        textViewLocation.setText(dummyParkingSpot.getLocation().toString());
-        textViewPrice.setText(dummyParkingSpot.getPrice()+" $");
+        TextView textViewStartTime = convertView.findViewById(R.id.start_time_text_view);
+        TextView textViewEndTime = convertView.findViewById(R.id.end_time_text_view);
+        textViewStartTime.setText(offer.getStartTime().toString());
+        textViewEndTime.setText(offer.getEndTime().toString());
         return convertView;
     }
 }
