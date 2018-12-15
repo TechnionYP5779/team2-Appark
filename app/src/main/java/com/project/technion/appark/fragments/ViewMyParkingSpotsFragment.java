@@ -1,7 +1,5 @@
 package com.project.technion.appark.fragments;
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,19 +17,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.project.technion.appark.DataBase;
-import com.project.technion.appark.DummyDB;
-import com.project.technion.appark.DummyParkingSpot;
-import com.project.technion.appark.OffersAdapter;
-import com.project.technion.appark.ParkingSpot;
-import com.project.technion.appark.ParkingSpotsAdapter;
+import com.project.technion.appark.adapters.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
-import com.project.technion.appark.activities.MasterActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ViewMyParkingSpotsFragment extends Fragment {
 

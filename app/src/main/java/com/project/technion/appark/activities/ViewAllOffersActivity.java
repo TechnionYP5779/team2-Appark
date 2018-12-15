@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
 import com.project.technion.appark.DummyParkingSpot;
-import com.project.technion.appark.OffersAdapter;
+import com.project.technion.appark.adapters.OffersAdapter;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 

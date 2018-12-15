@@ -1,4 +1,4 @@
-package com.project.technion.appark;
+package com.project.technion.appark.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.project.technion.appark.DummyParkingSpot;
+import com.project.technion.appark.R;
+
 import java.util.ArrayList;
 
 
-public class OffersAdapter extends ArrayAdapter<DummyParkingSpot> {
-    public OffersAdapter(Context context, ArrayList<DummyParkingSpot> dummyParkingSpots){
+public class ParkingSpotsOfferAdapter extends ArrayAdapter<DummyParkingSpot> {
+    public ParkingSpotsOfferAdapter(Context context, ArrayList<DummyParkingSpot> dummyParkingSpots){
         super(context,0, dummyParkingSpots);
     }
 
