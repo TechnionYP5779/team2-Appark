@@ -41,7 +41,7 @@ public class ViewAllOffersActivity extends AppCompatActivity {
                 Snackbar.make(view, "Let's search!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Intent i = new Intent(ViewAllOffersActivity.this, SearchParkingsActivity.class);
-                i.putExtra("user_id",mUser.getId());
+//                i.putExtra("user_id",mUser.getId());
                 startActivity(i);
             }
         });

@@ -42,7 +42,7 @@ public class ViewMyOffersActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(ViewMyOffersActivity.this, AddParkingSpotActivity.class);
-                i.putExtra("user_id",mUser.getId());
+//                i.putExtra("user_id",mUser.getId());
                 startActivity(i);
             }
         });
@@ -64,7 +64,7 @@ public class ViewMyOffersActivity extends AppCompatActivity {
 
     private void refreshList(){
         final TextView offerListTextView = findViewById(R.id.offer_list);
-        List<Integer> myOffersIDS = db.getParkingSpotsOfUser(mUser.getId());
+        List<Integer> myOffersIDS = db.getParkingSpotsOfUser(0); //TODO:change to real id
         if(myOffersIDS.size() != 0)
             offerListTextView.setText("");
         for(Integer i : myOffersIDS){

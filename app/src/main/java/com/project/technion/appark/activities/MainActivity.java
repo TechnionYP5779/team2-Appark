@@ -33,39 +33,5 @@ public class MainActivity extends AppCompatActivity {
 
         mUser = db.getUser(id);
         textView.setText(mUser.toString());
-
-        setUpButtons();
-    }
-
-    private void setUpButtons(){
-        Button offerButton = findViewById(R.id.button_offer);
-        offerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, AddParkingSpotActivity.class);
-                i.putExtra("user_id",mUser.getId());
-                startActivity(i);
-            }
-        });
-
-        Button viewMyOffersButtons = findViewById(R.id.button_view_my_offers);
-        viewMyOffersButtons.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ViewMyOffersActivity.class);
-                i.putExtra("user_id",mUser.getId());
-                startActivity(i);
-            }
-        });
-
-        Button viewAllOffersButtons = findViewById(R.id.button_view_all_offers);
-        viewAllOffersButtons.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ViewAllOffersActivity.class);
-                i.putExtra("user_id",mUser.getId());
-                startActivity(i);
-            }
-        });
     }
 }

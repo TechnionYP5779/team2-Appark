@@ -81,14 +81,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         bLogin.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
 
-        //Delete this code later on...
-        user1 = findViewById(R.id.button_user1);
-        user2 = findViewById(R.id.button_user2);
-        user3 = findViewById(R.id.button_user3);
-
-        user1.setOnClickListener(this);
-        user2.setOnClickListener(this);
-        user3.setOnClickListener(this);
     }
 
     @Override

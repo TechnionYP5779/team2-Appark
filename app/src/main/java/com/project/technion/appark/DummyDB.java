@@ -16,12 +16,6 @@ public class DummyDB implements DataBase {
     }
 
     private DummyDB() {
-        User user1 = new User(1, "Guy", "guy@gmail.com");
-        User user2 = new User(2, "Addir", "addir@gmail.com");
-        User user3 = new User(3, "Tal", "tal@gmail.com");
-        users.put(1, user1);
-        users.put(2, user2);
-        users.put(3, user3);
     }
 
     private Map<Integer, User> users = new HashMap<>();
@@ -47,13 +41,13 @@ public class DummyDB implements DataBase {
 
     @Override
     public void add(User b) {
-        users.put(b.getId(), b);
+        users.put(0, b);
     }
 
     @Override
     public void add(ParkingSpot s) {
         parkingSpots.put(s.getId(), s);
-        add(s.getUser().getId(),s.getId());
+        add(0,s.getId());
     }
 
     @Override
@@ -68,7 +62,7 @@ public class DummyDB implements DataBase {
 
     @Override
     public void update(User s) {
-        users.put(s.getId(), s);
+        users.put(0, s);
     }
 
     @Override
