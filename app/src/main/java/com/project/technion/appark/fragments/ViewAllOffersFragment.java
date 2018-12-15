@@ -1,9 +1,6 @@
 package com.project.technion.appark.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +9,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
-import com.project.technion.appark.ParkingSpot;
+import com.project.technion.appark.DummyParkingSpot;
 import com.project.technion.appark.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
-import com.project.technion.appark.activities.SearchParkingsActivity;
+
 import java.util.ArrayList;
 
 public class ViewAllOffersFragment extends Fragment {
@@ -48,7 +45,7 @@ public class ViewAllOffersFragment extends Fragment {
         mListView = rootView.findViewById(R.id.list_view);
 
         db = DummyDB.getInstance();
-        ArrayList<ParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
+        ArrayList<DummyParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
         mAdapter = new ParkingSpotsAdapter(getContext(), spots);
         mListView.setAdapter(mAdapter);
         TextView noOffers = rootView.findViewById(R.id.textView_no_offers);

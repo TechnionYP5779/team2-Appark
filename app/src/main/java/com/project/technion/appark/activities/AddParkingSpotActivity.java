@@ -2,7 +2,6 @@ package com.project.technion.appark.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -16,7 +15,7 @@ import android.widget.Toast;
 
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
-import com.project.technion.appark.ParkingSpot;
+import com.project.technion.appark.DummyParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.TimeSlot;
 import com.project.technion.appark.User;
@@ -29,7 +28,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
     private static final String TAG = "AddParkingSpotActivity";
 
     private DataBase db;
-    private ParkingSpot mParkingSpot;
+    private DummyParkingSpot mDummyParkingSpot;
     private User mUser;
 
     private Button pick_start, pick_end;
@@ -80,8 +79,8 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                 Calendar endCal = new GregorianCalendar(yearFinal,monthFinal-1,dayFinal,hourFinal,minuteFinal);
                 TimeSlot slot = new TimeSlot(startCal, endCal, false);
 
-                mParkingSpot = new ParkingSpot(db.getNextParkingSpotID(), mUser, price, location, slot);
-                db.add(mParkingSpot);
+                mDummyParkingSpot = new DummyParkingSpot(db.getNextParkingSpotID(), mUser, price, location, slot);
+                db.add(mDummyParkingSpot);
                 Toast.makeText(AddParkingSpotActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
                 finish();
             }

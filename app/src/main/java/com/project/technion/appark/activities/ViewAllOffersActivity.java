@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
-import com.project.technion.appark.ParkingSpot;
+import com.project.technion.appark.DummyParkingSpot;
 import com.project.technion.appark.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
@@ -51,7 +51,7 @@ public class ViewAllOffersActivity extends AppCompatActivity {
         Log.d(TAG,"user id is "+id);
         mUser = db.getUser(id);
 
-        ArrayList<ParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
+        ArrayList<DummyParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
         mAdapter = new ParkingSpotsAdapter(this, spots);
         mListView.setAdapter(mAdapter);
         TextView noOffers = findViewById(R.id.textView_no_offers);

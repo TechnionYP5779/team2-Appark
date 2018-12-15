@@ -19,7 +19,7 @@ public class DummyDB implements DataBase {
     }
 
     private Map<Integer, User> users = new HashMap<>();
-    private Map<Integer, ParkingSpot> parkingSpots = new HashMap<>();
+    private Map<Integer, DummyParkingSpot> parkingSpots = new HashMap<>();
     private Map<Integer, List<Integer>> parkingSpotsOfUsers = new HashMap<>();
 //    List<Reservation> reservations = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class DummyDB implements DataBase {
     }
 
     @Override
-    public ParkingSpot getParkingSpot(Integer id) throws ParkingSpotNotInSystem {
+    public DummyParkingSpot getParkingSpot(Integer id) throws ParkingSpotNotInSystem {
         if (!parkingSpots.containsKey(id)) throw new ParkingSpotNotInSystem();
         return parkingSpots.get(id);
     }
@@ -45,7 +45,7 @@ public class DummyDB implements DataBase {
     }
 
     @Override
-    public void add(ParkingSpot s) {
+    public void add(DummyParkingSpot s) {
         parkingSpots.put(s.getId(), s);
         add(0,s.getId());
     }
@@ -66,7 +66,7 @@ public class DummyDB implements DataBase {
     }
 
     @Override
-    public void update(ParkingSpot s) throws ParkingSpotNotInSystem {
+    public void update(DummyParkingSpot s) throws ParkingSpotNotInSystem {
         if (!parkingSpots.containsKey(s.getId())) throw new ParkingSpotNotInSystem();
         parkingSpots.put(s.getId(), s);
     }
@@ -92,7 +92,7 @@ public class DummyDB implements DataBase {
     }
 
     @Override
-    public List<ParkingSpot> getAllParkingSpot() {
+    public List<DummyParkingSpot> getAllParkingSpot() {
         return new ArrayList<>(parkingSpots.values());
     }
 

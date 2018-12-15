@@ -1,16 +1,16 @@
 package com.project.technion.appark;
 
 public class Offer {
-    private ParkingSpot parkingSPot;
+    private DummyParkingSpot dummyParkingSPot;
     private TimeSlot timeSlot;
 
-    public Offer(ParkingSpot parkingSpot, TimeSlot timeSlot) {
-        this.parkingSPot = parkingSpot;
+    public Offer(DummyParkingSpot dummyParkingSpot, TimeSlot timeSlot) {
+        this.dummyParkingSPot = dummyParkingSpot;
         this.timeSlot = timeSlot;
     }
 
-    public ParkingSpot getParkingSPot() {
-        return parkingSPot;
+    public DummyParkingSpot getDummyParkingSPot() {
+        return dummyParkingSPot;
     }
 
     public TimeSlot getTimeSlot() {

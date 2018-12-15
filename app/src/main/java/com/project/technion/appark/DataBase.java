@@ -10,11 +10,11 @@ public interface DataBase {
 
     int getNextParkingSpotID();
 
-    ParkingSpot getParkingSpot(Integer id) throws ParkingSpotNotInSystem;
+    DummyParkingSpot getParkingSpot(Integer id) throws ParkingSpotNotInSystem;
 
     void add(User b);
 
-    void add(ParkingSpot s);
+    void add(DummyParkingSpot s);
 
     void removeUser(Integer id);
 
@@ -22,13 +22,13 @@ public interface DataBase {
 
     void update(User updatedUser);
 
-    void update(ParkingSpot s) throws ParkingSpotNotInSystem;
+    void update(DummyParkingSpot s) throws ParkingSpotNotInSystem;
 
     List<Integer> getParkingSpotsOfUser(Integer userId);
 
     void add(Integer userId, Integer hisParkingSpot);
 
-    List<ParkingSpot> getAllParkingSpot();
+    List<DummyParkingSpot> getAllParkingSpot();
 
     List<User> getAllUsers();
 }

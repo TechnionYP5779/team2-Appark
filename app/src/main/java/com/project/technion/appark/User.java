@@ -1,13 +1,22 @@
 package com.project.technion.appark;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private String name;
-    private String contact_info;
+    private String contactInfo;
 
+    public List<ParkingSpot> parkingSpots;
 
-    public User( String name, String contact_info) {
+    public User() {
+        parkingSpots = new ArrayList<>();
+    }
+
+    public User( String name, String contactInfo) {
         this.name = name;
-        this.contact_info = contact_info;
+        this.contactInfo = contactInfo;
+        parkingSpots = new ArrayList<>();
     }
 
      public String getName() {
@@ -15,15 +24,15 @@ public class User {
     }
 
     public String getContactInfo() {
-        return contact_info;
+        return contactInfo;
     }
 
     public void update(User updatedUser) {
         this.name = updatedUser.getName();
-        this.contact_info = updatedUser.getContactInfo();
+        this.contactInfo = updatedUser.getContactInfo();
     }
 
     public String toString() {
-        return "UserImplementation [ name=" + name + ", contact_info=" + contact_info + "]";
+        return "UserImplementation [ name=" + name + ", contactInfo=" + contactInfo + "]";
     }
 }
