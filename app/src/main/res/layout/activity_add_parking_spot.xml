@@ -7,75 +7,33 @@
     android:orientation="vertical"
     tools:context=".activities.AddParkingSpotActivity">
 
+    <TextView
+        android:layout_marginTop="40dp"
+        android:textSize="40sp"
+        android:text="Fill The Form"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <EditText
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
         android:id="@+id/ps_price"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="enter price" />
+        android:hint="Enter price per hour" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:id="@+id/ps_address"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/ps_x"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/enter_x_coordinate"
-            android:inputType="number" />
-        <EditText
-            android:id="@+id/ps_y"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:hint="@string/enter_y_coordinate" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/choose_start_tnd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/select_start_time" />
-
-        <TextView
-            android:id="@+id/tnd_start_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="start time"
-            android:textSize="20sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/choose_end_tnd"
-            android:layout_width="159dp"
-            android:layout_height="wrap_content"
-            android:text="@string/select_end_time" />
-
-        <TextView
-            android:id="@+id/tnd_end_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="end time"
-            android:textSize="20sp"/>
-
-    </LinearLayout>
-
+        android:ems="10"
+        android:inputType="textPostalAddress"
+        android:hint="Enter parking spot address" />
 
     <Button
         android:id="@+id/button_offer"

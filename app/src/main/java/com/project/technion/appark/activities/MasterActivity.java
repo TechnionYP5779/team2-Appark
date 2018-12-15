@@ -91,38 +91,7 @@ public class MasterActivity extends AppCompatActivity {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabaseReference.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User u = dataSnapshot.getValue(User.class);
-
-
-                        Geocoder gc = new Geocoder(getApplicationContext());
-                        if(gc.isPresent()) {
-                            List<Address> list = null;
-                            try {
-                                list = gc.getFromLocationName("155 Park Theater, Palo Alto, CA", 1);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            Address address = list.get(0);
-                            double lat = address.getLatitude();
-                            double lng = address.getLongitude();
-
-                            u.parkingSpots.add(new ParkingSpot(mUser.getUid(),10,lat,lng));
-
-                            mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
-                        }
-
-
-
-                        Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                startActivity(new Intent(MasterActivity.this, AddParkingSpotActivity.class));
             }
         });
 
