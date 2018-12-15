@@ -19,6 +19,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -66,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
+                pd.dismiss();
                 if (task.isSuccessful()) {
                     mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
                             .setValue(new User(name,phone));
@@ -78,6 +81,10 @@ public class RegisterActivity extends AppCompatActivity {
                         if (e.getClass() == FirebaseAuthWeakPasswordException.class) {
                             etPassword.setError(getString(R.string.error_weak_password));
                             etPassword.requestFocus();
+                        }
+                        else if (e.getClass() == FirebaseAuthUserCollisionException.class) {
+                            etEmail.setError(getString(R.string.error_email_taken));
+                            etEmail.requestFocus();
                         }
                     }
                     Toast.makeText(RegisterActivity.this, "Could not register... please try again", Toast.LENGTH_SHORT).show();

@@ -26,5 +26,7 @@
     <string name="location">Location</string>
     <string name="price">Price</string>
     <string name="offer">Offer</string>
-    <string name="error_weak_password">Weak Password, try again</string>
+    <string name="error_weak_password">Password must be at least 6 characters long</string>
+    <string name="error_invalid_credentials">Wrong email, try again</string>
+    <string name="error_email_taken">Email is already taken</string>
 </resources>
