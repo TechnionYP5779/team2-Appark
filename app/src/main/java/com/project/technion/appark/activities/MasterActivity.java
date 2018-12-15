@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
 
@@ -31,6 +33,8 @@ public class MasterActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private FloatingActionButton mFab;
     private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +42,15 @@ public class MasterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_master);
 
         mAuth = FirebaseAuth.getInstance();
+
         //TODO: this prevents unauthorized users reach the master page:
-        /*
         if(mAuth.getCurrentUser() == null){
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-        FirebaseUser user = mAuth.getCurrentUser();
-        */
+        mUser = mAuth.getCurrentUser();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,6 +89,8 @@ public class MasterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                mDatabaseReference.child(mUser.getUid()).setValue("new parking spot");
             }
         });
 

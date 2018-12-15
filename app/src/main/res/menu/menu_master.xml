@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.project.technion.appark.activities.MasterActivity">
     <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="99"
+        android:title="Settings"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="Logout"

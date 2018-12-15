@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task) {
                 pd.dismiss();
                 if(task.isSuccessful()){
-                    //finish();
+                    finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
                 }
             }
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if(mAuth.getCurrentUser() != null){//user is already logged in
             //profile activity here
-            //finish();
+            finish();
             startActivity(new Intent(getApplicationContext(), MasterActivity.class));
         }
 
