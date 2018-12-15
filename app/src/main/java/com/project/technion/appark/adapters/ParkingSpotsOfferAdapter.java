@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.project.technion.appark.DummyParkingSpot;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
 

@@ -14,6 +14,10 @@ public class Offer {
 
     }
 
+    public Offer(){
+
+    }
+
     public Offer(String parkingSpotId, String userId
             , long startCalenderInMillis, long endCalenderInMillis) {
         this.parkingSpotId = parkingSpotId;
