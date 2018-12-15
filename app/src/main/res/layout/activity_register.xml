@@ -35,7 +35,7 @@
     <EditText
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:inputType="phone"
+        android:inputType="textPersonName"
         android:id="@+id/nameInput"
         android:hint="Enter your name"
         android:layout_width="300dp"
