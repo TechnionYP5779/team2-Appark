@@ -3,9 +3,35 @@ package com.project.technion.appark;
 public class ParkingSpot {
     private String userId;
     private double price;
+    private double lat;
+    private double lng;
 
     public ParkingSpot(){
 
+    }
+
+    public ParkingSpot(String userId, double price,double lat,double lng) {
+        this.userId = userId;
+        this.price = price;
+        this.lat = lat;
+        this.lng = lng;
+
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
     public String getUserId() {
@@ -24,8 +50,5 @@ public class ParkingSpot {
         this.price = price;
     }
 
-    public ParkingSpot(String userId, double price) {
-        this.userId = userId;
-        this.price = price;
-    }
+
 }

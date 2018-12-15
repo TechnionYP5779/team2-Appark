@@ -1,6 +1,8 @@
 package com.project.technion.appark.activities;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +31,9 @@ import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MasterActivity extends AppCompatActivity {
 
@@ -91,9 +96,23 @@ public class MasterActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User u = dataSnapshot.getValue(User.class);
 
-                        u.parkingSpots.add(new ParkingSpot(mUser.getUid(),10));
 
-                        mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
+                        Geocoder gc = new Geocoder(getApplicationContext());
+                        if(gc.isPresent()) {
+                            List<Address> list = null;
+                            try {
+                                list = gc.getFromLocationName("155 Park Theater, Palo Alto, CA", 1);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Address address = list.get(0);
+                            double lat = address.getLatitude();
+                            double lng = address.getLongitude();
+
+                            u.parkingSpots.add(new ParkingSpot(mUser.getUid(),10,lat,lng));
+
+                            mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
+                        }
 
 
 
