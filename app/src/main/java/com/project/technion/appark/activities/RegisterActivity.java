@@ -50,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-                            .setValue(new User(12,"my name","my contect info"));
+                            .setValue(new User("my name","my contect info"));
                     finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
                 }else{
