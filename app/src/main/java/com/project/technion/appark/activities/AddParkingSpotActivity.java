@@ -61,7 +61,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                     double lat = found_address.getLatitude();
                     double lng = found_address.getLongitude();
                     Log.d("AddParkingSpotActivity","Full Address Data: " + found_address.toString());
-                    mParkingSpot = new ParkingSpot(mUser.getUid(), price, found_address.getAddressLine(0), lat, lng);
+                    mParkingSpot = new ParkingSpot(mUser.getUid(), price, found_address.getAddressLine(0), lat, lng,mDB.push().getKey());
                     mDB.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

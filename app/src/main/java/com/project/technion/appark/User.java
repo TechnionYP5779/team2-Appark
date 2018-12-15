@@ -19,7 +19,7 @@ public class User {
         parkingSpots = new ArrayList<>();
     }
 
-     public String getName() {
+    public String getName() {
         return name;
     }
 

@@ -1,6 +1,7 @@
 package com.project.technion.appark;
 
 public class Offer {
+
     private DummyParkingSpot dummyParkingSPot;
     private TimeSlot timeSlot;
 

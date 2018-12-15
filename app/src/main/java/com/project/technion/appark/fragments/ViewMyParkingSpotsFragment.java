@@ -72,19 +72,6 @@ public class ViewMyParkingSpotsFragment extends Fragment {
 
     public void setup(final View rootView){
         mListView = rootView.findViewById(R.id.list_view);
-//
-//        db = DummyDB.getInstance();
-//        ArrayList<ParkingSpot> spots =
-//        mAdapter = new ParkingSpotsAdapter(getContext(), spots);
-//        mListView.setAdapter(mAdapter);
-//        TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
-//        if(spots.size() == 0){
-//            noOffers.setVisibility(View.VISIBLE);
-//        }
-//        else{
-//            noOffers.setVisibility(View.INVISIBLE);
-//        }
-
         mDatabaseReference.child("Users").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

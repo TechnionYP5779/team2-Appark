@@ -6,17 +6,19 @@ public class ParkingSpot {
     public String address;
     public double lat;
     public double lng;
+    public String id;
 
     public ParkingSpot(){
 
     }
 
-    public ParkingSpot(String userId, double price,String address,double lat,double lng) {
+    public ParkingSpot(String userId, double price,String address,double lat,double lng,String id) {
         this.userId = userId;
         this.price = price;
         this.address = address;
         this.lat = lat;
         this.lng = lng;
+        this.id=id;
     }
 
 }
