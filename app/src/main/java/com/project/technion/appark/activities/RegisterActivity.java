@@ -52,6 +52,15 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill password", Toast.LENGTH_LONG).show();
             return;
         }
+        if (TextUtils.isEmpty(name)) {
+            Toast.makeText(this, "Please fill name", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (TextUtils.isEmpty(phone)) {
+            Toast.makeText(this, "Please fill phone number", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         pd.setMessage("Registering user...");
         pd.show();
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
