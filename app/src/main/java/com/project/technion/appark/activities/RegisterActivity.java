@@ -6,33 +6,26 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 
-import java.util.concurrent.TimeUnit;
 
 public class RegisterActivity extends AppCompatActivity {
+    private static final String  TAG = "RegisterActivity";
     private Button bRegister;
     private EditText etEmail, etPassword, etName, etPhone;
     private TextView tvLogin;
@@ -51,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill email", Toast.LENGTH_LONG).show();
             return;
         }
+
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Please fill password", Toast.LENGTH_LONG).show();
             return;
@@ -78,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     Exception e = task.getException();
                     if (e!=null) {
+                        Log.d("RegisterActivity", "The execption class is: " + e.getClass().toString());
                         if (e.getClass() == FirebaseAuthWeakPasswordException.class) {
                             etPassword.setError(getString(R.string.error_weak_password));
                             etPassword.requestFocus();

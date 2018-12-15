@@ -10,6 +10,9 @@ public class Offer {
     public long startCalenderInMillis;
     public long endCalenderInMillis;
 
+    public Offer(){
+
+    }
 
     public Offer(String parkingSpotId, String userId
             , long startCalenderInMillis, long endCalenderInMillis) {
@@ -19,13 +22,13 @@ public class Offer {
         this.endCalenderInMillis = endCalenderInMillis;
     }
 
-    public Calendar getStartTime(){
+    public Calendar startTime(){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(startCalenderInMillis);
         return cal;
     }
 
-    public Calendar getEndTime(){
+    public Calendar endTime(){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(endCalenderInMillis);
         return cal;

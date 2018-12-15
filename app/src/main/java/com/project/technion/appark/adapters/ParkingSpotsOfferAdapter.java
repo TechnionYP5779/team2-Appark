@@ -27,8 +27,8 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
         }
         TextView textViewStartTime = convertView.findViewById(R.id.start_time_text_view);
         TextView textViewEndTime = convertView.findViewById(R.id.end_time_text_view);
-        textViewStartTime.setText(offer.getStartTime().toString());
-        textViewEndTime.setText(offer.getEndTime().toString());
+        textViewStartTime.setText(offer.startTime().toString());
+        textViewEndTime.setText(offer.endTime().toString());
         return convertView;
     }
 }

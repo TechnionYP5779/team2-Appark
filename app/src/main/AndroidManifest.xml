@@ -38,7 +38,10 @@
             android:name=".activities.MasterActivity"
             android:label="@string/title_activity_master"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.ParkingSpotActivity"></activity>
+        <activity android:name=".activities.ParkingSpotActivity" />
+        <activity android:name=".activities.OfferPopActivity"
+            android:theme="@style/AppTheme.PopMe">
+        </activity>
     </application>
 
 </manifest>
