@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.project.technion.appark.DataBase;
 import com.project.technion.appark.DummyDB;
 import com.project.technion.appark.DummyParkingSpot;
-import com.project.technion.appark.ParkingSpotsAdapter;
+import com.project.technion.appark.OffersAdapter;
 import com.project.technion.appark.R;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ViewAllOffersFragment extends Fragment {
     private static final String  TAG = "ViewAllOffersActivity";
     private DataBase db;
     private ListView mListView;
-    private ParkingSpotsAdapter mAdapter;
+    private OffersAdapter mAdapter;
     public ViewAllOffersFragment() {
     }
 
@@ -46,7 +46,7 @@ public class ViewAllOffersFragment extends Fragment {
 
         db = DummyDB.getInstance();
         ArrayList<DummyParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
-        mAdapter = new ParkingSpotsAdapter(getContext(), spots);
+        mAdapter = new OffersAdapter(getContext(), spots);
         mListView.setAdapter(mAdapter);
         TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
         if(spots.size() == 0){

@@ -31,6 +31,7 @@ import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
+import com.project.technion.appark.fragments.ViewMyParkingSpotsFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -131,8 +132,9 @@ public class MasterActivity extends AppCompatActivity {
                 return ViewAllOffersFragment.newInstance();
             else if (position == 1)
                 return ViewAllOffersFragment.newInstance();
-            else
-                return ViewAllOffersFragment.newInstance();
+            else {
+                return ViewMyParkingSpotsFragment.newInstance();
+            }
         }
         @Override
         public int getCount() {

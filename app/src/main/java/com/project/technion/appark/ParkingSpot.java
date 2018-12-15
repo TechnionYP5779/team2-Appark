@@ -1,7 +1,5 @@
 package com.project.technion.appark;
 
-import android.location.Address;
-
 public class ParkingSpot {
     public String userId;
     public double price; //TODO: change this to pph - price per hour
