@@ -52,8 +52,8 @@ public class ViewAllOffersActivity extends AppCompatActivity {
         mUser = db.getUser(id);
 
         ArrayList<DummyParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
-        mAdapter = new OffersAdapter(this, spots);
-        mListView.setAdapter(mAdapter);
+//        mAdapter = new OffersAdapter(this, spots);
+//        mListView.setAdapter(mAdapter);
         TextView noOffers = findViewById(R.id.textView_no_offers);
         if(spots.size() == 0){
             noOffers.setVisibility(View.VISIBLE);

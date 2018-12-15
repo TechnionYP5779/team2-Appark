@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.project.technion.appark.DummyParkingSpot;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
 
@@ -27,8 +26,8 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
         }
         TextView textViewStartTime = convertView.findViewById(R.id.start_time_text_view);
         TextView textViewEndTime = convertView.findViewById(R.id.end_time_text_view);
-        textViewStartTime.setText(offer.getStartTime().toString());
-        textViewEndTime.setText(offer.getEndTime().toString());
+        textViewStartTime.setText(offer.startTime().toString());
+        textViewEndTime.setText(offer.endTime().toString());
         return convertView;
     }
 }
