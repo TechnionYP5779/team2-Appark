@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(this, "Please fill password", Toast.LENGTH_LONG).show();
             return;
         }
-        pd.setMessage("Welcome");
+        pd.setMessage("Processing...");
         pd.show();
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -51,6 +51,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(task.isSuccessful()){
                     finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
