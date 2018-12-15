@@ -31,6 +31,25 @@
         android:hint="Enter your password"
         android:layout_width="300dp"
         android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:inputType="phone"
+        android:id="@+id/nameInput"
+        android:hint="Enter your name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:inputType="phone"
+        android:id="@+id/phoneInput"
+        android:hint="Enter your phone number"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
     <Button
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -38,15 +57,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign Up" />
-
-    <Button
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log Out" />
 
     <TextView
         android:textAlignment="center"

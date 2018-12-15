@@ -26,8 +26,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText etEmail, etPassword;
     private TextView tvRegister;
 
-    private Button user1, user2, user3;
-
     private FirebaseAuth mAuth;
     private ProgressDialog pd;
 
@@ -90,21 +88,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         if(view == tvRegister){
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-        }
-        if(view == user1){
-            Intent i = new Intent(LoginActivity.this, MasterActivity.class);
-            i.putExtra("user_id",1);
-            startActivity(i);
-        }
-        if(view == user1){
-            Intent i = new Intent(LoginActivity.this, MasterActivity.class);
-            i.putExtra("user_id",2);
-            startActivity(i);
-        }
-        if(view == user1){
-            Intent i = new Intent(LoginActivity.this, MasterActivity.class);
-            i.putExtra("user_id",3);
-            startActivity(i);
         }
     }
 }

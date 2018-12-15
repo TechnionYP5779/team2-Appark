@@ -9,22 +9,29 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 
+import java.util.concurrent.TimeUnit;
+
 public class RegisterActivity extends AppCompatActivity {
     private Button bRegister;
-    private EditText etEmail, etPassword;
+    private EditText etEmail, etPassword, etName, etPhone;
     private TextView tvLogin;
     private ProgressDialog pd;
     private FirebaseAuth mAuth;
@@ -35,7 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-
+        final String phone = etPhone.getText().toString();
+        final String name = etName.getText().toString();
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Please fill email", Toast.LENGTH_LONG).show();
             return;
@@ -49,9 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+
                 if (task.isSuccessful()) {
                     mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-                            .setValue(new User("my name","my contect info"));
+                            .setValue(new User(name,phone));
                     finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
                 } else {
@@ -76,6 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.emailInput);
         etPassword = findViewById(R.id.passwordInput);
         tvLogin = findViewById(R.id.textViewSignin);
+        etName = findViewById(R.id.nameInput);
+        etPhone = findViewById(R.id.phoneInput);
         pd = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
 
