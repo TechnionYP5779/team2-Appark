@@ -16,7 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
+import com.project.technion.appark.User;
 
 public class RegisterActivity extends AppCompatActivity {
     private Button bRegister;
@@ -24,11 +27,14 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView tvLogin;
     private ProgressDialog pd;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabaseReference;
 
 
     private void registerUser() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Please fill email", Toast.LENGTH_LONG).show();
             return;
@@ -43,7 +49,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    //finish();
+                    mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
+                            .setValue(new User(12,"my name","my contect info"));
+                    finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
                 }else{
                     Toast.makeText(RegisterActivity.this, "Could not register... please try again", Toast.LENGTH_SHORT).show();
