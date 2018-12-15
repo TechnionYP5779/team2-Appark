@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
@@ -48,12 +49,19 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
                             .setValue(new User("my name","my contect info"));
                     finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
-                }else{
+                } else {
+                    Exception e = task.getException();
+                    if (e!=null) {
+                        if (e.getClass() == FirebaseAuthWeakPasswordException.class) {
+                            etPassword.setError(getString(R.string.error_weak_password));
+                            etPassword.requestFocus();
+                        }
+                    }
                     Toast.makeText(RegisterActivity.this, "Could not register... please try again", Toast.LENGTH_SHORT).show();
                 }
             }
