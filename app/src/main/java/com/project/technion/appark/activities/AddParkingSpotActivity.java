@@ -69,10 +69,8 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                             u.parkingSpots.add(mParkingSpot);
                             mDB.child("Users").child(mUser.getUid()).setValue(u);
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
                     Toast.makeText(AddParkingSpotActivity.this, "Parking Spot Added!", Toast.LENGTH_SHORT).show();

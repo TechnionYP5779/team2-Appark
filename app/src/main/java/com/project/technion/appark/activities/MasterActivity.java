@@ -1,14 +1,10 @@
 package com.project.technion.appark.activities;
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,24 +13,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
-import com.project.technion.appark.User;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
 import com.project.technion.appark.fragments.ViewMyParkingSpotsFragment;
-
-import java.io.IOException;
-import java.util.List;
 
 public class MasterActivity extends AppCompatActivity {
 
