@@ -6,17 +6,19 @@ import java.util.List;
 public class User {
     private String name;
     private String contactInfo;
-
     public List<ParkingSpot> parkingSpots;
+    public List<Reservation> reservations;
 
     public User() {
         parkingSpots = new ArrayList<>();
+        reservations = new ArrayList<>();
     }
 
     public User( String name, String contactInfo) {
         this.name = name;
         this.contactInfo = contactInfo;
         parkingSpots = new ArrayList<>();
+        reservations = new ArrayList<>();
     }
 
     public String getName() {

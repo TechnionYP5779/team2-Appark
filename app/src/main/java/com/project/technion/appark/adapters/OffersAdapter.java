@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.net.InternetDomainName;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
+import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
 
 import java.util.ArrayList;
@@ -59,6 +62,32 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
+        });
+
+        Button bookNow = convertView.findViewById(R.id.button_booking);
+        bookNow.setOnClickListener(view -> {
+            mDB.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(offer.userId.equals(mAuth.getUid())){
+                        Toast.makeText(getContext(),"This is your offer , so you can not book it",Toast.LENGTH_SHORT).show();
+                    }
+                    User seller = dataSnapshot.child(offer.userId).getValue(User.class);
+                    User buyer = dataSnapshot.child(mAuth.getUid()).getValue(User.class);
+
+                    Reservation reservation = new Reservation(offer.userId,mAuth.getUid(),
+                            offer.parkingSpotId,offer.startCalenderInMillis,offer.endCalenderInMillis);
+
+                    seller.reservations.add(reservation);
+                    buyer.reservations.add(reservation);
+
+                    mDB.child("Users").child(offer.userId).setValue(seller);
+                    mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
         });
 
         return convertView;

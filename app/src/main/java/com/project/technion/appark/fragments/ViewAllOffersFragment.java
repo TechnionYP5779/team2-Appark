@@ -63,18 +63,6 @@ public class ViewAllOffersFragment extends Fragment {
 
     public void setup(final View rootView){
         mListView = rootView.findViewById(R.id.list_view);
-
-//        ArrayList<DummyParkingSpot> spots = new ArrayList<>(db.getAllParkingSpot());
-//        mAdapter = new OffersAdapter(getContext(), spots);
-//        mListView.setAdapter(mAdapter);
-//        TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
-//        if(spots.size() == 0){
-//            noOffers.setVisibility(View.VISIBLE);
-//        }
-//        else{
-//            noOffers.setVisibility(View.INVISIBLE);
-//        }
-
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
