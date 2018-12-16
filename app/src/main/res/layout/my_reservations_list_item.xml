@@ -5,7 +5,7 @@
 
     <TextView
         android:id="@+id/textView_location"
-        android:layout_width="200dp"
+        android:layout_width="240dp"
         android:layout_height="30dp"
         android:layout_alignTop="@+id/textView_price"
         android:layout_alignParentStart="true"
