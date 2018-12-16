@@ -29,6 +29,7 @@
     <string name="error_weak_password">Password must be at least 6 characters long</string>
     <string name="error_invalid_credentials">Wrong email, try again</string>
     <string name="error_email_taken">Email is already taken</string>
+    <string name="email_not_valid">Email is not valid</string>
     <string name="no_offers">no offers</string>
     <string name="blank">blank</string>
     <string name="delete">Delete</string>
