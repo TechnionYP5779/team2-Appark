@@ -53,12 +53,10 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
         textViewPrice.setText(parkingSpot.price+" $");
 
         Button button = convertView.findViewById(R.id.button_make_offer);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getContext(), ParkingSpotActivity.class);
-                i.putExtra("parking_spot_index", position);
-                getContext().startActivity(i);
+        button.setOnClickListener(view -> {
+            Intent i = new Intent(getContext(), ParkingSpotActivity.class);
+            i.putExtra("parking_spot_index", position);
+            getContext().startActivity(i);
 
 //                mDB.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 //                    @Override
@@ -76,7 +74,6 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
 //                });
 
 
-            }
         });
 
 
