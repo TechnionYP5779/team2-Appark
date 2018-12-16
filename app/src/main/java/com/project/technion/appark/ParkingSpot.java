@@ -24,5 +24,4 @@ public class ParkingSpot {
         this.id=id;
         offers = new ArrayList<>();
     }
-
 }

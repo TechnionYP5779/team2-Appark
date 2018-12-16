@@ -35,12 +35,14 @@ public class ParkingSpotActivity extends AppCompatActivity {
     private Integer parkingSpotIndex;
     private ParkingSpot parkingSpot;
     private FloatingActionButton mFab;
+    private TextView tvAddress, tvPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parking_spot);
-
+        tvAddress = findViewById(R.id.address);
+        tvPrice = findViewById(R.id.price);
         // parking_spot
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -57,9 +59,11 @@ public class ParkingSpotActivity extends AppCompatActivity {
                     Toast.makeText(ParkingSpotActivity.this, "Should not happen!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 List<Offer> offersList = parkingSpot.offers.stream()
                         .map(offerID -> dataSnapshot.child("Offers").child(offerID).getValue(Offer.class)).collect(Collectors.toList());
-
+                tvAddress.setText(parkingSpot.address);
+                tvPrice.setText(parkingSpot.price + " $");
                 mAdapter = new ParkingSpotsOfferAdapter(getApplicationContext(), new ArrayList<>(offersList));
                 mListView.setAdapter(mAdapter);
                 TextView noOffers = findViewById(R.id.textView_no_offers);
@@ -75,7 +79,6 @@ public class ParkingSpotActivity extends AppCompatActivity {
 
             }
         });
-
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), OfferPopActivity.class);
