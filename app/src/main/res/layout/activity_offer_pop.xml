@@ -24,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="112dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="105dp"
         android:text="select start time" />
 
     <TextView
@@ -33,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="161dp"
         android:text="choose end time"
         android:textSize="20sp" />
 
@@ -44,7 +45,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginTop="197dp"
         android:text="select end time" />
 
     <Button
@@ -54,7 +55,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="324dp"
+        android:layout_marginTop="250dp"
         android:text="Make Offer" />
 
 </RelativeLayout>

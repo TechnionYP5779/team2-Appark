@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,7 +27,7 @@ import com.project.technion.appark.User;
 
 
 public class RegisterActivity extends AppCompatActivity {
-    private static final String  TAG = "RegisterActivity";
+    private static final String TAG = "RegisterActivity";
     private Button bRegister;
     private EditText etEmail, etPassword, etName, etPhone;
     private TextView tvLogin;
@@ -67,22 +68,20 @@ public class RegisterActivity extends AppCompatActivity {
                 pd.dismiss();
                 if (task.isSuccessful()) {
                     mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-                            .setValue(new User(name,phone));
+                            .setValue(new User(name, phone));
                     finish();
                     startActivity(new Intent(getApplicationContext(), MasterActivity.class));
                 } else {
                     Exception e = task.getException();
-                    if (e!=null) {
+                    if (e != null) {
                         Log.d("RegisterActivity", "The execption class is: " + e.getClass().toString());
                         if (e.getClass() == FirebaseAuthWeakPasswordException.class) {
                             etPassword.setError(getString(R.string.error_weak_password));
                             etPassword.requestFocus();
-                        }
-                        else if (e.getClass() == FirebaseAuthUserCollisionException.class) {
+                        } else if (e.getClass() == FirebaseAuthUserCollisionException.class) {
                             etEmail.setError(getString(R.string.error_email_taken));
                             etEmail.requestFocus();
-                        }
-                        else if (e.getClass() == FirebaseAuthInvalidCredentialsException.class){
+                        } else if (e.getClass() == FirebaseAuthInvalidCredentialsException.class) {
                             etEmail.setError(getString(R.string.email_not_valid));
                             etEmail.requestFocus();
                         }
