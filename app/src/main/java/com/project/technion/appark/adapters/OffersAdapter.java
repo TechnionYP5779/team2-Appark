@@ -71,6 +71,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(offer.userId.equals(mAuth.getUid())){
                         Toast.makeText(getContext(),"This is your offer , so you can not book it",Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     User seller = dataSnapshot.child(offer.userId).getValue(User.class);
                     User buyer = dataSnapshot.child(mAuth.getUid()).getValue(User.class);
@@ -81,6 +82,10 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                     seller.reservations.add(reservation);
                     buyer.reservations.add(reservation);
 
+                    seller.removeOfferById(offer.id);
+                    buyer.removeOfferById(offer.id);
+
+                    mDB.child("Offers").child(offer.id).removeValue();
                     mDB.child("Users").child(offer.userId).setValue(seller);
                     mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
                 }

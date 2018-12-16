@@ -70,14 +70,15 @@ public class ViewAllOffersFragment extends Fragment {
                 for(DataSnapshot offer : dataSnapshot.getChildren()){
                     offers.add(offer.getValue(Offer.class));
                 }
-                mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
-                mListView.setAdapter(mAdapter);
-                TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
-                if(offers.size() == 0){
-                    noOffers.setVisibility(View.VISIBLE);
-                }
-                else{
-                    noOffers.setVisibility(View.INVISIBLE);
+                if(getContext() != null) {
+                    mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
+                    mListView.setAdapter(mAdapter);
+                    TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+                    if (offers.size() == 0) {
+                        noOffers.setVisibility(View.VISIBLE);
+                    } else {
+                        noOffers.setVisibility(View.INVISIBLE);
+                    }
                 }
 
 //                Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();

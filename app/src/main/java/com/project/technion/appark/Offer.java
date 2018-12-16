@@ -5,6 +5,7 @@ import java.util.Calendar;
 public class Offer {
 
     //    private TimeSlot timeSlot;
+    public String id;
     public String parkingSpotId;
     public String userId;
     public long startCalenderInMillis;
@@ -14,8 +15,9 @@ public class Offer {
 
     }
 
-    public Offer(String parkingSpotId, String userId
+    public Offer(String id,String parkingSpotId, String userId
             , long startCalenderInMillis, long endCalenderInMillis) {
+        this.id = id;
         this.parkingSpotId = parkingSpotId;
         this.userId = userId;
         this.startCalenderInMillis = startCalenderInMillis;

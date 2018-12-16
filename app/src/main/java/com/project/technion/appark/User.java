@@ -37,4 +37,13 @@ public class User {
     public String toString() {
         return "UserImplementation [ name=" + name + ", contactInfo=" + contactInfo + "]";
     }
+
+    public void removeOfferById(String offerId){
+        for(ParkingSpot p : parkingSpots){
+            if(p.offers.contains(offerId)) {
+                p.offers.remove(offerId);
+                return;
+            }
+        }
+    }
 }

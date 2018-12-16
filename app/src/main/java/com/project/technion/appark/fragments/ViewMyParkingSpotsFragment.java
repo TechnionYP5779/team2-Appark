@@ -65,15 +65,16 @@ public class ViewMyParkingSpotsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.getValue(User.class);
-                mAdapter = new ParkingSpotsAdapter(getContext(), new ArrayList<>(u.parkingSpots));
-                Log.d(TAG,u.parkingSpots.toString());
-                mListView.setAdapter(mAdapter);
-                TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
-                if(u.parkingSpots.size() == 0){
-                    noOffers.setVisibility(View.VISIBLE);
-                }
-                else{
-                    noOffers.setVisibility(View.INVISIBLE);
+                if(getContext() != null) {
+                    mAdapter = new ParkingSpotsAdapter(getContext(), new ArrayList<>(u.parkingSpots));
+                    Log.d(TAG, u.parkingSpots.toString());
+                    mListView.setAdapter(mAdapter);
+                    TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+                    if (u.parkingSpots.size() == 0) {
+                        noOffers.setVisibility(View.VISIBLE);
+                    } else {
+                        noOffers.setVisibility(View.INVISIBLE);
+                    }
                 }
 
 //                Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();
