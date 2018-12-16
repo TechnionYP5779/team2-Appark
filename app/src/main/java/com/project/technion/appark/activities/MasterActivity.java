@@ -26,7 +26,7 @@ public class MasterActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private FloatingActionButton mFab;
+    private FloatingActionButton mFab, searchFab;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
@@ -55,6 +55,10 @@ public class MasterActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
+                if(i==0)
+                    searchFab.show();
+                else
+                    searchFab.hide();
                 if(i==2)
                     mFab.show();
                 else
@@ -67,15 +71,12 @@ public class MasterActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         mFab = findViewById(R.id.fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MasterActivity.this, AddParkingSpotActivity.class));
-            }
-        });
+        mFab.setOnClickListener(view -> startActivity(new Intent(MasterActivity.this, AddParkingSpotActivity.class)));
 
         mFab.hide();
-
+        searchFab = findViewById(R.id.searchFab);
+        searchFab.setOnClickListener(v -> startActivity(new Intent(MasterActivity.this, SearchParkingsActivity.class)));
+        searchFab.hide();
     }
 
 

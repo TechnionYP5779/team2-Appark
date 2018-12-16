@@ -58,60 +58,37 @@ public class SearchParkingsActivity extends AppCompatActivity implements
 
         mAddress = findViewById((R.id.addressInput));
 
-        mChooseStartTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTimePickerDialog("start");
+        mChooseStartTime.setOnClickListener(v -> showTimePickerDialog("start"));
+
+        mChooseEndTime.setOnClickListener(v -> showTimePickerDialog("end"));
+
+
+        mChooseStartDate.setOnClickListener(v -> showDatePickerDialog("start"));
+
+        mChooseEndDate.setOnClickListener(v -> showDatePickerDialog("end"));
+
+
+        mSendButton.setOnClickListener(v -> {
+            if(mStartDay == null || mStartHour == null){
+                Toast.makeText(SearchParkingsActivity.this, "You need to choose start date", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
-        mChooseEndTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTimePickerDialog("end");
+            if(mEndDay == null || mEndHour == null){
+                Toast.makeText(SearchParkingsActivity.this, "You need to choose end date", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
+            Date startDate = getDate(mStartYear, mStartMonth, mStartDay, mStartHour);
+            Date endDate = getDate(mEndYear, mEndMonth, mEndDay, mEndHour);
+            String address = mAddress.getText().toString();
 
-        mChooseStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog("start");
-            }
-        });
-
-        mChooseEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog("end");
-            }
-        });
-
-
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mStartDay == null || mStartHour == null){
-                    Toast.makeText(SearchParkingsActivity.this, "You need to choose start date", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(mEndDay == null || mEndHour == null){
-                    Toast.makeText(SearchParkingsActivity.this, "You need to choose end date", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Date startDate = getDate(mStartYear, mStartMonth, mStartDay, mStartHour);
-                Date endDate = getDate(mEndYear, mEndMonth, mEndDay, mEndHour);
-                String address = mAddress.getText().toString();
-
-                //TODO: dest class
-                Intent i = new Intent(SearchParkingsActivity.this, SearchParkingsActivity.class);
-                i.putExtra("address", address);
-                i.putExtra("start-date", startDate);
-                i.putExtra("end-date", endDate);
-                startActivityForResult(i, RENT_PARKING_RETURN_CODE);
-            }
+            //TODO: dest class
+            Intent i = new Intent(SearchParkingsActivity.this, SearchParkingsActivity.class);
+            i.putExtra("address", address);
+            i.putExtra("start-date", startDate);
+            i.putExtra("end-date", endDate);
+            startActivityForResult(i, RENT_PARKING_RETURN_CODE);
         });
     }
 
