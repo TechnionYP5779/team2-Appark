@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
 import com.project.technion.appark.fragments.ViewMyParkingSpotsFragment;
+import com.project.technion.appark.fragments.ViewMyReservationFragment;
 
 public class MasterActivity extends AppCompatActivity {
 
@@ -116,7 +117,7 @@ public class MasterActivity extends AppCompatActivity {
             if(position==0)
                 return ViewAllOffersFragment.newInstance();
             else if (position == 1)
-                return ViewAllOffersFragment.newInstance();
+                return ViewMyReservationFragment.newInstance();
             else {
                 return ViewMyParkingSpotsFragment.newInstance();
             }
