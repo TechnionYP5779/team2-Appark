@@ -48,6 +48,8 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.parking_spots_offers_list_item, parent, false);
         }
+        if(offer == null) return convertView;
+
         TextView textViewStartTime = convertView.findViewById(R.id.start_time);
 
         TextView textViewEndTime = convertView.findViewById(R.id.end_time);
