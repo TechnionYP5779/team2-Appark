@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -24,10 +25,14 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.parking_spots_offers_list_item, parent, false);
         }
-        TextView textViewStartTime = convertView.findViewById(R.id.start_time_text_view);
-        TextView textViewEndTime = convertView.findViewById(R.id.end_time_text_view);
-        textViewStartTime.setText(offer.startTime().toString());
-        textViewEndTime.setText(offer.endTime().toString());
+        TextView textViewStartTime = convertView.findViewById(R.id.start_time);
+
+        TextView textViewEndTime = convertView.findViewById(R.id.end_time);
+        SimpleDateFormat start_format = new SimpleDateFormat("MMMM d, yyyy 'from' h:mm a");
+        SimpleDateFormat end_format = new SimpleDateFormat("MMMM d, yyyy 'until' h:mm a");
+
+        textViewStartTime.setText(start_format.format(offer.startTime().getTime()));
+        textViewEndTime.setText(end_format.format(offer.endTime().getTime()));
         return convertView;
     }
 }
