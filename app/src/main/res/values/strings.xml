@@ -27,6 +27,13 @@
     <string name="price">Price</string>
     <string name="offer">Offer</string>
     <string name="error_weak_password">Password must be at least 6 characters long</string>
+    <string name="error_please_email">Please fill email</string>
+    <string name="error_please_password">Please fill password</string>
+    <string name="error_please_price">Please fill price</string>
+    <string name="error_please_address">Please fill address</string>
+    <string name="error_please_phone_number">Please fill phone number</string>
+    <string name="error_please_name">Please fill name</string>
+    <string name="error_no_such_address">Invalid Address</string>
     <string name="error_invalid_credentials">Wrong email, try again</string>
     <string name="error_email_taken">Email is already taken</string>
     <string name="email_not_valid">Email is not valid</string>

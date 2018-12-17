@@ -5,6 +5,7 @@ import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,8 +46,19 @@ public class AddParkingSpotActivity extends AppCompatActivity {
         offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Double price = Double.parseDouble(etPrice.getText().toString());
+                String strPrice = etPrice.getText().toString();
+                if(TextUtils.isEmpty(strPrice)) {
+                    etPrice.setError(getString(R.string.error_please_price));
+                    etPrice.requestFocus();
+                    return;
+                }
+                Double price = Double.parseDouble(strPrice);
                 String address = etAddress.getText().toString();
+                if(TextUtils.isEmpty(address)) {
+                    etAddress.setError(getString(R.string.error_please_address));
+                    etAddress.requestFocus();
+                    return;
+                }
                 Geocoder gc = new Geocoder(getApplicationContext());
                 if(gc.isPresent()) {
                     List<Address> list = null;
@@ -55,7 +67,13 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    if(list.isEmpty()) {// no such address
+                        etAddress.setError(getString(R.string.error_no_such_address));
+                        etAddress.requestFocus();
+                        return;
+                    }
                     Address found_address = list.get(0);
+
                     double lat = found_address.getLatitude();
                     double lng = found_address.getLongitude();
                     Log.d("AddParkingSpotActivity","Full Address Data: " + found_address.toString());
