@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textView_price"
         android:layout_marginStart="17dp"
-        android:layout_marginEnd="99dp"
+        android:layout_marginEnd="110dp"
         android:layout_marginBottom="0dp"
         android:layout_toStartOf="@+id/button_booking"
         android:layout_toEndOf="@+id/imageView"
