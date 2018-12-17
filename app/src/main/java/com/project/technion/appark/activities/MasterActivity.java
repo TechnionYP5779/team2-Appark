@@ -38,6 +38,7 @@ public class MasterActivity extends AppCompatActivity {
 
     AlertDialog.Builder sortDialog;
     MenuItem sortItem;
+    private ViewAllOffersFragment viewAllOffersFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +93,12 @@ public class MasterActivity extends AppCompatActivity {
         searchFab.setOnClickListener(v -> startActivity(new Intent(MasterActivity.this, SearchParkingsActivity.class)));
 
 
-        String[] colors = {"by distance", "by price"};
+        String[] sortMethods = {"by distance", "by price"};
 
         sortDialog = new AlertDialog.Builder(this);
         sortDialog.setTitle("Pick a sorting method");
-        sortDialog.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // the user clicked on colors[which]
-            }
+        sortDialog.setItems(sortMethods, (dialog, index) -> {
+            viewAllOffersFragment.setup(index);
         });
     }
 
@@ -137,8 +135,10 @@ public class MasterActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if(position==0)
-                return ViewAllOffersFragment.newInstance();
+            if(position==0) {
+                viewAllOffersFragment = ViewAllOffersFragment.newInstance();
+                return viewAllOffersFragment;
+            }
             else if (position == 1)
                 return ViewMyReservationFragment.newInstance();
             else {

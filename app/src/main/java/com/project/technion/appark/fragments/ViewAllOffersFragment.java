@@ -17,16 +17,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.project.technion.appark.DataBase;
-import com.project.technion.appark.DummyDB;
-import com.project.technion.appark.DummyParkingSpot;
 import com.project.technion.appark.Offer;
-import com.project.technion.appark.User;
+import com.project.technion.appark.activities.MasterActivity;
 import com.project.technion.appark.adapters.OffersAdapter;
 import com.project.technion.appark.R;
-import com.project.technion.appark.adapters.ParkingSpotsAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ViewAllOffersFragment extends Fragment {
 
@@ -37,14 +35,15 @@ public class ViewAllOffersFragment extends Fragment {
     private DatabaseReference mDatabaseReference;
     private FirebaseUser mUser;
     private FirebaseAuth mAuth;
-
+    private View mRootView;
+    private static int lastSortIndex = -1;
     public ViewAllOffersFragment() {
     }
+
 
     public static ViewAllOffersFragment newInstance() {
         ViewAllOffersFragment fragment = new ViewAllOffersFragment();
         Bundle args = new Bundle();
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,20 +55,30 @@ public class ViewAllOffersFragment extends Fragment {
         mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         View rootView = inflater.inflate(R.layout.fragment_view_all_offers, container, false);
-        setup(rootView);
+        mRootView = rootView;
+        setup(lastSortIndex);
 
         return rootView;
     }
 
-    public void setup(final View rootView){
+    public void setup(int index){
+        lastSortIndex = index;
+        final View rootView = mRootView;
         mListView = rootView.findViewById(R.id.list_view);
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Offer> offers = new ArrayList<>();
+                List<Offer> offers = new ArrayList<>();
                 for(DataSnapshot offer : dataSnapshot.getChildren()){
                     offers.add(offer.getValue(Offer.class));
                 }
+                Log.d("beebo", String.valueOf(index));
+
+                if(index == 1){
+                    Log.d("beebo", "toast");
+                    offers = offers.stream().sorted((offer1, offer2) -> (int)(offer1.price - offer2.price)).collect(Collectors.toList());
+                }
+
                 if(getContext() != null) {
                     mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
                     mListView.setAdapter(mAdapter);
