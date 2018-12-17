@@ -46,6 +46,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
         offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                offerButton.setEnabled(false);
                 String strPrice = etPrice.getText().toString();
                 String address = etAddress.getText().toString();
 
@@ -60,7 +61,10 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                     etAddress.setError(getString(R.string.error_please_address));
                     etAddress.requestFocus();
                 }
-                if(emptyEtPrice || emptyEtAddress) return;
+                if(emptyEtPrice || emptyEtAddress){
+                    offerButton.setEnabled(true);
+                    return;
+                }
                 Double price = Double.parseDouble(strPrice);
 
                 Geocoder gc = new Geocoder(getApplicationContext());

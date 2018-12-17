@@ -78,7 +78,7 @@ public class OfferPopActivity extends Activity {
                     calendarFinish.set(yearFinal, monthFinal - 1, dayFinal, hourFinal, minuteFinal);
                     long start_time = calendarStart.getTimeInMillis();
                     long end_time = calendarFinish.getTimeInMillis();
-                    mDatabaseReference.child("Offers").child(offerId).setValue(new Offer(offerId,p.id,mUser.getUid(),start_time,end_time,p.lat,p.lng));
+                    mDatabaseReference.child("Offers").child(offerId).setValue(new Offer(offerId,p.id,mUser.getUid(),start_time,end_time,p.lat,p.lng,p.price));
                     p.offers.add(offerId);
                     mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
                 }

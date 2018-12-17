@@ -32,16 +32,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void UserLogin(){
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        if(TextUtils.isEmpty(email)){
+        boolean emptyEtEmail = TextUtils.isEmpty(email);
+        boolean emptyEtPassword = TextUtils.isEmpty(password);
+        if(emptyEtEmail){
             etEmail.setError(getString(R.string.error_please_email));
             etEmail.requestFocus();
-            return;
         }
-        if(TextUtils.isEmpty(password)){
+        if(emptyEtPassword){
             etPassword.setError(getString(R.string.error_please_password));
             etPassword.requestFocus();
-            return;
         }
+        if(emptyEtEmail || emptyEtPassword)  return;
+
         pd.setMessage("Processing...");
         pd.show();
 

@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/textView_location"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView_price"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="126dp"
+        android:layout_marginTop="47dp"
         android:layout_weight="1"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:text="Location"
-        android:textSize="25sp" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/textView_price"
@@ -21,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="305dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginStart="313dp"
+        android:layout_marginTop="16dp"
         android:layout_weight="1"
         android:text="Price" />
 
@@ -33,7 +36,17 @@
         android:layout_below="@+id/textView_price"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="11dp"
-        android:text="Make Offer" />
+        android:layout_marginEnd="7dp"
+        android:text="Add Offer" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="112dp"
+        android:layout_height="89dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="13dp"
+        app:srcCompat="@mipmap/ic_launcher" />
 
 </RelativeLayout>
