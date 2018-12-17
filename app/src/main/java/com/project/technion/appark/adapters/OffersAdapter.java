@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -32,9 +34,11 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 
@@ -58,7 +62,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.all_offers_list_item, parent, false);
         }
-        final TextView textViewLocation = convertView.findViewById(R.id.textView_location);
+        final TextView textViewLocation = convertView.findViewById(R.id.tvAddress);
         final TextView textViewPrice = convertView.findViewById(R.id.textView_price);
 
         mDB.child("Users").child(offer.userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,15 +83,13 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         });
 
         SimpleDateFormat format = new SimpleDateFormat("dd/MM , hh:mm");
-        final TextView startTime = convertView.findViewById(R.id.tv_start_time);
-        final TextView endTime = convertView.findViewById(R.id.tv_end_time);
+        final TextView timeField = convertView.findViewById(R.id.tvTimeAndDate);
 
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(offer.startCalenderInMillis);
         Calendar end = Calendar.getInstance();
         end.setTimeInMillis(offer.endCalenderInMillis);
-        startTime.setText(format.format(start.getTime()));
-        endTime.setText(format.format(end.getTime()));
+        timeField.setText(format.format(start.getTime()) + " to " + format.format(end.getTime()));
 
         Button bookNow = convertView.findViewById(R.id.button_booking);
         bookNow.setOnClickListener(view -> {
@@ -121,13 +123,13 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             });
         });
 
-        setDistanceFromMe(convertView);
+        setDistanceFromMe(convertView, offer);
 
 
         return convertView;
     }
 
-    private void setDistanceFromMe(View convertView) {
+    private void setDistanceFromMe(View convertView, Offer offer) {
         final TextView textViewDistanceFromMe = convertView.findViewById(R.id.distance_from_me);
         LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new LocationListener() {
@@ -135,7 +137,11 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             public void onLocationChanged(Location location) {
                 //TODO: consider 'append'
                 Toast.makeText(getContext(), "updating!", Toast.LENGTH_SHORT).show();
-                textViewDistanceFromMe.setText(location.getLatitude()+","+location.getLongitude());
+                Location offer_location = new Location("");
+                offer_location.setLatitude(offer.lat);
+                offer_location.setLongitude(offer.lng);
+                float dist = location.distanceTo(offer_location)/1000;
+                textViewDistanceFromMe.setText(String.format("%.2f KM", dist));
             }
 
             @Override
