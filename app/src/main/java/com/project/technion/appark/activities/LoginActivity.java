@@ -33,11 +33,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         if(TextUtils.isEmpty(email)){
-            Toast.makeText(this, "Please fill email", Toast.LENGTH_LONG).show();
+            etEmail.setError(getString(R.string.error_please_email));
+            etEmail.requestFocus();
             return;
         }
         if(TextUtils.isEmpty(password)){
-            Toast.makeText(this, "Please fill password", Toast.LENGTH_LONG).show();
+            etPassword.setError(getString(R.string.error_please_password));
+            etPassword.requestFocus();
             return;
         }
         pd.setMessage("Processing...");

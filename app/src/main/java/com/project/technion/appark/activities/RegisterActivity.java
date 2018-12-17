@@ -43,20 +43,24 @@ public class RegisterActivity extends AppCompatActivity {
         final String phone = etPhone.getText().toString();
         final String name = etName.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please fill email", Toast.LENGTH_LONG).show();
+            etEmail.setError(getString(R.string.error_please_email));
+            etEmail.requestFocus();
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please fill password", Toast.LENGTH_LONG).show();
+            etPassword.setError(getString(R.string.error_please_password));
+            etPassword.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "Please fill name", Toast.LENGTH_LONG).show();
+            etName.setError(getString(R.string.error_please_name));
+            etName.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(phone)) {
-            Toast.makeText(this, "Please fill phone number", Toast.LENGTH_LONG).show();
+            etPhone.setError(getString(R.string.error_please_phone_number));
+            etPhone.requestFocus();
             return;
         }
 

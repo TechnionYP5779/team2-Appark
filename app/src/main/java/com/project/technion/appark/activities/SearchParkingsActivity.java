@@ -70,12 +70,14 @@ public class SearchParkingsActivity extends AppCompatActivity implements
 
         mSendButton.setOnClickListener(v -> {
             if(mStartDay == null || mStartHour == null){
-                Toast.makeText(SearchParkingsActivity.this, "You need to choose start date", Toast.LENGTH_SHORT).show();
+                mChooseStartTime.setError("You need to choose start date");
+                mChooseStartTime.requestFocus();
                 return;
             }
 
             if(mEndDay == null || mEndHour == null){
-                Toast.makeText(SearchParkingsActivity.this, "You need to choose end date", Toast.LENGTH_SHORT).show();
+                mChooseEndTime.setError("You need to choose end date");
+                mChooseEndTime.requestFocus();
                 return;
             }
 
