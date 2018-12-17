@@ -112,27 +112,15 @@ public class SearchParkingsActivity extends AppCompatActivity {
                         long offerEndMillis = o.endCalenderInMillis;
                         String offerUserID = o.userId;
                         String offerPsID = o.parkingSpotId;
-
-                        Calendar x = Calendar.getInstance();
-                        x.setTimeInMillis(calSrtMillis);
-                        Log.d("beebo","offerSrtMillis "+ x.toString());
-
-                        x = Calendar.getInstance();
-                        x.setTimeInMillis(calEndMillis);
-                        Log.d("beebo","offerEndMillis "+x.toString());
-
                         if(offerSrtMillis <= calSrtMillis && calEndMillis <= offerEndMillis){
-                            Log.d("beebo","beebo");
                             double delta = 5.0;
                             Location thisLocation = new Location("");
                             thisLocation.setLatitude(o.lat);
                             thisLocation.setLongitude(o.lng);
-                            Log.d("beebo",thisLocation.distanceTo(location)+"");
                             if(location == null || thisLocation.distanceTo(location) <= delta)
                                 offers.add(offer.getValue(Offer.class));
                         }
                     }
-
                     if(getApplicationContext() != null) {
                         mAdapter = new OffersAdapter(getApplicationContext(), new ArrayList<>(offers));
                         mSearchResList.setAdapter(mAdapter);
