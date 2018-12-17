@@ -2,23 +2,19 @@ package com.project.technion.appark.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,23 +23,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.technion.appark.Offer;
-import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
-import com.project.technion.appark.User;
 import com.project.technion.appark.adapters.OffersAdapter;
-import com.project.technion.appark.adapters.ParkingSpotsOfferAdapter;
-import com.project.technion.appark.utils.MyDatePickerFragment;
-import com.project.technion.appark.utils.MyTimePickerFragment;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SearchParkingsActivity extends AppCompatActivity {
-
     private static final String TAG = "SearchParkingsActivity";
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -54,8 +41,6 @@ public class SearchParkingsActivity extends AppCompatActivity {
     private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
     private boolean startTimeWasSet, finishTimeWasSet;
     private OffersAdapter mAdapter;
-
-    private static final int RENT_PARKING_RETURN_CODE = 0;
     private Button mSearchButton;
     private EditText mAddress;
 
@@ -79,18 +64,17 @@ public class SearchParkingsActivity extends AppCompatActivity {
             }
             Calendar calendarStart = Calendar.getInstance();
             Calendar calendarFinish = Calendar.getInstance();
-            calendarStart.set(yearStart, monthStart, dayStart, hourStart, minuteStart);
-            calendarFinish.set(yearFinal, monthFinal,dayFinal,hourFinal, minuteFinal);
+            calendarStart.set(yearStart, monthStart - 1, dayStart, hourStart, minuteStart);
+            calendarFinish.set(yearFinal, monthFinal - 1,dayFinal,hourFinal, minuteFinal);
             long calSrtMillis = calendarStart.getTimeInMillis();
             long calEndMillis = calendarFinish.getTimeInMillis();
-
             String address = mAddress.getText().toString();
             Geocoder gc = new Geocoder(getApplicationContext());
-
             mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     ArrayList<Offer> offers = new ArrayList<>();
+                    Log.d("SearchParkingsActivity", "list length: "+ offers.size());
                     Location location = null;
                     if(gc.isPresent()) {
                         List<Address> list = null;
@@ -103,14 +87,11 @@ public class SearchParkingsActivity extends AppCompatActivity {
                         location = new Location("");
                         location.setLatitude(found_address.getLatitude());
                         location.setLongitude(found_address.getLongitude());
-
                     }
                     for(DataSnapshot offer : dataSnapshot.getChildren()){
                         Offer o = offer.getValue(Offer.class);
                         long offerSrtMillis = o.startCalenderInMillis;
                         long offerEndMillis = o.endCalenderInMillis;
-                        String offerUserID = o.userId;
-                        String offerPsID = o.parkingSpotId;
                         if(offerSrtMillis <= calSrtMillis && calEndMillis <= offerEndMillis){
                             double delta = 5.0;
                             Location thisLocation = new Location("");
