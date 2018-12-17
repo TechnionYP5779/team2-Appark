@@ -75,13 +75,4 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_search_category_default" />
 
-    <ImageButton
-        android:id="@+id/sort_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="bottom|center"
-        android:contentDescription="where is the sorting?!"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/image_search" />
-
 </android.support.design.widget.CoordinatorLayout>

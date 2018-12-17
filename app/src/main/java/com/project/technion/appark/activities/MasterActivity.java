@@ -32,7 +32,6 @@ public class MasterActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private FloatingActionButton mFab, searchFab;
-    private ImageButton sortButton;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
@@ -91,10 +90,6 @@ public class MasterActivity extends AppCompatActivity {
         mFab.hide();
         searchFab = findViewById(R.id.searchFab);
         searchFab.setOnClickListener(v -> startActivity(new Intent(MasterActivity.this, SearchParkingsActivity.class)));
-
-        sortButton = findViewById(R.id.sort_button);
-        sortButton.setOnClickListener(v -> Toast.makeText(MasterActivity.this, "You want to sort, eh?", Toast.LENGTH_SHORT).show());
-
 
 
         String[] colors = {"by distance", "by price"};
