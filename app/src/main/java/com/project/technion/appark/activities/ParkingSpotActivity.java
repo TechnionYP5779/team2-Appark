@@ -1,11 +1,13 @@
 package com.project.technion.appark.activities;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +86,15 @@ public class ParkingSpotActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), OfferPopActivity.class);
             i.putExtra("parking_spot_index", parkingSpotIndex);
             startActivity(i);
+        });
+
+        Button buttonStreetView = findViewById(R.id.button_street_view);
+        buttonStreetView.setOnClickListener(view -> {
+            Uri gmmIntentUri = Uri.parse("google.streetview:cbll="+parkingSpot.lat+","+parkingSpot.lng);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            startActivity(mapIntent);
+
         });
     }
 }
