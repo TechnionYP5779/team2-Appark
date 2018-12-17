@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +30,7 @@ public class MasterActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private FloatingActionButton mFab, searchFab;
+    private ImageButton sortButton;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
@@ -55,10 +59,15 @@ public class MasterActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
-                if(i==0)
+
+                if(i==0) {
                     searchFab.show();
-                else
+                    sortButton.setVisibility(View.VISIBLE);
+                }
+                else {
                     searchFab.hide();
+                    sortButton.setVisibility(View.INVISIBLE);
+                }
                 if(i==2)
                     mFab.show();
                 else
@@ -76,7 +85,10 @@ public class MasterActivity extends AppCompatActivity {
         mFab.hide();
         searchFab = findViewById(R.id.searchFab);
         searchFab.setOnClickListener(v -> startActivity(new Intent(MasterActivity.this, SearchParkingsActivity.class)));
-        searchFab.hide();
+
+        sortButton = findViewById(R.id.sort_button);
+        sortButton.setOnClickListener(v -> Toast.makeText(MasterActivity.this, "You want to sort, eh?", Toast.LENGTH_SHORT).show());
+
     }
 
 
