@@ -1,9 +1,14 @@
 package com.project.technion.appark.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +32,8 @@ import com.project.technion.appark.fragments.ViewAllOffersFragment;
 import com.project.technion.appark.fragments.ViewMyParkingSpotsFragment;
 import com.project.technion.appark.fragments.ViewMyReservationFragment;
 
+import static android.support.v4.app.ActivityCompat.requestPermissions;
+
 public class MasterActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -49,6 +56,10 @@ public class MasterActivity extends AppCompatActivity {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
+
+        permissionHandler();
+
+
         mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -103,6 +114,11 @@ public class MasterActivity extends AppCompatActivity {
         });
     }
 
+    private void permissionHandler() {
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 10);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
