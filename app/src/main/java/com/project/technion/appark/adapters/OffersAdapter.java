@@ -66,19 +66,16 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             }
         });
 
-        SimpleDateFormat start_format = new SimpleDateFormat("MMMM d, yyyy 'from' h:mm a");
-        final TextView startTime = convertView.findViewById(R.id.tv_startTime);
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(offer.startCalenderInMillis);
-        startTime.setText(start_format.format(c.getTime()));
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM , hh:mm");
+        final TextView startTime = convertView.findViewById(R.id.tv_start_time);
+        final TextView endTime = convertView.findViewById(R.id.tv_end_time);
 
-
-        SimpleDateFormat end_format = new SimpleDateFormat("MMMM d, yyyy 'until' h:mm a");
-        final TextView endTime = convertView.findViewById(R.id.tv_endTime);
-        c = Calendar.getInstance();
-        c.setTimeInMillis(offer.endCalenderInMillis);
-        endTime.setText(end_format.format(c.getTime()));
-
+        Calendar start = Calendar.getInstance();
+        start.setTimeInMillis(offer.startCalenderInMillis);
+        Calendar end = Calendar.getInstance();
+        end.setTimeInMillis(offer.endCalenderInMillis);
+        startTime.setText(format.format(start.getTime()));
+        endTime.setText(format.format(end.getTime()));
 
         Button bookNow = convertView.findViewById(R.id.button_booking);
         bookNow.setOnClickListener(view -> {
