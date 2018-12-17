@@ -47,18 +47,22 @@ public class AddParkingSpotActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String strPrice = etPrice.getText().toString();
-                if(TextUtils.isEmpty(strPrice)) {
+                String address = etAddress.getText().toString();
+
+                boolean emptyEtPrice = TextUtils.isEmpty(strPrice);
+                boolean emptyEtAddress = TextUtils.isEmpty(address);
+
+                if(emptyEtPrice) {
                     etPrice.setError(getString(R.string.error_please_price));
                     etPrice.requestFocus();
-                    return;
                 }
-                Double price = Double.parseDouble(strPrice);
-                String address = etAddress.getText().toString();
-                if(TextUtils.isEmpty(address)) {
+                if(emptyEtAddress) {
                     etAddress.setError(getString(R.string.error_please_address));
                     etAddress.requestFocus();
-                    return;
                 }
+                if(emptyEtPrice || emptyEtAddress) return;
+                Double price = Double.parseDouble(strPrice);
+
                 Geocoder gc = new Geocoder(getApplicationContext());
                 if(gc.isPresent()) {
                     List<Address> list = null;

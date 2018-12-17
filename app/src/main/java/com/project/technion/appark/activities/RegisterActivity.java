@@ -36,33 +36,34 @@ public class RegisterActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
 
 
+
     private void registerUser() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         final String phone = etPhone.getText().toString();
         final String name = etName.getText().toString();
-        if (TextUtils.isEmpty(email)) {
+        boolean emptyEtEmail = TextUtils.isEmpty(email);
+        boolean emptyEtPassword = TextUtils.isEmpty(password);
+        boolean emptyEtName = TextUtils.isEmpty(name);
+        boolean emptyEtPhoneNumber = TextUtils.isEmpty(phone);
+        if (emptyEtEmail) {
             etEmail.setError(getString(R.string.error_please_email));
             etEmail.requestFocus();
-            return;
         }
-
-        if (TextUtils.isEmpty(password)) {
+        if (emptyEtPassword) {
             etPassword.setError(getString(R.string.error_please_password));
             etPassword.requestFocus();
-            return;
         }
-        if (TextUtils.isEmpty(name)) {
+        if (emptyEtName) {
             etName.setError(getString(R.string.error_please_name));
             etName.requestFocus();
-            return;
         }
-        if (TextUtils.isEmpty(phone)) {
+        if (emptyEtPhoneNumber) {
             etPhone.setError(getString(R.string.error_please_phone_number));
             etPhone.requestFocus();
-            return;
         }
+        if(emptyEtEmail || emptyEtPassword || emptyEtName || emptyEtPhoneNumber) return;
 
         pd.setMessage("Registering user...");
         pd.show();
