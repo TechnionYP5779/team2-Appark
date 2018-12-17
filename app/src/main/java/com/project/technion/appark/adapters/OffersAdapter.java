@@ -24,7 +24,9 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class OffersAdapter extends ArrayAdapter<Offer> {
@@ -63,6 +65,20 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+        SimpleDateFormat start_format = new SimpleDateFormat("MMMM d, yyyy 'from' h:mm a");
+        final TextView startTime = convertView.findViewById(R.id.tv_startTime);
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(offer.startCalenderInMillis);
+        startTime.setText(start_format.format(c.getTime()));
+
+
+        SimpleDateFormat end_format = new SimpleDateFormat("MMMM d, yyyy 'until' h:mm a");
+        final TextView endTime = convertView.findViewById(R.id.tv_endTime);
+        c = Calendar.getInstance();
+        c.setTimeInMillis(offer.endCalenderInMillis);
+        endTime.setText(end_format.format(c.getTime()));
+
 
         Button bookNow = convertView.findViewById(R.id.button_booking);
         bookNow.setOnClickListener(view -> {
