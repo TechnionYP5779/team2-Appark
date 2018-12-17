@@ -48,6 +48,8 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
     private DatabaseReference mDB;
     private Context mContext;
 
+    private static Location lastLocation;
+
 
     public OffersAdapter(Context context, ArrayList<Offer> offers) {
         super(context, 0, offers);
@@ -90,6 +92,16 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         Calendar end = Calendar.getInstance();
         end.setTimeInMillis(offer.endCalenderInMillis);
         timeField.setText(format.format(start.getTime()) + " to " + format.format(end.getTime()));
+        final TextView textViewDistanceFromMe = convertView.findViewById(R.id.distance_from_me);
+
+        if(lastLocation != null){
+            Location offer_location = new Location("");
+            offer_location.setLatitude(offer.lat);
+            offer_location.setLongitude(offer.lng);
+            float dist = lastLocation.distanceTo(offer_location)/1000;
+            textViewDistanceFromMe.setText(String.format("%.2f KM", dist));
+        }
+
 
         Button bookNow = convertView.findViewById(R.id.button_booking);
         bookNow.setOnClickListener(view -> {
@@ -136,7 +148,8 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             @Override
             public void onLocationChanged(Location location) {
                 //TODO: consider 'append'
-                Toast.makeText(getContext(), "updating!", Toast.LENGTH_SHORT).show();
+                lastLocation = location;
+//                Toast.makeText(getContext(), "updating!", Toast.LENGTH_SHORT).show();
                 Location offer_location = new Location("");
                 offer_location.setLatitude(offer.lat);
                 offer_location.setLongitude(offer.lng);
