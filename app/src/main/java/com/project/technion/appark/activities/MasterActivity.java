@@ -65,11 +65,13 @@ public class MasterActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int i) {
                 if(i==0) {
-                    sortItem.setVisible(true);
+                    if(sortItem != null)
+                        sortItem.setVisible(true);
                     searchFab.show();
                 }
                 else {
-                    sortItem.setVisible(false);
+                    if(sortItem != null)
+                        sortItem.setVisible(false);
                     searchFab.hide();
                 }
                 if(i==2)
