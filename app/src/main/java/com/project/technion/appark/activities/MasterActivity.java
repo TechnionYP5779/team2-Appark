@@ -1,8 +1,10 @@
 package com.project.technion.appark.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -35,6 +37,9 @@ public class MasterActivity extends AppCompatActivity {
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
 
+    AlertDialog.Builder sortDialog;
+    MenuItem sortItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,14 +64,13 @@ public class MasterActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
-
                 if(i==0) {
+                    sortItem.setVisible(true);
                     searchFab.show();
-                    sortButton.setVisibility(View.VISIBLE);
                 }
                 else {
+                    sortItem.setVisible(false);
                     searchFab.hide();
-                    sortButton.setVisibility(View.INVISIBLE);
                 }
                 if(i==2)
                     mFab.show();
@@ -89,12 +93,26 @@ public class MasterActivity extends AppCompatActivity {
         sortButton = findViewById(R.id.sort_button);
         sortButton.setOnClickListener(v -> Toast.makeText(MasterActivity.this, "You want to sort, eh?", Toast.LENGTH_SHORT).show());
 
+
+
+        String[] colors = {"by distance", "by price"};
+
+        sortDialog = new AlertDialog.Builder(this);
+        sortDialog.setTitle("Pick a sorting method");
+        sortDialog.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // the user clicked on colors[which]
+            }
+        });
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_master, menu);
+        sortItem = menu.findItem(R.id.action_sort);
+
         return true;
     }
 
@@ -107,6 +125,9 @@ public class MasterActivity extends AppCompatActivity {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
             return true;
+        }
+        if(id == R.id.action_sort){
+            sortDialog.show();
         }
         return super.onOptionsItemSelected(item);
     }

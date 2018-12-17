@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,8 +80,8 @@ public class SearchParkingsActivity extends AppCompatActivity {
             }
             Calendar calendarStart = Calendar.getInstance();
             Calendar calendarFinish = Calendar.getInstance();
-            calendarStart.set(yearStart, monthStart, dayStart, hourStart, minuteStart);
-            calendarFinish.set(yearFinal, monthFinal,dayFinal,hourFinal, minuteFinal);
+            calendarStart.set(yearStart, monthStart-1, dayStart, hourStart, minuteStart);
+            calendarFinish.set(yearFinal, monthFinal-1,dayFinal,hourFinal, minuteFinal);
             long calSrtMillis = calendarStart.getTimeInMillis();
             long calEndMillis = calendarFinish.getTimeInMillis();
 
@@ -111,15 +112,27 @@ public class SearchParkingsActivity extends AppCompatActivity {
                         long offerEndMillis = o.endCalenderInMillis;
                         String offerUserID = o.userId;
                         String offerPsID = o.parkingSpotId;
+
+                        Calendar x = Calendar.getInstance();
+                        x.setTimeInMillis(calSrtMillis);
+                        Log.d("beebo","offerSrtMillis "+ x.toString());
+
+                        x = Calendar.getInstance();
+                        x.setTimeInMillis(calEndMillis);
+                        Log.d("beebo","offerEndMillis "+x.toString());
+
                         if(offerSrtMillis <= calSrtMillis && calEndMillis <= offerEndMillis){
+                            Log.d("beebo","beebo");
                             double delta = 5.0;
                             Location thisLocation = new Location("");
                             thisLocation.setLatitude(o.lat);
                             thisLocation.setLongitude(o.lng);
+                            Log.d("beebo",thisLocation.distanceTo(location)+"");
                             if(location == null || thisLocation.distanceTo(location) <= delta)
                                 offers.add(offer.getValue(Offer.class));
                         }
                     }
+
                     if(getApplicationContext() != null) {
                         mAdapter = new OffersAdapter(getApplicationContext(), new ArrayList<>(offers));
                         mSearchResList.setAdapter(mAdapter);
