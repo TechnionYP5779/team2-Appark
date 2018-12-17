@@ -86,7 +86,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(offer.userId.equals(mAuth.getUid())){
-                        Toast.makeText(getContext(),"This is your offer , so you can not book it",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"You can't book your own offer!",Toast.LENGTH_SHORT).show();
                         return;
                     }
                     User seller = dataSnapshot.child(offer.userId).getValue(User.class);
