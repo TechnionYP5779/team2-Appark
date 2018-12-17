@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class ViewAllOffersFragment extends Fragment {
 
-    private static final String  TAG = "ViewAllOffersActivity";
+    private static final String  TAG = "ViewAllOffersFragment";
     private ListView mListView;
     private OffersAdapter mAdapter;
 

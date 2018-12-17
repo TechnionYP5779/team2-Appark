@@ -21,17 +21,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
-            android:label="Appark" />
-        <activity
             android:name=".activities.AddParkingSpotActivity"
             android:label="Add new Parking Spot" />
-        <activity
-            android:name=".activities.ViewMyOffersActivity"
-            android:label="My Offers" />
-        <activity
-            android:name=".activities.ViewAllOffersActivity"
-            android:label="Available Parking Spots" />
         <activity
             android:name=".activities.RegisterActivity"
             android:label="Registering new user" />

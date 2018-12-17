@@ -98,7 +98,8 @@ public class MasterActivity extends AppCompatActivity {
         sortDialog = new AlertDialog.Builder(this);
         sortDialog.setTitle("Pick a sorting method");
         sortDialog.setItems(sortMethods, (dialog, index) -> {
-            viewAllOffersFragment.setup(index);
+            if(viewAllOffersFragment != null)
+                viewAllOffersFragment.setup(index);
         });
     }
 
