@@ -61,7 +61,6 @@ public class ParkingSpotActivity extends AppCompatActivity {
                     Toast.makeText(ParkingSpotActivity.this, "Should not happen!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 List<Offer> offersList = parkingSpot.offers.stream()
                         .map(offerID -> dataSnapshot.child("Offers").child(offerID).getValue(Offer.class)).collect(Collectors.toList());
                 tvAddress.setText(parkingSpot.address);

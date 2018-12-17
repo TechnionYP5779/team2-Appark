@@ -10,18 +10,22 @@ public class Offer {
     public String userId;
     public long startCalenderInMillis;
     public long endCalenderInMillis;
+    public double lat;
+    public double lng;
 
     public Offer(){
 
     }
 
     public Offer(String id,String parkingSpotId, String userId
-            , long startCalenderInMillis, long endCalenderInMillis) {
+            , long startCalenderInMillis, long endCalenderInMillis, double lat, double lng) {
         this.id = id;
         this.parkingSpotId = parkingSpotId;
         this.userId = userId;
         this.startCalenderInMillis = startCalenderInMillis;
         this.endCalenderInMillis = endCalenderInMillis;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public Calendar startTime(){

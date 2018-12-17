@@ -1,186 +1,196 @@
 package com.project.technion.appark.activities;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.project.technion.appark.Offer;
+import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
+import com.project.technion.appark.User;
+import com.project.technion.appark.adapters.OffersAdapter;
+import com.project.technion.appark.adapters.ParkingSpotsOfferAdapter;
 import com.project.technion.appark.utils.MyDatePickerFragment;
 import com.project.technion.appark.utils.MyTimePickerFragment;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class SearchParkingsActivity extends AppCompatActivity implements
-        MyTimePickerFragment.OnCallbackReceived, MyDatePickerFragment.OnCallbackReceived {
+public class SearchParkingsActivity extends AppCompatActivity {
 
     private static final String TAG = "SearchParkingsActivity";
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private DatabaseReference mDatabaseReference;
+    private TextView text_start, text_end;
+    private ListView mSearchResList;
+    private int dayStart, monthStart, yearStart, hourStart, minuteStart;
+    private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
+    private boolean startTimeWasSet, finishTimeWasSet;
+    private OffersAdapter mAdapter;
+
     private static final int RENT_PARKING_RETURN_CODE = 0;
-    private TextView mChooseStartTime;
-    private TextView mChooseEndTime;
-    private Button mSendButton;
+    private Button mSearchButton;
     private EditText mAddress;
-
-    private TextView mChooseStartDate;
-    private TextView mChooseEndDate;
-
-    private Integer mStartHour;
-    private Integer mEndHour;
-
-    private Integer mStartYear;
-    private Integer mEndYear;
-
-    private Integer mStartMonth;
-    private Integer mEndMonth;
-
-    private Integer mStartDay;
-    private Integer mEndDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_parkings);
-
-        mChooseStartTime = findViewById(R.id.chooseStartTime);
-        mChooseEndTime = findViewById(R.id.chooseEndTime);
-        mChooseStartDate = findViewById(R.id.chooseStartDate);
-        mChooseEndDate = findViewById(R.id.chooseEndDate);
-        mSendButton = findViewById(R.id.sendButton);
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mSearchButton = findViewById(R.id.searchButton);
         mAddress = findViewById((R.id.addressInput));
-        mChooseStartTime.setOnClickListener(v -> showTimePickerDialog("start"));
-        mChooseEndTime.setOnClickListener(v -> showTimePickerDialog("end"));
-        mChooseStartDate.setOnClickListener(v -> showDatePickerDialog("start"));
-        mChooseEndDate.setOnClickListener(v -> showDatePickerDialog("end"));
+        text_start = findViewById(R.id.chooseStartTnd);
+        text_end = findViewById(R.id.chooseEndTnd);
+        mSearchResList = findViewById(R.id.lvSearchRes);
 
-        mSendButton.setOnClickListener(v -> {
-            String address = mAddress.getText().toString();
-            boolean emptyEtAddress = TextUtils.isEmpty(address);
-            boolean emptyEtStartTime = TextUtils.isEmpty(mChooseStartTime.getText().toString());
-            boolean emptyEtEndTime = TextUtils.isEmpty(mChooseEndTime.getText().toString());
-            boolean emptyEtStartDate = TextUtils.isEmpty(mChooseStartDate.getText().toString());
-            boolean emptyEtEndDate = TextUtils.isEmpty(mChooseEndDate.getText().toString());
-            if (emptyEtAddress) {
-                mAddress.setError("Please fill address");
-                mAddress.requestFocus();
-            }
-            if (emptyEtStartTime) {
-                mChooseStartTime.setError("You need to choose start time");
-                mChooseStartTime.requestFocus();
-            } else {
-                mChooseStartTime.setError(null);
-            }
-
-            if (emptyEtEndTime) {
-                mChooseEndTime.setError("You need to choose end time");
-                mChooseEndTime.requestFocus();
-            } else {
-                mChooseEndTime.setError(null);
-            }
-            if (emptyEtStartDate) {
-                mChooseStartDate.setError("You need to choose start date");
-                mChooseStartDate.requestFocus();
-            } else {
-                mChooseStartDate.setError(null);
-            }
-
-            if (emptyEtEndDate) {
-                mChooseEndDate.setError("You need to choose end date");
-                mChooseEndDate.requestFocus();
-            } else {
-                mChooseEndDate.setError(null);
-            }
-            if (emptyEtAddress || emptyEtStartTime || emptyEtEndTime || emptyEtStartDate || emptyEtEndDate)
+        mSearchButton.setOnClickListener(v -> {
+            if (!startTimeWasSet || !finishTimeWasSet) {
+                Toast.makeText(SearchParkingsActivity.this, "Fill all the fields before you search", Toast.LENGTH_SHORT).show();
                 return;
-            Date startDate = getDate(mStartYear, mStartMonth, mStartDay, mStartHour);
-            Date endDate = getDate(mEndYear, mEndMonth, mEndDay, mEndHour);
+            }
+            Calendar calendarStart = Calendar.getInstance();
+            Calendar calendarFinish = Calendar.getInstance();
+            calendarStart.set(yearStart, monthStart, dayStart, hourStart, minuteStart);
+            calendarFinish.set(yearFinal, monthFinal,dayFinal,hourFinal, minuteFinal);
+            long calSrtMillis = calendarStart.getTimeInMillis();
+            long calEndMillis = calendarFinish.getTimeInMillis();
 
-            //TODO: dest class
-            Intent i = new Intent(SearchParkingsActivity.this, SearchParkingsActivity.class);
-            Toast.makeText(SearchParkingsActivity.this, "stop poking me!", Toast.LENGTH_SHORT).show();
-            i.putExtra("address", address);
-            i.putExtra("start-date", startDate);
-            i.putExtra("end-date", endDate);
-            startActivityForResult(i, RENT_PARKING_RETURN_CODE);
+            String address = mAddress.getText().toString();
+            Geocoder gc = new Geocoder(getApplicationContext());
+
+            mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    ArrayList<Offer> offers = new ArrayList<>();
+                    Location location = null;
+                    if(gc.isPresent()) {
+                        List<Address> list = null;
+                        try {
+                            list = gc.getFromLocationName(address, 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Address found_address = list.get(0);
+                        location = new Location("");
+                        location.setLatitude(found_address.getLatitude());
+                        location.setLongitude(found_address.getLongitude());
+
+                    }
+                    for(DataSnapshot offer : dataSnapshot.getChildren()){
+                        Offer o = offer.getValue(Offer.class);
+                        long offerSrtMillis = o.startCalenderInMillis;
+                        long offerEndMillis = o.endCalenderInMillis;
+                        String offerUserID = o.userId;
+                        String offerPsID = o.parkingSpotId;
+                        if(offerSrtMillis <= calSrtMillis && calEndMillis <= offerEndMillis){
+                            double delta = 5.0;
+                            Location thisLocation = new Location("");
+                            thisLocation.setLatitude(o.lat);
+                            thisLocation.setLongitude(o.lng);
+                            if(location == null || thisLocation.distanceTo(location) <= delta)
+                                offers.add(offer.getValue(Offer.class));
+                        }
+                    }
+                    if(getApplicationContext() != null) {
+                        mAdapter = new OffersAdapter(getApplicationContext(), new ArrayList<>(offers));
+                        mSearchResList.setAdapter(mAdapter);
+                        /*
+                        TextView noOffers = findViewById(R.id.textView_no_offers);
+                        if (offers.size() == 0) {
+                            noOffers.setVisibility(View.VISIBLE);
+                        } else {
+                            noOffers.setVisibility(View.INVISIBLE);
+                        }
+                        */
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            //TODO: change this to something more UI-ish
+            Toast.makeText(SearchParkingsActivity.this, "Searching...", Toast.LENGTH_SHORT).show();
+            //finish();
+        });
+        addStartTime();
+        addFinishTime();
+    }
+
+    public void addStartTime() {
+        text_start.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            DatePickerDialog dpg = new DatePickerDialog(SearchParkingsActivity.this, (view, year, month, dayOfMonth) -> {
+                TimePickerDialog tpg = new TimePickerDialog(SearchParkingsActivity.this, (view1, hourOfDay, minute) -> {
+                    dayStart = dayOfMonth;
+                    monthStart = month + 1;
+                    yearStart = year;
+                    hourStart = hourOfDay;
+                    minuteStart = minute;
+                    String add_zero = "";
+                    if (minuteStart < 10)
+                        add_zero = "0";
+                    text_start.setText(dayStart + "/" + monthStart + "/" + yearStart + " , " + hourStart + ":" + add_zero + minuteStart);
+                    startTimeWasSet = true;
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
+                tpg.show();
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            dpg.show();
+        });
+
+    }
+
+    public void addFinishTime() {
+        text_end.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            DatePickerDialog dpg = new DatePickerDialog(SearchParkingsActivity.this, (view, year, month, dayOfMonth) -> {
+                TimePickerDialog tpg = new TimePickerDialog(SearchParkingsActivity.this, (view1, hourOfDay, minute) -> {
+                    dayFinal = dayOfMonth;
+                    monthFinal = month + 1;
+                    yearFinal = year;
+                    hourFinal = hourOfDay;
+                    minuteFinal = minute;
+                    String add_zero = "";
+                    if (minuteFinal < 10)
+                        add_zero = "0";
+                    text_end.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
+                    finishTimeWasSet = true;
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
+                tpg.show();
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            dpg.show();
         });
     }
-
-
-    public void showTimePickerDialog(String startOrEnd) {
-        DialogFragment newFragment = new MyTimePickerFragment();
-        Bundle b = new Bundle();
-        b.putString("start-or-end", startOrEnd);
-        newFragment.setArguments(b);
-        newFragment.show(getSupportFragmentManager(), "time picker");
-    }
-
-    public void showDatePickerDialog(String startOrEnd) {
-        DialogFragment newFragment = new MyDatePickerFragment();
-        Bundle b = new Bundle();
-        b.putString("start-or-end", startOrEnd);
-        newFragment.setArguments(b);
-        newFragment.show(getSupportFragmentManager(), "date picker");
-    }
-
-
-    public void setStartTime(int startHour) {
-        mStartHour = startHour;
-    }
-
-    public void setStartDate(int startYear, int startMonth, int startDay) {
-        mStartYear = startYear;
-        mStartMonth = startMonth;
-        mStartDay = startDay;
-    }
-
-    public void setEndDate(int endYear, int endMonth, int endDay) {
-        mEndYear = endYear;
-        mEndMonth = endMonth;
-        mEndDay = endDay;
-    }
-
-    public void setEndTime(int endHour) {
-        mEndHour = endHour;
-    }
-
-    @Override
-    public void UpdateTime(String startOrEnd, Integer hour) {
-        if (startOrEnd.equals("start")) {
-            setStartTime(hour);
-            mChooseStartTime.setText(mStartHour.toString() + ":00");
-        } else {
-            setEndTime(hour);
-            mChooseEndTime.setText(mEndHour.toString() + ":00");
-        }
-    }
-
-    @Override
-    public void UpdateDate(String startOrEnd, Integer year, Integer month, Integer dayOfMonth) {
-        if (startOrEnd.equals("start")) {
-            setStartDate(year, month, dayOfMonth);
-            mChooseStartDate.setText(mStartDay.toString() + "/" + mStartMonth.toString() + "/" + mStartYear.toString());
-        } else {
-            setEndDate(year, month, dayOfMonth);
-            mChooseEndDate.setText(mEndDay.toString() + "/" + mEndMonth.toString() + "/" + mEndYear.toString());
-        }
-    }
-
-    public static Date getDate(int year, int month, int day, int hour) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        cal.set(Calendar.HOUR_OF_DAY, hour);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTime();
-    }
+    
 }
