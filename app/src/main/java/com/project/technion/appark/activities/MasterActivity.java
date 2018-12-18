@@ -38,7 +38,7 @@ public class MasterActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private FloatingActionButton mFab, searchFab;
+    public FloatingActionButton mFab, searchFab;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
@@ -153,13 +153,13 @@ public class MasterActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if(position==0) {
-                viewAllOffersFragment = ViewAllOffersFragment.newInstance();
+                viewAllOffersFragment = ViewAllOffersFragment.newInstance(MasterActivity.this);
                 return viewAllOffersFragment;
             }
             else if (position == 1)
                 return ViewMyReservationFragment.newInstance();
             else {
-                return ViewMyParkingSpotsFragment.newInstance();
+                return ViewMyParkingSpotsFragment.newInstance(MasterActivity.this);
             }
         }
         @Override

@@ -1,5 +1,6 @@
 package com.project.technion.appark.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,12 +39,14 @@ public class ViewAllOffersFragment extends Fragment {
     private FirebaseAuth mAuth;
     private View mRootView;
     private static int lastSortIndex = -1;
+    private static MasterActivity masterActivity;
     public ViewAllOffersFragment() {
     }
 
 
-    public static ViewAllOffersFragment newInstance() {
+    public static ViewAllOffersFragment newInstance(MasterActivity masterActivity) {
         ViewAllOffersFragment fragment = new ViewAllOffersFragment();
+        ViewAllOffersFragment.masterActivity = masterActivity;
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -65,6 +69,25 @@ public class ViewAllOffersFragment extends Fragment {
         lastSortIndex = index;
         final View rootView = mRootView;
         mListView = rootView.findViewById(R.id.list_view);
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                int lastItem = firstVisibleItem + visibleItemCount;
+                if (lastItem == totalItemCount) {
+
+                    masterActivity.searchFab.hide();
+                }else {
+                    masterActivity.searchFab.show();
+                }
+            }
+        });
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

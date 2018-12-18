@@ -145,13 +145,13 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                     }
                 });
 
-
-                StorageReference filepath = mStorageRef.child("Images").child(mUser.getUid()).child(mParkingSpot.id);
-                filepath.putFile(imageDataUri).addOnSuccessListener(taskSnapshot -> {
-                    Toast.makeText(this,"uploaded",Toast.LENGTH_LONG);
-                }).addOnCanceledListener(() -> {
-                    Toast.makeText(this,"Failed",Toast.LENGTH_LONG);
-                });
+//
+//                StorageReference filepath = mStorageRef.child("Images").child(mUser.getUid()).child(mParkingSpot.id);
+//                filepath.putFile(imageDataUri).addOnSuccessListener(taskSnapshot -> {
+//                    Toast.makeText(this,"uploaded",Toast.LENGTH_LONG);
+//                }).addOnCanceledListener(() -> {
+//                    Toast.makeText(this,"Failed",Toast.LENGTH_LONG);
+//                });
 
 
                 Toast.makeText(AddParkingSpotActivity.this, "Parking Spot Added!", Toast.LENGTH_SHORT).show();

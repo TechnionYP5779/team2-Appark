@@ -1,5 +1,6 @@
 package com.project.technion.appark.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.technion.appark.activities.MasterActivity;
 import com.project.technion.appark.adapters.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
@@ -33,14 +36,16 @@ public class ViewMyParkingSpotsFragment extends Fragment {
     private FirebaseUser mUser;
     private FirebaseAuth mAuth;
 
+    static MasterActivity masterActivity;
+
 
     public ViewMyParkingSpotsFragment() {
     }
 
-    public static ViewMyParkingSpotsFragment newInstance() {
+    public static ViewMyParkingSpotsFragment newInstance(MasterActivity masterActivity) {
         ViewMyParkingSpotsFragment fragment = new ViewMyParkingSpotsFragment();
         Bundle args = new Bundle();
-
+        ViewMyParkingSpotsFragment.masterActivity = masterActivity;
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,6 +66,27 @@ public class ViewMyParkingSpotsFragment extends Fragment {
 
     public void setup(final View rootView){
         mListView = rootView.findViewById(R.id.list_view);
+
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                int lastItem = firstVisibleItem + visibleItemCount;
+                if (lastItem == totalItemCount) {
+
+                    masterActivity.mFab.hide();
+                }else {
+                    masterActivity.mFab.show();
+                }
+            }
+        });
+
         mDatabaseReference.child("Users").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
