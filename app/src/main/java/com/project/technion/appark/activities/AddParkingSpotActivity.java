@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -32,6 +34,8 @@ import com.google.firebase.storage.UploadTask;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -43,7 +47,6 @@ public class AddParkingSpotActivity extends AppCompatActivity {
     private EditText etPrice, etAddress;
     private DatabaseReference mDB;
     private StorageReference mStorageRef;
-
 
     final private int IMAGE_PICKER_RESULT = 2;
     Uri imageDataUri;
@@ -66,11 +69,14 @@ public class AddParkingSpotActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == IMAGE_PICKER_RESULT && requestCode == RESULT_OK){
+        if(requestCode == IMAGE_PICKER_RESULT && resultCode == RESULT_OK){
             imageDataUri = data.getData();
             Log.d("beebo",imageDataUri.toString());
             Button offerButton = findViewById(R.id.button_offer);
             offerButton.setEnabled(true);
+            ImageView imageView = findViewById(R.id.imageView);
+            imageView.setImageURI(imageDataUri);
+
         }
         else if (requestCode == IMAGE_PICKER_RESULT){
             Toast.makeText(this,resultCode+"",Toast.LENGTH_LONG).show();
@@ -145,13 +151,11 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                     }
                 });
 
-//
-//                StorageReference filepath = mStorageRef.child("Images").child(mUser.getUid()).child(mParkingSpot.id);
-//                filepath.putFile(imageDataUri).addOnSuccessListener(taskSnapshot -> {
-//                    Toast.makeText(this,"uploaded",Toast.LENGTH_LONG);
-//                }).addOnCanceledListener(() -> {
-//                    Toast.makeText(this,"Failed",Toast.LENGTH_LONG);
-//                });
+                StorageReference filepath = mStorageRef.child("Images").child(mUser.getUid()).child(mParkingSpot.id);
+
+                filepath.putFile(imageDataUri).addOnSuccessListener(taskSnapshot -> {
+                }).addOnCanceledListener(() -> {
+                });
 
 
                 Toast.makeText(AddParkingSpotActivity.this, "Parking Spot Added!", Toast.LENGTH_SHORT).show();
@@ -161,7 +165,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
 
         Button pickImage = findViewById(R.id.button_pick_image);
         pickImage.setOnClickListener(view -> {
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            Intent i = new Intent(Intent.ACTION_PICK);
             i.setType("image/*");
             startActivityForResult(i,IMAGE_PICKER_RESULT);
         });
