@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,12 +14,15 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +33,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -47,6 +56,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
     private final FirebaseAuth mAuth;
     private DatabaseReference mDB;
     private Context mContext;
+    private StorageReference mStorageRef;
 
     private static Location lastLocation;
 
@@ -54,6 +64,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
     public OffersAdapter(Context context, ArrayList<Offer> offers) {
         super(context, 0, offers);
         mAuth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         mDB = FirebaseDatabase.getInstance().getReference();
         mContext = context;
     }
@@ -133,6 +144,38 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             });
+        });
+
+        final ImageView imageView = convertView.findViewById(R.id.imageView);
+
+
+        StorageReference storageRef = mStorageRef.child("Images").child(mAuth.getUid()).child(offer.parkingSpotId);
+        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+//            Picasso.with(getContext()).load(uri.toString()).into(imageView);
+
+            Picasso.with(getContext()).load(uri.toString())
+                    .resize(100,100)
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Bitmap imageBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                            RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getContext().getResources(), imageBitmap);
+                            imageDrawable.setCircular(true);
+                            imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
+                            imageView.setImageDrawable(imageDrawable);
+                        }
+                        @Override
+                        public void onError() {
+                            imageView.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    });
+
+
+            Log.d("beebo",uri.toString());
+
+        }).addOnFailureListener(exception -> {
+            Log.d("beebo","error");
+            imageView.setImageResource(R.mipmap.ic_launcher);
         });
 
         setDistanceFromMe(convertView, offer);
