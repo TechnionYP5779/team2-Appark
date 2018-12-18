@@ -3,6 +3,7 @@ package com.project.technion.appark.adapters;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
+import com.project.technion.appark.activities.OfferActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -50,6 +53,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
+import static android.support.v4.content.ContextCompat.startActivity;
 
 
 public class OffersAdapter extends ArrayAdapter<Offer> {
@@ -57,6 +61,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
     private DatabaseReference mDB;
     private Context mContext;
     private StorageReference mStorageRef;
+    private RelativeLayout itemLayout;
 
     private static Location lastLocation;
 
@@ -77,6 +82,11 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         }
         final TextView textViewLocation = convertView.findViewById(R.id.tvAddress);
         final TextView textViewPrice = convertView.findViewById(R.id.textView_price);
+        itemLayout = convertView.findViewById(R.id.offerItemLayer);
+
+        itemLayout.setOnClickListener(v -> {
+            getContext().startActivity(new Intent(getContext(), OfferActivity.class));
+        });
 
         mDB.child("Users").child(offer.userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -152,7 +162,6 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         StorageReference storageRef = mStorageRef.child("Images").child(mAuth.getUid()).child(offer.parkingSpotId);
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
 //            Picasso.with(getContext()).load(uri.toString()).into(imageView);
-
             Picasso.with(getContext()).load(uri.toString())
                     .resize(100,100)
                     .into(imageView, new Callback() {
@@ -169,7 +178,6 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                             imageView.setImageResource(R.mipmap.ic_launcher);
                         }
                     });
-
 
             Log.d("beebo",uri.toString());
 
