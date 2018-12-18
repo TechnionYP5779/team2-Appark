@@ -3,4 +3,15 @@
     <color name="colorPrimary">#03a9f4</color>
     <color name="colorPrimaryDark">#00447c</color>
     <color name="colorAccent">#ffd180</color>
+    <color name="backgroundcolor">#fcfcfc</color>
+    <color name="lightgray">#ededed</color>
+    <color name="deeppurple">#7c4dff</color>
+    <color name="yello">#ffb300</color>
+    <color name="green">#00bfa5</color>
+    <color name="darkblue">#23283a</color>
+    <color name="pink">#fe104d</color>
+    <color name="black_overlay">#66000000</color>
+
 </resources>
+
+
