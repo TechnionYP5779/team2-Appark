@@ -52,10 +52,12 @@ public class ReservationsAdapter extends ArrayAdapter<Reservation> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User seller = dataSnapshot.getValue(User.class);
-                for(ParkingSpot p : seller.parkingSpots){
-                    if(p.id.equals(reservation.parkingSpotId)){
-                        textViewLocation.setText(p.address);
-                        textViewPrice.setText(p.price+" $");
+                if (seller != null) {
+                    for(ParkingSpot p : seller.parkingSpots){
+                        if(p.id.equals(reservation.parkingSpotId)){
+                            textViewLocation.setText(p.address);
+                            textViewPrice.setText(p.price+" $");
+                        }
                     }
                 }
             }

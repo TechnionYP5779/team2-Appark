@@ -57,6 +57,7 @@
                         android:background="@color/lightgray"
                         android:layout_margin="10dp"/>
                     <TextView
+                        android:id="@+id/tvAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -99,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Change This 3"
+                        android:text="See the street of this parking spot"
                         android:padding="5dp"
                         android:textColor="@android:color/darker_gray"/>
 
@@ -143,6 +144,7 @@
                         android:background="@color/lightgray"
                         android:layout_margin="10dp"/>
                     <TextView
+                        android:id="@+id/tvPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -211,7 +213,7 @@
                 android:layout_height="150dp"
                 android:layout_margin="10dp">
                 <LinearLayout
-
+                    android:id="@+id/bookLayer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
