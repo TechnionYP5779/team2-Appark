@@ -141,6 +141,7 @@ public class ViewAllOffersFragment extends Fragment {
             return offers;
         }
         Location locationCurrent = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if(locationCurrent==null) return offers;
         switch (sortingMethod) {
             case DISTANCE_LOWEST:
                 return offers = offers.stream().sorted((offer1, offer2) -> {
