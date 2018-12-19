@@ -71,7 +71,6 @@ public class AddParkingSpotActivity extends AppCompatActivity {
 
         if(requestCode == IMAGE_PICKER_RESULT && resultCode == RESULT_OK){
             imageDataUri = data.getData();
-            Log.d("beebo",imageDataUri.toString());
             Button offerButton = findViewById(R.id.button_offer);
             offerButton.setEnabled(true);
             ImageView imageView = findViewById(R.id.imageView);
@@ -131,6 +130,7 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                 if(list.isEmpty()) {// no such address
                     etAddress.setError(getString(R.string.error_no_such_address));
                     etAddress.requestFocus();
+                    offerButton.setEnabled(true);
                     return;
                 }
                 Address found_address = list.get(0);
@@ -152,17 +152,22 @@ public class AddParkingSpotActivity extends AppCompatActivity {
                 });
 
                 if(imageDataUri != null) {
-                    StorageReference filepath = mStorageRef.child("Images").child(mUser.getUid()).child(mParkingSpot.id);
+                    try {
+                        StorageReference filepath = mStorageRef.child("Images").child(mUser.getUid()).child(mParkingSpot.id);
 
-                    filepath.putFile(imageDataUri).addOnSuccessListener(taskSnapshot -> {
-                    }).addOnCanceledListener(() -> {
-                    });
+                        filepath.putFile(imageDataUri).addOnSuccessListener(taskSnapshot -> {
+                        }).addOnCanceledListener(() -> {
+                        });
+                    }catch (Exception e){}
 
 
-                    Toast.makeText(AddParkingSpotActivity.this, "Parking Spot Added!", Toast.LENGTH_SHORT).show();
-                    finish();
+                }
+                else{
+                    offerButton.setEnabled(true);
                 }
             }
+            Toast.makeText(AddParkingSpotActivity.this, "Parking Spot Added!", Toast.LENGTH_SHORT).show();
+            finish();
         });
 
         Button pickImage = findViewById(R.id.button_pick_image);
