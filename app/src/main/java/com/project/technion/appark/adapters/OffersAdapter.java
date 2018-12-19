@@ -12,6 +12,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -51,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 import static android.support.v4.content.ContextCompat.startActivity;
@@ -85,7 +87,10 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         itemLayout = convertView.findViewById(R.id.offerItemLayer);
 
         itemLayout.setOnClickListener(v -> {
-            getContext().startActivity(new Intent(getContext(), OfferActivity.class));
+            Intent i = new Intent(getContext(), OfferActivity.class);
+            i.putExtra("lat", offer.lat);
+            i.putExtra("lng", offer.lng);
+            getContext().startActivity(i);
         });
 
         mDB.child("Users").child(offer.userId).addListenerForSingleValueEvent(new ValueEventListener() {
