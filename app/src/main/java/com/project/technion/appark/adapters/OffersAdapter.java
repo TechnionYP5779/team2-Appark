@@ -240,7 +240,6 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             Toast.makeText(getContext(), "We need location permission...", Toast.LENGTH_SHORT).show();
             return;
         }
-//        Toast.makeText(getContext(), "oh oh", Toast.LENGTH_SHORT).show();
         locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,locationListener,null);
 //        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, locationListener);
 

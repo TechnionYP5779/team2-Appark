@@ -1,15 +1,29 @@
 package com.project.technion.appark;
 
 public enum SortingBy {
-    PRICE{
+
+    DISTANCE_LOWEST{
         @Override
         public String toString() {
-            return "by price";
+            return "by distance (lowest)";
         }
-    }, DISTNACE{
+    },
+    DISTANCE_HIGHEST{
         @Override
         public String toString() {
-            return "by distance";
+            return "by distance (highest)";
+        }
+    },
+    PRICE_LOWEST{
+        @Override
+        public String toString() {
+            return "by price (lowest)";
+        }
+    }
+    , PRICE_HiGHEST{
+        @Override
+        public String toString() {
+            return "by price (highest)";
         }
     };
 

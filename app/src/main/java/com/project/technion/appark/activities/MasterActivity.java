@@ -28,9 +28,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
+import com.project.technion.appark.SortingBy;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
 import com.project.technion.appark.fragments.ViewMyParkingSpotsFragment;
 import com.project.technion.appark.fragments.ViewMyReservationFragment;
+
+import java.util.Arrays;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 
@@ -106,13 +109,15 @@ public class MasterActivity extends AppCompatActivity {
         searchFab.setOnClickListener(v -> startActivity(new Intent(MasterActivity.this, SearchParkingsActivity.class)));
 
 
-        String[] sortMethods = {"by distance", "by price"};
+        String[] sortMethodsEnum = Arrays.stream(SortingBy.values()).map(SortingBy::toString).toArray(String[]::new);
 
         sortDialog = new AlertDialog.Builder(this);
         sortDialog.setTitle("Pick a sorting method");
-        sortDialog.setItems(sortMethods, (dialog, index) -> {
-            if(viewAllOffersFragment != null)
-                viewAllOffersFragment.setup(index);
+        sortDialog.setItems(sortMethodsEnum, (dialog, sortingMethodIndex) -> {
+            if(viewAllOffersFragment != null) {
+                SortingBy sortingMethod = SortingBy.values()[sortingMethodIndex];
+                viewAllOffersFragment.setup(sortingMethod);
+            }
         });
     }
 
