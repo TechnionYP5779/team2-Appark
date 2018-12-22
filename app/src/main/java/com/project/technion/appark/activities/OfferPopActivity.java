@@ -3,8 +3,10 @@ package com.project.technion.appark.activities;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -12,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,7 +55,7 @@ public class OfferPopActivity extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-        getWindow().setLayout((int)(width * 0.6),(int)(height * 0.5));
+        getWindow().setLayout((int) (width * 0.6), (int) (height * 0.5));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
@@ -65,29 +68,48 @@ public class OfferPopActivity extends Activity {
                 Toast.makeText(OfferPopActivity.this, "Fill all the fields before you submit", Toast.LENGTH_SHORT).show();
                 return;
             }
-            mDatabaseReference.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Make offer?");
+            builder.setMessage("Are you sure you want to offer this parking spot from " +
+                    dayStart + "/" + monthStart + "/" + yearStart + ", " + hourStart + ":" + minuteStart + " to " +
+                    dayFinal + "/" + monthFinal + "/" + yearFinal + ", " + hourFinal + ":" + minuteFinal + "?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User u = dataSnapshot.getValue(User.class);
-                    parkingSpotIndex = getIntent().getIntExtra("parking_spot_index",-1);
-                    ParkingSpot p = u.parkingSpots.get(parkingSpotIndex);
-                    String offerId = mDatabaseReference.push().getKey();
-                    calendarStart = Calendar.getInstance();
-                    calendarStart.set(yearStart, monthStart - 1, dayStart, hourStart, minuteStart);
-                    calendarFinish = Calendar.getInstance();
-                    calendarFinish.set(yearFinal, monthFinal - 1, dayFinal, hourFinal, minuteFinal);
-                    long start_time = calendarStart.getTimeInMillis();
-                    long end_time = calendarFinish.getTimeInMillis();
-                    mDatabaseReference.child("Offers").child(offerId).setValue(new Offer(offerId,p.id,mUser.getUid(),start_time,end_time,p.lat,p.lng,p.price));
-                    p.offers.add(offerId);
-                    mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                public void onClick(DialogInterface dialog, int which) {
+                    mDatabaseReference.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User u = dataSnapshot.getValue(User.class);
+                            parkingSpotIndex = getIntent().getIntExtra("parking_spot_index", -1);
+                            ParkingSpot p = u.parkingSpots.get(parkingSpotIndex);
+                            String offerId = mDatabaseReference.push().getKey();
+                            calendarStart = Calendar.getInstance();
+                            calendarStart.set(yearStart, monthStart - 1, dayStart, hourStart, minuteStart);
+                            calendarFinish = Calendar.getInstance();
+                            calendarFinish.set(yearFinal, monthFinal - 1, dayFinal, hourFinal, minuteFinal);
+                            long start_time = calendarStart.getTimeInMillis();
+                            long end_time = calendarFinish.getTimeInMillis();
+                            mDatabaseReference.child("Offers").child(offerId).setValue(new Offer(offerId, p.id, mUser.getUid(), start_time, end_time, p.lat, p.lng, p.price));
+                            p.offers.add(offerId);
+                            mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                    Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
-            Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
-            finish();
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.show();
         });
         addStartTime();
         addFinishTime();
