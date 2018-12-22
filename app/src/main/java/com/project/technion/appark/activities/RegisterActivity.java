@@ -75,7 +75,9 @@ public class RegisterActivity extends AppCompatActivity {
                     mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
                             .setValue(new User(name, phone));
                     finish();
-                    startActivity(new Intent(getApplicationContext(), MasterActivity.class));
+                    Intent i = new Intent(getApplicationContext(), MasterActivity.class);
+                    i.putExtra("FROM", "REGISTER");
+                    startActivity(i);
                 } else {
                     Exception e = task.getException();
                     if (e != null) {
