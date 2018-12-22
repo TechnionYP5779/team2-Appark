@@ -1,8 +1,10 @@
 package com.project.technion.appark.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,10 +67,31 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
     private void handleDeleteButton(View convertView, int position){
         Button deleteButton = convertView.findViewById(R.id.button_delete);
         deleteButton.setOnClickListener(view -> {
-
                 mDB.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        /*AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Delete this offer?");
+                        builder.setMessage("Are you sure you want to delete this offer?");
+                        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
+                                Offer offer = getItem(position);
+                                for(ParkingSpot p : u.parkingSpots){
+                                    if(p.id.equals(offer.parkingSpotId)){
+                                        p.offers.remove(offer.id);
+                                        break;
+                                    }
+                                }
+                                mDB.child("Offers").child(offer.id).removeValue();
+                                mDB.child("Users").child(mUser.getUid()).setValue(u);
+                                Toast.makeText(getContext(), "the offer was deleted ", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        builder.setNegativeButton("NO", null);
+                        builder.show();*/
+
                         User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
                         Offer offer = getItem(position);
                         for(ParkingSpot p : u.parkingSpots){
@@ -85,8 +108,6 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-
-
         });
     }
 }
