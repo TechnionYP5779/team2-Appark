@@ -3,6 +3,7 @@ package com.project.technion.appark.adapters;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,11 +42,14 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
 import com.project.technion.appark.activities.OfferActivity;
+import com.project.technion.appark.activities.OfferPopActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 
@@ -116,11 +122,11 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         timeField.setText(format.format(start.getTime()) + " to " + format.format(end.getTime()));
         final TextView textViewDistanceFromMe = convertView.findViewById(R.id.distance_from_me);
 
-        if(lastLocation != null){
+        if (lastLocation != null) {
             Location offer_location = new Location("");
             offer_location.setLatitude(offer.lat);
             offer_location.setLongitude(offer.lng);
-            float dist = lastLocation.distanceTo(offer_location)/1000;
+            float dist = lastLocation.distanceTo(offer_location) / 1000;
             textViewDistanceFromMe.setText(String.format("%.2f KM", dist));
         }
 
@@ -130,25 +136,35 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             mDB.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (offer.userId.equals(mAuth.getUid())) {
-                        Toast.makeText(getContext(), "You can't book your own offer!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    User seller = dataSnapshot.child(offer.userId).getValue(User.class);
-                    User buyer = dataSnapshot.child(mAuth.getUid()).getValue(User.class);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Book parking spot?");
+                    builder.setMessage("Are you sure you want to book this parking spot?");
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (offer.userId.equals(mAuth.getUid())) {
+                                Toast.makeText(getContext(), "You can't book your own offer!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            User seller = dataSnapshot.child(offer.userId).getValue(User.class);
+                            User buyer = dataSnapshot.child(mAuth.getUid()).getValue(User.class);
 
-                    Reservation reservation = new Reservation(offer.userId, mAuth.getUid(),
-                            offer.parkingSpotId, offer.startCalenderInMillis, offer.endCalenderInMillis);
+                            Reservation reservation = new Reservation(offer.userId, mAuth.getUid(),
+                                    offer.parkingSpotId, offer.startCalenderInMillis, offer.endCalenderInMillis);
 
-                    seller.reservations.add(reservation);
-                    buyer.reservations.add(reservation);
+                            seller.reservations.add(reservation);
+                            buyer.reservations.add(reservation);
 
-                    seller.removeOfferById(offer.id);
-                    buyer.removeOfferById(offer.id);
+                            seller.removeOfferById(offer.id);
+                            buyer.removeOfferById(offer.id);
 
-                    mDB.child("Offers").child(offer.id).removeValue();
-                    mDB.child("Users").child(offer.userId).setValue(seller);
-                    mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
+                            mDB.child("Offers").child(offer.id).removeValue();
+                            mDB.child("Users").child(offer.userId).setValue(seller);
+                            mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
+                        }
+                    });
+                    builder.setNegativeButton("NO", null);
+                    builder.show();
                 }
 
                 @Override
@@ -164,7 +180,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
 //            Picasso.with(getContext()).load(uri.toString()).into(imageView);
             Picasso.with(getContext()).load(uri.toString())
-                    .resize(100,100)
+                    .resize(100, 100)
                     .into(imageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -174,16 +190,17 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                             imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
                             imageView.setImageDrawable(imageDrawable);
                         }
+
                         @Override
                         public void onError() {
                             imageView.setImageResource(R.mipmap.ic_launcher);
                         }
                     });
 
-            Log.d("beebo",uri.toString());
+            Log.d("beebo", uri.toString());
 
         }).addOnFailureListener(exception -> {
-            Log.d("beebo","error");
+            Log.d("beebo", "error");
             imageView.setImageResource(R.mipmap.ic_launcher);
         });
 
@@ -205,7 +222,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                 Location offer_location = new Location("");
                 offer_location.setLatitude(offer.lat);
                 offer_location.setLongitude(offer.lng);
-                float dist = location.distanceTo(offer_location)/1000;
+                float dist = location.distanceTo(offer_location) / 1000;
                 textViewDistanceFromMe.setText(String.format("%.2f KM", dist));
             }
 
@@ -235,12 +252,12 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions((Activity)getContext(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 10);
+                requestPermissions((Activity) getContext(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 10);
             }
             Toast.makeText(getContext(), "We need location permission...", Toast.LENGTH_SHORT).show();
             return;
         }
-        locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER,locationListener,null);
+        locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
 //        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, locationListener);
 
     }
