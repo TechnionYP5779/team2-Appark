@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Appark</string>
+    <string name="loginMessage">Login to Appark</string>
     <string name="title_activity_available_parking">AvailableParkingActivity</string>
     <string name="address_of_parking">Address of parking</string>
     <string name="pick_date">Pick date</string>
