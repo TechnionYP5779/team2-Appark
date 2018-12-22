@@ -5,25 +5,25 @@ public enum SortingBy {
     DISTANCE_LOWEST{
         @Override
         public String toString() {
-            return "by distance (lowest)";
+            return "by distance (CLOSEST first)";
         }
     },
     DISTANCE_HIGHEST{
         @Override
         public String toString() {
-            return "by distance (highest)";
+            return "by distance (FARTHEST first)";
         }
     },
     PRICE_LOWEST{
         @Override
         public String toString() {
-            return "by price (lowest)";
+            return "by price (LOWEST first)";
         }
     }
     , PRICE_HiGHEST{
         @Override
         public String toString() {
-            return "by price (highest)";
+            return "by price (HIGHEST first)";
         }
     };
 
