@@ -161,6 +161,8 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                             mDB.child("Offers").child(offer.id).removeValue();
                             mDB.child("Users").child(offer.userId).setValue(seller);
                             mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
+
+                            Toast.makeText(getContext(), "You booked this offer!", Toast.LENGTH_SHORT).show();
                         }
                     });
                     builder.setNegativeButton("NO", null);
