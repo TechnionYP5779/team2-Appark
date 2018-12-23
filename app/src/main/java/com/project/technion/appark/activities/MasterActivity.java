@@ -47,7 +47,7 @@ public class MasterActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
 
     AlertDialog.Builder sortDialog;
-    MenuItem sortItem;
+    MenuItem sortItem,mapItem;
     private ViewAllOffersFragment viewAllOffersFragment;
     public int tabPosition;
 
@@ -83,11 +83,15 @@ public class MasterActivity extends AppCompatActivity {
                 if(i==0) {
                     if(sortItem != null)
                         sortItem.setVisible(true);
+                    if(mapItem != null)
+                        mapItem.setVisible(true);
                     searchFab.show();
                 }
                 else {
                     if(sortItem != null)
                         sortItem.setVisible(false);
+                    if(mapItem != null)
+                        mapItem.setVisible(false);
                     searchFab.hide();
                 }
                 if(i==2)
@@ -131,7 +135,7 @@ public class MasterActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_master, menu);
         sortItem = menu.findItem(R.id.action_sort);
-
+        mapItem = menu.findItem(R.id.action_map);
         return true;
     }
 
