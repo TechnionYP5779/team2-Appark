@@ -37,7 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.ui.IconGenerator;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
-import com.project.technion.appark.adapters.OffersAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -64,7 +62,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.771959, 35.217018)));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 8.0f ) );
 
@@ -74,22 +71,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         getMyLocation();
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Offer offer = (Offer)marker.getTag();
-                Intent i = new Intent(MapsActivity.this, OfferActivity.class);
-                i.putExtra("lat", offer.lat);
-                i.putExtra("lng", offer.lng);
-                i.putExtra("price", offer.price);
-                i.putExtra("userId", offer.userId);
-                i.putExtra("offerId", offer.id);
-                i.putExtra("PSID", offer.parkingSpotId);
-                i.putExtra("startMillis", offer.startCalenderInMillis);
-                i.putExtra("endMillis", offer.endCalenderInMillis);
-                startActivity(i);
-                return false;
-            }
+        mMap.setOnMarkerClickListener(marker -> {
+            Offer offer = (Offer)marker.getTag();
+            Intent i = new Intent(MapsActivity.this, OfferActivity.class);
+            i.putExtra("lat", offer.lat);
+            i.putExtra("lng", offer.lng);
+            i.putExtra("price", offer.price);
+            i.putExtra("userId", offer.userId);
+            i.putExtra("offerId", offer.id);
+            i.putExtra("PSID", offer.parkingSpotId);
+            i.putExtra("startMillis", offer.startCalenderInMillis);
+            i.putExtra("endMillis", offer.endCalenderInMillis);
+            startActivity(i);
+            return false;
         });
 
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
