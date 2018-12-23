@@ -148,6 +148,9 @@ public class MasterActivity extends AppCompatActivity {
         if(id == R.id.action_sort){
             sortDialog.show();
         }
+        if(id == R.id.action_map){
+            startActivity(new Intent(MasterActivity.this,MapsActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 

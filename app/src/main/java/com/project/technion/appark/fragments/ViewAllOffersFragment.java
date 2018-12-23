@@ -127,7 +127,6 @@ public class ViewAllOffersFragment extends Fragment {
                     }
                 }
 
-//                Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
