@@ -35,6 +35,7 @@ import com.project.technion.appark.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ViewAllOffersFragment extends Fragment {
@@ -126,7 +127,6 @@ public class ViewAllOffersFragment extends Fragment {
                     }
                 }
 
-//                Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -136,7 +136,7 @@ public class ViewAllOffersFragment extends Fragment {
         });
     }
     private List<Offer> sortOffers(SortingBy sortingMethod, List<Offer> offers){
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return offers;
         }
