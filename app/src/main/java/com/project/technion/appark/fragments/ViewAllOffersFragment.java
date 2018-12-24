@@ -49,6 +49,8 @@ public class ViewAllOffersFragment extends Fragment {
     private View mRootView;
     private static SortingBy lastSortMethod = SortingBy.DISTANCE_LOWEST; // default sorting method
     private static MasterActivity masterActivity;
+    // Declare Context variable at class level in Fragment
+    private Context mContext;
 
 
     public ViewAllOffersFragment() {
@@ -74,6 +76,12 @@ public class ViewAllOffersFragment extends Fragment {
         setup(lastSortMethod);
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     public void setup(SortingBy sortingMethod) {
@@ -136,8 +144,8 @@ public class ViewAllOffersFragment extends Fragment {
         });
     }
     private List<Offer> sortOffers(SortingBy sortingMethod, List<Offer> offers){
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return offers;
         }
         Location locationCurrent = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);

@@ -29,8 +29,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.technion.appark.R;
 import com.facebook.FacebookException;
+import com.project.technion.appark.User;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -48,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog pd;
 
     private CallbackManager mCallbackManager;
+    private DatabaseReference mDatabaseReference;
 
 
 
@@ -74,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pd.setMessage("Processing...");
         pd.show();
 
+
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -91,6 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -100,8 +106,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                           // updateUI(user);
+                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                            if(isNewUser) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String phone = "0546536925"; //user.getPhoneNumber()
+                                mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
+                                        .setValue(new User(user.getDisplayName(), phone));
+                            }
                             finish();
                             startActivity(new Intent(getApplicationContext(), MasterActivity.class));
                         } else {
