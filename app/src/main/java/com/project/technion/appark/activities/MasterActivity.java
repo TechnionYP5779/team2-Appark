@@ -57,9 +57,9 @@ public class MasterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master);
         mAuth = FirebaseAuth.getInstance();
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired(); //Facebook
-        if(mAuth.getCurrentUser() == null && !isLoggedIn){
+       // AccessToken accessToken = AccessToken.getCurrentAccessToken();
+      //  boolean isLoggedIn = accessToken != null && !accessToken.isExpired(); //Facebook
+        if(mAuth.getCurrentUser() == null){
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
