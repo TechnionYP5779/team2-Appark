@@ -146,7 +146,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //mMap.getUiSettings().setAllGesturesEnabled(false);
+        mMap.getUiSettings().setAllGesturesEnabled(false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -169,9 +169,9 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         }*/
         getMyLocation();
 
-        /*mMap.setOnMarkerClickListener(marker -> {
+        mMap.setOnMarkerClickListener(marker -> {
             Offer offer = (Offer)marker.getTag();
-            Intent i = new Intent(MapsActivity.this, OfferActivity.class);
+            /*Intent i = new Intent(MapsActivity.this, OfferActivity.class);
             i.putExtra("lat", offer.lat);
             i.putExtra("lng", offer.lng);
             i.putExtra("price", offer.price);
@@ -180,9 +180,10 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             i.putExtra("PSID", offer.parkingSpotId);
             i.putExtra("startMillis", offer.startCalenderInMillis);
             i.putExtra("endMillis", offer.endCalenderInMillis);
-            startActivity(i);
+            startActivity(i);*/
+            Toast.makeText(this, "Price: "+offer.price+ " $", Toast.LENGTH_LONG).show();
             return false;
-        });*/
+        });
 
         /*mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
