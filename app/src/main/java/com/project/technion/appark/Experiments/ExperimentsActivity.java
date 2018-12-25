@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -50,10 +51,11 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     private Marker mCurrLocationMarker = null;
     private SupportMapFragment mapFrag = null;
     private final int zoomLevel = 18;
+    private int currentBearing = 0;
 
     private LocationManager locationManager;
-    Button btnShowLocation;
-    Button gpsSettings;
+    ImageButton leftBearingButton;
+    ImageButton rightBearingButton;
 
     // GPSTracker class
     GPSTracker gps;
@@ -83,44 +85,37 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
         gps = new GPSTracker(ExperimentsActivity.this);
 
-        btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+        leftBearingButton = (ImageButton) findViewById(R.id.LeftBearing);
         // Show location button click event
-        btnShowLocation.setOnClickListener(new View.OnClickListener() {
+        leftBearingButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                // Create class object
+                currentBearing = (currentBearing + 45)%180;
 
-
-                // Check if GPS enabled
-                if (gps.canGetLocation()) {
-
-                    double latitude = gps.getLatitude();
-                    double longitude = gps.getLongitude();
-
-                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoomLevel);
-                    mMap.animateCamera(yourLocation);
-
-                    // \n is for new line
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-
-                } else {
-                    // Can't get location.
-                    // GPS or network is not enabled.
-                    // Ask user to enable GPS/network in settings.
-                    gps.showSettingsAlert();
-                }
+                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
+                        .tilt(90).bearing(currentBearing).build();
+                CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
+                mMap.animateCamera(yourLocation);
             }
         });
 
-        gpsSettings = (Button) findViewById(R.id.gpsSettingButton);
-        // Show location button click event
-        gpsSettings.setOnClickListener(new View.OnClickListener() {
+        rightBearingButton = (ImageButton) findViewById(R.id.RightBearing);
+        rightBearingButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                // Create class object
-                gps.showSettingsAlert();
+                currentBearing = (currentBearing - 45)%180;
+                if(currentBearing < 0){
+                    currentBearing += 180;
+                }
+
+                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
+                        .tilt(90).bearing(currentBearing).build();
+                CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
+                mMap.animateCamera(yourLocation);
             }
         });
 
@@ -267,10 +262,12 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                             .title("I am here"));
                 }*/
 
-                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .tilt(65).bearing(location.getBearing()).build();
 
-                Log.d("OMER",Float.toString(location.getBearing()));
+
+                //Log.d("OMER",Float.toString(location.getBearing()));
+                 //CameraPosition cameraPositionOld = mMap.getCameraPosition();
+                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(latLng)
+                        .tilt(90).bearing(currentBearing).build();
                 CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);

@@ -5,27 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/gpsSettingButton"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="GPS Settings" />
-
-        <Button
-            android:id="@+id/btnShowLocation"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Show Location" />
-    </LinearLayout>
-
-
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -34,4 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".activities.MapsActivity" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/LeftBearing"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_back_icon" />
+
+        <ImageButton
+            android:id="@+id/RightBearing"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_forward_icon" />
+    </LinearLayout>
 </LinearLayout>
