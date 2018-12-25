@@ -12,6 +12,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,7 +39,7 @@ import com.project.technion.appark.activities.OfferActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExperimentsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class ExperimentsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     //private DatabaseReference mDatabaseReference;
@@ -44,18 +47,67 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     private Marker mCurrLocationMarker = null;
     private SupportMapFragment mapFrag = null;
 
+    Button btnShowLocation;
+
+    // GPSTracker class
+    GPSTracker gps;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_expriments);
         //mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        //mapFrag = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
-        //mapFrag.getMapAsync(this);
+        mapFrag = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
+        mapFrag.getMapAsync(this);
 
-        setContentView(R.layout.activity_maps);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);*/
+
+        btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+
+        // Show location button click event
+        btnShowLocation.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // Create class object
+                gps = new GPSTracker(ExperimentsActivity.this);
+
+                // Check if GPS enabled
+                if(gps.canGetLocation()) {
+
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+
+                    // \n is for new line
+                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+
+                } else {
+                    // Can't get location.
+                    // GPS or network is not enabled.
+                    // Ask user to enable GPS/network in settings.
+                    gps.showSettingsAlert();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 101:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //granted
+                } else {
+                    //not granted
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
@@ -128,7 +180,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
         }
     }
-    @Override
+    /*@Override
     public void onLocationChanged(Location location) {
         double lattitude = location.getLatitude();
         double longitude = location.getLongitude();
@@ -149,22 +201,8 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
         //stop location updates
-    }
+    }*/
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 
     private void getMyLocation(){
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
