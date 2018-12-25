@@ -116,10 +116,10 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
                     });
 
 
-            Log.d("beebo",uri.toString());
+            Log.d("tag",uri.toString());
 
         }).addOnFailureListener(exception -> {
-            Log.d("beebo","error");
+            Log.d("tag","error "+exception.getMessage());
         });
 
         return convertView;

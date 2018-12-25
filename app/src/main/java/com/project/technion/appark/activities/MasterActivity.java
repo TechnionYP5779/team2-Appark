@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -48,6 +49,8 @@ public class MasterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
+
+    private final int ADD_PARKING_SPOT_REQUEST_CODE=5;
 
     AlertDialog.Builder sortDialog;
     MenuItem sortItem,mapItem;
@@ -206,6 +209,50 @@ public class MasterActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 3;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADD_PARKING_SPOT_REQUEST_CODE){
+            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            mViewPager = findViewById(R.id.container);
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setOffscreenPageLimit(2);
+            TabLayout tabLayout = findViewById(R.id.tabs);
+            mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
+                }
+
+                @Override
+                public void onPageSelected(int i) {
+                    if (i == 0) {
+                        if (sortItem != null)
+                            sortItem.setVisible(true);
+                        if(mapItem != null)
+                            mapItem.setVisible(true);
+                        searchFab.show();
+                    } else {
+                        if (sortItem != null)
+                            sortItem.setVisible(false);
+                        if(mapItem != null)
+                            mapItem.setVisible(false);
+                        searchFab.hide();
+                    }
+                    if (i == 2)
+                        mFab.show();
+                    else
+                        mFab.hide();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int i) {
+                }
+            });
+            tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         }
     }
 }
