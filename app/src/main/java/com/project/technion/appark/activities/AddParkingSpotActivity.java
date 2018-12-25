@@ -75,10 +75,6 @@ public class AddParkingSpotActivity extends AppCompatActivity {
             offerButton.setEnabled(true);
             ImageView imageView = findViewById(R.id.imageView);
             imageView.setImageURI(imageDataUri);
-
-        }
-        else if (requestCode == IMAGE_PICKER_RESULT){
-            Toast.makeText(this,resultCode+"",Toast.LENGTH_LONG).show();
         }
     }
 

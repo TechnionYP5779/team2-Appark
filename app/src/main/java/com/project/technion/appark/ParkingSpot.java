@@ -24,4 +24,32 @@ public class ParkingSpot {
         this.id=id;
         offers = new ArrayList<>();
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public ArrayList<String> getOffers() {
+        return offers;
+    }
 }
