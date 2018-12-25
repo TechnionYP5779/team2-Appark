@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     private Marker mCurrLocationMarker = null;
     private SupportMapFragment mapFrag = null;
 
+    private LocationManager locationManager;
     Button btnShowLocation;
 
     // GPSTracker class
@@ -59,8 +61,10 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_expriments);
         //mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        mapFrag = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
+        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
         mapFrag.getMapAsync(this);
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 
         /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -70,7 +74,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions( this,
+            ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     101);
         }
@@ -84,7 +88,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                 gps = new GPSTracker(ExperimentsActivity.this);
 
                 // Check if GPS enabled
-                if(gps.canGetLocation()) {
+                if (gps.canGetLocation()) {
 
                     double latitude = gps.getLatitude();
                     double longitude = gps.getLongitude();
@@ -100,6 +104,8 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                 }
             }
         });
+
+
     }
 
     @Override
@@ -122,13 +128,13 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         mMap = googleMap;
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.771959, 35.217018)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 8.0f ) );
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
 
         if (lastLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())));
-            mMap.animateCamera( CameraUpdateFactory.zoomTo( 8.0f ) );
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
         }
-        //getMyLocation();
+        getMyLocation();
 
         /*mMap.setOnMarkerClickListener(marker -> {
             Offer offer = (Offer)marker.getTag();
@@ -173,16 +179,15 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             }
         });*/
         List<Offer> offers = new ArrayList<>();
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu","LUPEyDQhrKhgAgYFy2M","uwOb4dkhhDXV00am0gTj4RHbzKB2",1545645193337L,1545645193337L,32.7767783,35.023127099999996,100));
-        for(Offer offer : offers){
+        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2", 1545645193337L, 1545645193337L, 32.7767783, 35.023127099999996, 100));
+        for (Offer offer : offers) {
 
             IconGenerator icg = new IconGenerator(ExperimentsActivity.this);
-            Bitmap bm = icg.makeIcon(offer.price+" $");
+            Bitmap bm = icg.makeIcon(offer.price + " $");
 
             Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
             marker.showInfoWindow();
             marker.setTag(offer);
-
 
 
         }
@@ -211,8 +216,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     }*/
 
 
-    private void getMyLocation(){
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    private void getMyLocation() {
 
         LocationListener locationListener = new LocationListener() {
 
@@ -240,6 +244,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
             }
         };
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -248,6 +253,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Log.d("OMER","no permission");
             return;
         }
         locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
