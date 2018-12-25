@@ -55,8 +55,8 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
         TextView textViewStartTime = convertView.findViewById(R.id.start_time);
 
         TextView textViewEndTime = convertView.findViewById(R.id.end_time);
-        SimpleDateFormat start_format = new SimpleDateFormat("MMMM d, yyyy 'from' h:mm a");
-        SimpleDateFormat end_format = new SimpleDateFormat("MMMM d, yyyy 'until' h:mm a");
+        SimpleDateFormat start_format = new SimpleDateFormat("dd/MM/YYYY, HH:mm");
+        SimpleDateFormat end_format = new SimpleDateFormat("dd/MM/YYYY, HH:mm");
 
         textViewStartTime.setText(start_format.format(offer.startTime().getTime()));
         textViewEndTime.setText(end_format.format(offer.endTime().getTime()));
@@ -66,31 +66,26 @@ public class ParkingSpotsOfferAdapter extends ArrayAdapter<Offer> {
             AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
             builder.setTitle("Delete this offer?");
             builder.setMessage("Are you sure you want to delete this offer?");
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("YES", (dialog, which) -> mDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mDB.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
-                            Offer offer = getItem(position);
-                            for (ParkingSpot p : u.parkingSpots) {
-                                if (p.id.equals(offer.parkingSpotId)) {
-                                    p.offers.remove(offer.id);
-                                    break;
-                                }
-                            }
-                            mDB.child("Offers").child(offer.id).removeValue();
-                            mDB.child("Users").child(mUser.getUid()).setValue(u);
-                            Toast.makeText(getContext(), "The offer was deleted!", Toast.LENGTH_SHORT).show();
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
+                    Offer offer1 = getItem(position);
+                    for (ParkingSpot p : u.parkingSpots) {
+                        if (p.id.equals(offer1.parkingSpotId)) {
+                            p.offers.remove(offer1.id);
+                            break;
                         }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
+                    }
+                    mDB.child("Offers").child(offer1.id).removeValue();
+                    mDB.child("Users").child(mUser.getUid()).setValue(u);
+                    Toast.makeText(getContext(), "The offer was deleted!", Toast.LENGTH_SHORT).show();
                 }
-            });
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            }));
             builder.setNegativeButton("NO", null);
             builder.show();
 

@@ -57,6 +57,9 @@
         <activity
             android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps" />
+        <activity android:name=".activities.EditParkingSpotActivity"
+            android:label="Edit Parking Spot"
+            ></activity>
         <activity android:name=".Experiments.ExperimentsActivity"></activity>
     </application>
 

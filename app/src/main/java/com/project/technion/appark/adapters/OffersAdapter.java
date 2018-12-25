@@ -112,7 +112,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             }
         });
 
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM , hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/YYYY, HH:mm ");
         final TextView timeField = convertView.findViewById(R.id.tvTimeAndDate);
 
         Calendar start = Calendar.getInstance();
@@ -178,7 +178,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         final ImageView imageView = convertView.findViewById(R.id.imageView);
 
 
-        StorageReference storageRef = mStorageRef.child("Images").child(mAuth.getUid()).child(offer.parkingSpotId);
+        StorageReference storageRef = mStorageRef.child("Images").child(offer.userId).child(offer.parkingSpotId);
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
 //            Picasso.with(getContext()).load(uri.toString()).into(imageView);
             Picasso.with(getContext()).load(uri.toString())
@@ -199,10 +199,10 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                         }
                     });
 
-            Log.d("beebo", uri.toString());
+            Log.d("tag", uri.toString());
 
         }).addOnFailureListener(exception -> {
-            Log.d("beebo", "error");
+            Log.d("tag", "error  Images/"+mAuth.getUid()+"/"+offer.parkingSpotId+" not found");
             imageView.setImageResource(R.mipmap.ic_launcher);
         });
 

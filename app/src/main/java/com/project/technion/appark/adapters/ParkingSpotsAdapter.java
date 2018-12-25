@@ -32,6 +32,7 @@ import com.project.technion.appark.Offer;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
+import com.project.technion.appark.activities.EditParkingSpotActivity;
 import com.project.technion.appark.activities.MasterActivity;
 import com.project.technion.appark.activities.ParkingSpotActivity;
 import com.project.technion.appark.activities.SearchParkingsActivity;
@@ -73,23 +74,13 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
             Intent i = new Intent(getContext(), ParkingSpotActivity.class);
             i.putExtra("parking_spot_index", position);
             getContext().startActivity(i);
+        });
 
-//                mDB.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        User u = dataSnapshot.getValue(User.class);
-//                        ParkingSpot p = u.parkingSpots.get(position);
-//                        String offerId = mDB.push().getKey();
-//                        mDB.child("Offers").child(offerId).setValue(new Offer(p.id,mUser.getUid(),1000,1000));
-//                        p.offers.add(offerId);
-//                        mDB.child("Users").child(mUser.getUid()).setValue(u);
-//                    }
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                    }
-//                });
-
-
+        Button edit_button = convertView.findViewById(R.id.button_edit_parking_spot);
+        edit_button.setOnClickListener(view -> {
+            Intent i = new Intent(getContext(), EditParkingSpotActivity.class);
+            i.putExtra("parking_spot_index", position);
+            getContext().startActivity(i);
         });
 
         final ImageView imageView = convertView.findViewById(R.id.imageView);
@@ -116,10 +107,10 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
                     });
 
 
-            Log.d("beebo",uri.toString());
+            Log.d("tag",uri.toString());
 
         }).addOnFailureListener(exception -> {
-            Log.d("beebo","error");
+            Log.d("tag","error "+exception.getMessage());
         });
 
         return convertView;
