@@ -24,6 +24,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -62,7 +64,7 @@ public class MasterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_master);
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
+        if(mAuth.getCurrentUser() == null){
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -172,6 +174,7 @@ public class MasterActivity extends AppCompatActivity {
         if (id == R.id.action_logout) {
             //meanwhile use this as logout
             mAuth.signOut();
+            LoginManager.getInstance().logOut();
             finish();
             startActivity(new Intent(this, LoginActivity.class));
             return true;
