@@ -85,7 +85,7 @@ public class EditParkingSpotActivity extends AppCompatActivity {
                 }
 
                 editTextAddress.setText(parkingSpot.getAddress());
-                editTextPrice.setText(Double.valueOf(parkingSpot.getPrice()).toString());
+                editTextPrice.setText(Long.valueOf(Math.round(parkingSpot.getPrice())).toString());
             }
 
             @Override
