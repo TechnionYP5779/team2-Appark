@@ -48,6 +48,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     private static Location lastLocation = null;
     private Marker mCurrLocationMarker = null;
     private SupportMapFragment mapFrag = null;
+    private final int zoomLevel = 18;
 
     private LocationManager locationManager;
     Button btnShowLocation;
@@ -92,6 +93,9 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
                     double latitude = gps.getLatitude();
                     double longitude = gps.getLongitude();
+
+                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoomLevel);
+                    mMap.animateCamera(yourLocation);
 
                     // \n is for new line
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
@@ -224,7 +228,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             public void onLocationChanged(Location location) {
                 lastLocation = location;
 
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 10);
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);
 
             }
@@ -256,7 +260,8 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             Log.d("OMER","no permission");
             return;
         }
-        locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
+        //locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1L,(float)0.001,locationListener);
 
     }
 }
