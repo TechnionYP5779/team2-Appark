@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activities.MapsActivity"
+    android:id="@+id/map_layout_relative">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fisheye_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <LinearLayout
+        android:id="@+id/map_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".activities.MapsActivity" />
+        android:orientation="vertical">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/fisheye_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/buttons_layout"
+        android:layout_alignParentBottom="true">
 
         <ImageButton
             android:id="@+id/LeftBearing"
@@ -33,4 +41,4 @@
             android:layout_gravity="center_horizontal"
             android:src="@drawable/ic_forward_icon" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

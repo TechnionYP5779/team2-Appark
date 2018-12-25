@@ -77,6 +77,8 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);*/
 
 
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -91,7 +93,12 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onClick(View arg0) {
-                currentBearing = (currentBearing + 45)%180;
+
+
+                currentBearing = (currentBearing - 45)%360;
+                if(currentBearing < 0){
+                    currentBearing += 180;
+                }
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
                         .tilt(90).bearing(currentBearing).build();
@@ -106,10 +113,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onClick(View arg0) {
-                currentBearing = (currentBearing - 45)%180;
-                if(currentBearing < 0){
-                    currentBearing += 180;
-                }
+                currentBearing = (currentBearing + 45)%360;
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
                         .tilt(90).bearing(currentBearing).build();
@@ -140,6 +144,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setAllGesturesEnabled(false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
