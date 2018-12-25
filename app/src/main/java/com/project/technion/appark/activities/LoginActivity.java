@@ -85,15 +85,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 pd.dismiss();
                 if(task.isSuccessful()){
                     finish();
-                    Intent i = new Intent(getApplicationContext(), MasterActivity.class);
-                    i.putExtra("FROM", "LOGIN");
-                    startActivity(i);
+                    completeSignIn();
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    private void completeSignIn(){
+        Intent i = new Intent(getApplicationContext(), MasterActivity.class);
+        i.putExtra("FROM", "LOGIN");
+        startActivity(i);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -116,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .setValue(new User(user.getDisplayName(), phone));
                             }
                             finish();
-                            startActivity(new Intent(getApplicationContext(), MasterActivity.class));
+                            completeSignIn();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
