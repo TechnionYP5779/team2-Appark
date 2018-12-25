@@ -151,7 +151,6 @@ public class OfferPopActivity extends Activity {
         String asString() {
             String minuteString = ((minute < 10) ? "0" : "") + minute;
             String hourString = ((hour < 10) ? "0" : "") + hour;
-
             return day + "/" + (month + 1) + "/" + year + " , " + hourString + ":" + minuteString;
         }
 

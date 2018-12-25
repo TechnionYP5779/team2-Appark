@@ -112,7 +112,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
             }
         });
 
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM , hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/YYYY, HH:mm ");
         final TextView timeField = convertView.findViewById(R.id.tvTimeAndDate);
 
         Calendar start = Calendar.getInstance();
