@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -95,9 +97,9 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             public void onClick(View arg0) {
 
 
-                currentBearing = (currentBearing - 45)%360;
+                currentBearing = (currentBearing - 35)%360;
                 if(currentBearing < 0){
-                    currentBearing += 180;
+                    currentBearing += 360;
                 }
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
@@ -113,7 +115,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onClick(View arg0) {
-                currentBearing = (currentBearing + 45)%360;
+                currentBearing = (currentBearing + 35)%360;
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
                         .tilt(90).bearing(currentBearing).build();
@@ -144,7 +146,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.getUiSettings().setAllGesturesEnabled(false);
+        //mMap.getUiSettings().setAllGesturesEnabled(false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -210,18 +212,39 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             }
         });*/
         List<Offer> offers = new ArrayList<>();
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2", 1545645193337L, 1545645193337L, 32.7767783, 35.023127099999996, 100));
+        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
+                1545645193337L, 1545645193337L, 32.7767783, 35.023127099999996, 100));
+        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
+                1545645193338L, 1545645193437L, 32.7757773, 35.020127099999990, 5));
+        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
+                1545645193337L, 1545645193337L, 32.7797780, 35.025127099999986, 14));
+        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
+                1545645193337L, 1545645193337L, 32.7717789, 35.019127100000008, 10));
+        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
+                1545645193337L, 1545645193337L, 32.777212, 35.019593, 25));
         for (Offer offer : offers) {
 
-            IconGenerator icg = new IconGenerator(ExperimentsActivity.this);
-            Bitmap bm = icg.makeIcon(offer.price + " $");
+            //IconGenerator icg = new IconGenerator(ExperimentsActivity.this);
+            //Bitmap bm = icg.makeIcon(offer.price + " $");
 
-            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
+            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
+            if(offer.price <= 10){
+                bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
+            }else if(offer.price <= 25){
+                bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
+            }
+            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
             marker.showInfoWindow();
             marker.setTag(offer);
 
 
         }
+    }
+
+    public Bitmap resizeMapIcons(String iconName,int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
     }
     /*@Override
     public void onLocationChanged(Location location) {
