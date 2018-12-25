@@ -35,6 +35,7 @@ import com.project.technion.appark.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ViewAllOffersFragment extends Fragment {
@@ -134,7 +135,6 @@ public class ViewAllOffersFragment extends Fragment {
                     }
                 }
 
-//                Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

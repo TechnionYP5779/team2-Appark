@@ -27,8 +27,11 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.technion.appark.R;
 import com.project.technion.appark.SortingBy;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
@@ -49,7 +52,7 @@ public class MasterActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
 
     AlertDialog.Builder sortDialog;
-    MenuItem sortItem;
+    MenuItem sortItem,mapItem;
     private ViewAllOffersFragment viewAllOffersFragment;
     public int tabPosition;
 
@@ -67,9 +70,29 @@ public class MasterActivity extends AppCompatActivity {
 
         permissionHandler();
 
-
-        mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        // greet the user after logging in
+        mUser = mAuth.getCurrentUser();
+        Intent forIntent = getIntent();
+        String previousActivity = forIntent.getStringExtra("FROM");
+        if (previousActivity.equals("LOGIN") || previousActivity.equals("REGISTER")) {
+            mDatabaseReference.child("Users").child(mUser.getUid())
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String name = dataSnapshot.child("name").getValue().toString();
+                            Toast.makeText(getApplicationContext(), "Hello " + name + "!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+        }
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -80,28 +103,33 @@ public class MasterActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i1) { }
+            public void onPageScrolled(int i, float v, int i1) {
+            }
 
             @Override
             public void onPageSelected(int i) {
-                if(i==0) {
-                    if(sortItem != null)
+                if (i == 0) {
+                    if (sortItem != null)
                         sortItem.setVisible(true);
+                    if(mapItem != null)
+                        mapItem.setVisible(true);
                     searchFab.show();
-                }
-                else {
-                    if(sortItem != null)
+                } else {
+                    if (sortItem != null)
                         sortItem.setVisible(false);
+                    if(mapItem != null)
+                        mapItem.setVisible(false);
                     searchFab.hide();
                 }
-                if(i==2)
+                if (i == 2)
                     mFab.show();
                 else
                     mFab.hide();
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) { }
+            public void onPageScrollStateChanged(int i) {
+            }
         });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
@@ -118,7 +146,7 @@ public class MasterActivity extends AppCompatActivity {
         sortDialog = new AlertDialog.Builder(this);
         sortDialog.setTitle("Pick a sorting method");
         sortDialog.setItems(sortMethodsEnum, (dialog, sortingMethodIndex) -> {
-            if(viewAllOffersFragment != null) {
+            if (viewAllOffersFragment != null) {
                 SortingBy sortingMethod = SortingBy.values()[sortingMethodIndex];
                 viewAllOffersFragment.setup(sortingMethod);
             }
@@ -135,7 +163,7 @@ public class MasterActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_master, menu);
         sortItem = menu.findItem(R.id.action_sort);
-
+        mapItem = menu.findItem(R.id.action_map);
         return true;
     }
 
@@ -150,8 +178,11 @@ public class MasterActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             return true;
         }
-        if(id == R.id.action_sort){
+        if (id == R.id.action_sort) {
             sortDialog.show();
+        }
+        if(id == R.id.action_map){
+            startActivity(new Intent(MasterActivity.this,MapsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -164,20 +195,19 @@ public class MasterActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if(position==0) {
+            if (position == 0) {
                 tabPosition = 0;
                 viewAllOffersFragment = ViewAllOffersFragment.newInstance(MasterActivity.this);
                 return viewAllOffersFragment;
-            }
-            else if (position == 1) {
+            } else if (position == 1) {
                 tabPosition = 1;
                 return ViewMyReservationFragment.newInstance();
-            }
-            else {
+            } else {
                 tabPosition = 2;
                 return ViewMyParkingSpotsFragment.newInstance(MasterActivity.this);
             }
         }
+
         @Override
         public int getCount() {
             return 3;

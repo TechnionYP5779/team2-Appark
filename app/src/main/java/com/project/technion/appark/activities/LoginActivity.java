@@ -85,7 +85,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 pd.dismiss();
                 if(task.isSuccessful()){
                     finish();
-                    startActivity(new Intent(getApplicationContext(), MasterActivity.class));
+                    Intent i = new Intent(getApplicationContext(), MasterActivity.class);
+                    i.putExtra("FROM", "LOGIN");
+                    startActivity(i);
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
@@ -167,7 +169,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(mAuth.getCurrentUser() != null){//user is already logged in
             //profile activity here
             finish();
-            startActivity(new Intent(getApplicationContext(), MasterActivity.class));
+            Intent i = new Intent(getApplicationContext(), MasterActivity.class);
+            i.putExtra("FROM", "NOTLOGIN");
+            startActivity(i);
         }
 
         bLogin.setOnClickListener(this);
