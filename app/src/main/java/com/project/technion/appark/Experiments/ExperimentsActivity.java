@@ -52,6 +52,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
     private LocationManager locationManager;
     Button btnShowLocation;
+    Button gpsSettings;
 
     // GPSTracker class
     GPSTracker gps;
@@ -72,7 +73,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);*/
 
-        btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -80,13 +81,16 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                     101);
         }
 
+        gps = new GPSTracker(ExperimentsActivity.this);
+
+        btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
         // Show location button click event
         btnShowLocation.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 // Create class object
-                gps = new GPSTracker(ExperimentsActivity.this);
+
 
                 // Check if GPS enabled
                 if (gps.canGetLocation()) {
@@ -106,6 +110,17 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                     // Ask user to enable GPS/network in settings.
                     gps.showSettingsAlert();
                 }
+            }
+        });
+
+        gpsSettings = (Button) findViewById(R.id.gpsSettingButton);
+        // Show location button click event
+        gpsSettings.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // Create class object
+                gps.showSettingsAlert();
             }
         });
 
@@ -257,7 +272,6 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Log.d("OMER","no permission");
             return;
         }
         //locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
