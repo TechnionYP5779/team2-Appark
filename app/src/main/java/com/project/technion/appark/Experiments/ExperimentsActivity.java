@@ -36,16 +36,21 @@ import com.project.technion.appark.activities.OfferActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExperimentsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class ExperimentsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
     //private DatabaseReference mDatabaseReference;
     private static Location lastLocation = null;
+    private Marker mCurrLocationMarker = null;
+    private SupportMapFragment mapFrag = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        //mapFrag = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
+        //mapFrag.getMapAsync(this);
 
         setContentView(R.layout.activity_maps);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -64,7 +69,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())));
             mMap.animateCamera( CameraUpdateFactory.zoomTo( 8.0f ) );
         }
-        getMyLocation();
+        //getMyLocation();
 
         /*mMap.setOnMarkerClickListener(marker -> {
             Offer offer = (Offer)marker.getTag();
@@ -123,7 +128,43 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
         }
     }
+    @Override
+    public void onLocationChanged(Location location) {
+        double lattitude = location.getLatitude();
+        double longitude = location.getLongitude();
 
+        //Place current location marker
+        LatLng latLng = new LatLng(lattitude, longitude);
+
+
+        if(mCurrLocationMarker!=null){
+            mCurrLocationMarker.setPosition(latLng);
+        }else{
+            mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .title("I am here"));
+        }
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+        //stop location updates
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 
     private void getMyLocation(){
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
