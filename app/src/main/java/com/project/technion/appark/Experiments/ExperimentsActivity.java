@@ -1,6 +1,7 @@
 package com.project.technion.appark.Experiments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -67,6 +68,12 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);*/
 
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions( this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    101);
+        }
 
         // Show location button click event
         btnShowLocation.setOnClickListener(new View.OnClickListener() {

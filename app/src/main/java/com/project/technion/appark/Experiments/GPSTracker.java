@@ -1,6 +1,7 @@
 package com.project.technion.appark.Experiments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 
 public class GPSTracker extends Service implements LocationListener {
@@ -48,6 +50,7 @@ public class GPSTracker extends Service implements LocationListener {
         getLocation();
     }
 
+    @SuppressLint("MissingPermission")
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext
@@ -67,12 +70,6 @@ public class GPSTracker extends Service implements LocationListener {
             } else {
                 this.canGetLocation = true;
                 if (isNetworkEnabled) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                            ActivityCompat.requestPermissions((Activity) mContext,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                                    101);
-                    }
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
@@ -95,16 +92,6 @@ public class GPSTracker extends Service implements LocationListener {
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                         //  Log.d("GPS Enabled", "GPS Enabled");
                         if (locationManager != null) {
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
-                                //return TODO;
-                            }
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             if (location != null) {
