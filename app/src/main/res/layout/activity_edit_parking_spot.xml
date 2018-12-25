@@ -50,7 +50,7 @@
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <Button
-        android:id="@+id/button_offer"
+        android:id="@+id/button_update"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
