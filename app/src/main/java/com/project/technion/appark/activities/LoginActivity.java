@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.project.technion.appark.Experiments.ExperimentsActivity;
 import com.project.technion.appark.R;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pd.setMessage("Processing...");
         pd.show();
 
+
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -59,6 +61,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
+                    finish();
+                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+                    i.putExtra("FROM", "LOGIN");
+                    startActivity(i);
                 }
             }
         });
@@ -75,6 +81,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pd = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
 
+
+
         if(mAuth.getCurrentUser() != null){//user is already logged in
             //profile activity here
             finish();
@@ -82,6 +90,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             i.putExtra("FROM", "NOTLOGIN");
             startActivity(i);
         }
+
+        //delete from here
+        finish();
+        Intent i = new Intent(getApplicationContext(), ExperimentsActivity.class);
+        startActivity(i);
+        //to here
 
         bLogin.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
