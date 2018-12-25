@@ -146,13 +146,14 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.771959, 35.217018)));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.771959, 35.217018)));
+        //mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
 
-        if (lastLocation != null) {
+
+        /*if (lastLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
-        }
+        }*/
         getMyLocation();
 
         /*mMap.setOnMarkerClickListener(marker -> {
@@ -242,6 +243,19 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onLocationChanged(Location location) {
                 lastLocation = location;
+
+                //Place current location marker
+                LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+
+
+                if(mCurrLocationMarker!=null){
+                    mCurrLocationMarker.setPosition(latLng);
+                }else{
+                    mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                            .title("I am here"));
+                }
 
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);
