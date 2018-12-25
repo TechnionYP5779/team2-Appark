@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.technion.appark.Maps.GoogleMapsActivity;
 import com.project.technion.appark.R;
 import com.project.technion.appark.SortingBy;
 import com.project.technion.appark.fragments.ViewAllOffersFragment;
@@ -183,7 +184,7 @@ public class MasterActivity extends AppCompatActivity {
             sortDialog.show();
         }
         if(id == R.id.action_map){
-            startActivity(new Intent(MasterActivity.this,MapsActivity.class));
+            startActivity(new Intent(MasterActivity.this,GoogleMapsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

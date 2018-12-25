@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
         });
@@ -169,6 +170,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // ...
             }
         });
+
 
         if(mAuth.getCurrentUser() != null){//user is already logged in
             //profile activity here
