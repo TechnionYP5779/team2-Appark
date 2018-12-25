@@ -1,8 +1,7 @@
-package com.project.technion.appark.Experiments;
+package com.project.technion.appark.Maps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -16,7 +15,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 
 public class GPSTracker extends Service implements LocationListener {

@@ -1,7 +1,6 @@
-package com.project.technion.appark.Experiments;
+package com.project.technion.appark.Maps;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,18 +13,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,20 +34,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.ui.IconGenerator;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
-import com.project.technion.appark.activities.MapsActivity;
 import com.project.technion.appark.activities.OfferActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExperimentsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //private DatabaseReference mDatabaseReference;
-    private static Location lastLocation = null;
-    private Marker mCurrLocationMarker = null;
+    private DatabaseReference mDatabaseReference;
     private SupportMapFragment mapFrag = null;
-    private final int zoomLevel = 18;
+    private final int zoomLevel = 16;
     private int currentBearing = 0;
 
     private LocationManager locationManager;
@@ -65,18 +57,13 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_expriments);
-        //mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        setContentView(R.layout.activity_google_maps);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
         mapFrag.getMapAsync(this);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-
-        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
 
 
 
@@ -87,7 +74,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                     101);
         }
 
-        gps = new GPSTracker(ExperimentsActivity.this);
+        gps = new GPSTracker(GoogleMapsActivity.this);
 
         leftBearingButton = (ImageButton) findViewById(R.id.LeftBearing);
         // Show location button click event
@@ -97,7 +84,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             public void onClick(View arg0) {
 
 
-                currentBearing = (currentBearing - 35)%360;
+                currentBearing = (currentBearing - 30)%360;
                 if(currentBearing < 0){
                     currentBearing += 360;
                 }
@@ -105,7 +92,6 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
                         .tilt(90).bearing(currentBearing).build();
                 CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);
             }
         });
@@ -115,12 +101,11 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onClick(View arg0) {
-                currentBearing = (currentBearing + 35)%360;
+                currentBearing = (currentBearing + 30)%360;
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
                         .tilt(90).bearing(currentBearing).build();
                 CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);
             }
         });
@@ -159,19 +144,11 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         }
         mMap.setMyLocationEnabled(true);
 
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.771959, 35.217018)));
-        //mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
-
-
-        /*if (lastLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
-        }*/
         getMyLocation();
 
         mMap.setOnMarkerClickListener(marker -> {
             Offer offer = (Offer)marker.getTag();
-            /*Intent i = new Intent(MapsActivity.this, OfferActivity.class);
+            Intent i = new Intent(GoogleMapsActivity.this, OfferActivity.class);
             i.putExtra("lat", offer.lat);
             i.putExtra("lng", offer.lng);
             i.putExtra("price", offer.price);
@@ -180,23 +157,47 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             i.putExtra("PSID", offer.parkingSpotId);
             i.putExtra("startMillis", offer.startCalenderInMillis);
             i.putExtra("endMillis", offer.endCalenderInMillis);
-            startActivity(i);*/
-            Toast.makeText(this, "Price: "+offer.price+ " $", Toast.LENGTH_LONG).show();
+            startActivity(i);
             return false;
         });
 
-        /*mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Offer> offers = new ArrayList<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
-                    offers.add(offer.getValue(Offer.class));
+                    long currentTimeMillis = System.currentTimeMillis();
+                    Offer gotOffer = offer.getValue(Offer.class);
+                    if(gotOffer.startCalenderInMillis <= currentTimeMillis &&
+                            gotOffer.endCalenderInMillis >= currentTimeMillis) {
+                        offers.add(offer.getValue(Offer.class));
+                    }
                 }
 
                 for(Offer offer : offers){
 
-                    IconGenerator icg = new IconGenerator(ExperimentsActivity.this);
-                    Bitmap bm = icg.makeIcon(offer.price+" $");
+                    /*BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
+                    if(offer.price <= 10){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
+                    }else if(offer.price <= 25){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
+                    }
+
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
+                    marker.showInfoWindow();
+                    marker.setTag(offer);*/
+
+
+                    IconGenerator icg = new IconGenerator(GoogleMapsActivity.this);
+                    String dollar = "$";
+                    if(offer.price > 10) {
+                        dollar += "$";
+                    }
+                    if(offer.price > 25){
+                        dollar += "$";
+                    }
+
+                    Bitmap bm = icg.makeIcon(dollar);
 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
                     marker.showInfoWindow();
@@ -211,35 +212,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
-        List<Offer> offers = new ArrayList<>();
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
-                1545645193337L, 1545645193337L, 32.7767783, 35.023127099999996, 100));
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
-                1545645193338L, 1545645193437L, 32.7757773, 35.020127099999990, 5));
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
-                1545645193337L, 1545645193337L, 32.7797780, 35.025127099999986, 14));
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
-                1545645193337L, 1545645193337L, 32.7717789, 35.019127100000008, 10));
-        offers.add(new Offer("LUUcUMjlN6r8Fg7BnCu", "LUPEyDQhrKhgAgYFy2M", "uwOb4dkhhDXV00am0gTj4RHbzKB2",
-                1545645193337L, 1545645193337L, 32.777212, 35.019593, 25));
-        for (Offer offer : offers) {
-
-            //IconGenerator icg = new IconGenerator(ExperimentsActivity.this);
-            //Bitmap bm = icg.makeIcon(offer.price + " $");
-
-            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
-            if(offer.price <= 10){
-                bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
-            }else if(offer.price <= 25){
-                bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
-            }
-            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
-            marker.showInfoWindow();
-            marker.setTag(offer);
-
-
-        }
+        });
     }
 
     public Bitmap resizeMapIcons(String iconName,int width, int height){
@@ -247,28 +220,6 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
     }
-    /*@Override
-    public void onLocationChanged(Location location) {
-        double lattitude = location.getLatitude();
-        double longitude = location.getLongitude();
-
-        //Place current location marker
-        LatLng latLng = new LatLng(lattitude, longitude);
-
-
-        if(mCurrLocationMarker!=null){
-            mCurrLocationMarker.setPosition(latLng);
-        }else{
-            mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .title("I am here"));
-        }
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
-        //stop location updates
-    }*/
 
     private void getMyLocation() {
 
@@ -276,29 +227,13 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onLocationChanged(Location location) {
-                lastLocation = location;
 
                 //Place current location marker
                 LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
 
-
-                /*if(mCurrLocationMarker!=null){
-                    mCurrLocationMarker.setPosition(latLng);
-                }else{
-                    mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                            .title("I am here"));
-                }*/
-
-
-
-                //Log.d("OMER",Float.toString(location.getBearing()));
-                 //CameraPosition cameraPositionOld = mMap.getCameraPosition();
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(latLng)
                         .tilt(90).bearing(currentBearing).build();
                 CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);
 
             }
@@ -329,7 +264,6 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        //locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
 
     }
