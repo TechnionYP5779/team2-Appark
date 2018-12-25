@@ -3,9 +3,8 @@ package com.project.technion.appark.activities;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
@@ -28,26 +27,21 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class OfferPopActivity extends Activity {
-    private static final String TAG = "OfferPopActivity";
-    private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
     private Integer parkingSpotIndex;
-    private Button pick_start, pick_end;
-    private TextView text_start, text_end;
-    private int dayStart, monthStart, yearStart, hourStart, minuteStart;
-    private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
-    private boolean startTimeWasSet, finishTimeWasSet;
-    Calendar calendarStart, calendarFinish;
+    private Time startTime = null, endTime = null;
+    private TextView startText, endText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_pop);
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -64,51 +58,34 @@ public class OfferPopActivity extends Activity {
 
         Button bOffer = findViewById(R.id.make_offer_button);
         bOffer.setOnClickListener(v -> {
-            if (!startTimeWasSet || !finishTimeWasSet) {
-                Toast.makeText(OfferPopActivity.this, "Fill all the fields before you submit", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Make offer?");
-            builder.setMessage("Are you sure you want to offer this parking spot from " +
-                    dayStart + "/" + monthStart + "/" + yearStart + ", " + hourStart + ":" + minuteStart + " to " +
-                    dayFinal + "/" + monthFinal + "/" + yearFinal + ", " + hourFinal + ":" + minuteFinal + "?");
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mDatabaseReference.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User u = dataSnapshot.getValue(User.class);
-                            parkingSpotIndex = getIntent().getIntExtra("parking_spot_index", -1);
-                            ParkingSpot p = u.parkingSpots.get(parkingSpotIndex);
-                            String offerId = mDatabaseReference.push().getKey();
-                            calendarStart = Calendar.getInstance();
-                            calendarStart.set(yearStart, monthStart - 1, dayStart, hourStart, minuteStart);
-                            calendarFinish = Calendar.getInstance();
-                            calendarFinish.set(yearFinal, monthFinal - 1, dayFinal, hourFinal, minuteFinal);
-                            long start_time = calendarStart.getTimeInMillis();
-                            long end_time = calendarFinish.getTimeInMillis();
-                            mDatabaseReference.child("Offers").child(offerId).setValue(new Offer(offerId, p.id, mUser.getUid(), start_time, end_time, p.lat, p.lng, p.price));
-                            p.offers.add(offerId);
-                            mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
-                        }
+            builder.setMessage("Are you sure you want to offer this parking spot\n" +
+                    "from " + startTime.asString() + "\n" +
+                    "to " + endTime.asString() + "?");
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                mDatabaseReference.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User u = dataSnapshot.getValue(User.class);
+                        parkingSpotIndex = getIntent().getIntExtra("parking_spot_index", -1);
+                        ParkingSpot p = Objects.requireNonNull(u).parkingSpots.get(parkingSpotIndex);
+                        String offerId = mDatabaseReference.push().getKey();
+                        long start_time = startTime.getInMillis();
+                        long end_time = endTime.getInMillis();
+                        mDatabaseReference.child("Offers").child(Objects.requireNonNull(offerId)).setValue(new Offer(offerId, p.id, mUser.getUid(), start_time, end_time, p.lat, p.lng, p.price));
+                        p.offers.add(offerId);
+                        mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                    Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+                Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
+                finish();
             });
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
+            builder.setNegativeButton("NO", (dialog, which) -> finish());
             builder.show();
         });
         addStartTime();
@@ -116,52 +93,72 @@ public class OfferPopActivity extends Activity {
     }
 
     public void addStartTime() {
-        pick_start = findViewById(R.id.choose_start_tnd);
-        text_start = findViewById(R.id.tnd_start_text);
+        Button pick_start = findViewById(R.id.choose_start_tnd);
+        startText = findViewById(R.id.tnd_start_text);
         pick_start.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
-            DatePickerDialog dpg = new DatePickerDialog(OfferPopActivity.this, (view, year, month, dayOfMonth) -> {
-                TimePickerDialog tpg = new TimePickerDialog(OfferPopActivity.this, (view1, hourOfDay, minute) -> {
-                    dayStart = dayOfMonth;
-                    monthStart = month + 1;
-                    yearStart = year;
-                    hourStart = hourOfDay;
-                    minuteStart = minute;
-                    String add_zero = "";
-                    if (minuteStart < 10)
-                        add_zero = "0";
-                    text_start.setText(dayStart + "/" + monthStart + "/" + yearStart + " , " + hourStart + ":" + add_zero + minuteStart);
-                    startTimeWasSet = true;
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
-                tpg.show();
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            DatePickerDialog dpg = new DatePickerDialog(
+                    OfferPopActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        TimePickerDialog tpg = new TimePickerDialog(OfferPopActivity.this, (view1, hourOfDay, minute) -> {
+                            startTime = new Time(year, month, dayOfMonth, hourOfDay, minute);
+                            startText.setText(startTime.asString());
+                        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
+                        tpg.show();
+                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            dpg.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+            if (endTime != null) {
+                dpg.getDatePicker().setMaxDate(endTime.getInMillis());
+            }
             dpg.show();
         });
-
     }
 
     public void addFinishTime() {
-        pick_end = findViewById(R.id.choose_end_tnd);
-        text_end = findViewById(R.id.tnd_end_text);
+        Button pick_end = findViewById(R.id.choose_end_tnd);
+        endText = findViewById(R.id.tnd_end_text);
         pick_end.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
-            DatePickerDialog dpg = new DatePickerDialog(OfferPopActivity.this, (view, year, month, dayOfMonth) -> {
-                TimePickerDialog tpg = new TimePickerDialog(OfferPopActivity.this, (view1, hourOfDay, minute) -> {
-                    dayFinal = dayOfMonth;
-                    monthFinal = month + 1;
-                    yearFinal = year;
-                    hourFinal = hourOfDay;
-                    minuteFinal = minute;
-                    String add_zero = "";
-                    if (minuteFinal < 10)
-                        add_zero = "0";
-                    text_end.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
-                    finishTimeWasSet = true;
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
-                tpg.show();
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            DatePickerDialog dpg = new DatePickerDialog(
+                    OfferPopActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        TimePickerDialog tpg = new TimePickerDialog(OfferPopActivity.this, (view1, hourOfDay, minute) -> {
+                            endTime = new Time(year, month, dayOfMonth, hourOfDay, minute);
+                            endText.setText(endTime.asString());
+                        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
+                        tpg.show();
+                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            if (startTime != null) {
+                dpg.getDatePicker().setMinDate(startTime.getInMillis());
+            } else {
+                dpg.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+            }
             dpg.show();
         });
+    }
+
+    private class Time {
+        private int year, month, day, hour, minute;
+
+        Time(int year, int month, int day, int hour, int minute) {
+            this.year = year;
+            this.month = month;
+            this.day = day;
+            this.hour = hour;
+            this.minute = minute;
+        }
+
+        String asString() {
+            String minuteString = ((minute < 10) ? "0" : "") + minute;
+            String hourString = ((hour < 10) ? "0" : "") + hour;
+            return day + "/" + (month + 1) + "/" + year + " , " + hourString + ":" + minuteString;
+        }
+
+        long getInMillis() {
+            Calendar c = Calendar.getInstance();
+            c.set(year, month, day, hour, minute);
+            return c.getTimeInMillis();
+        }
     }
 }
 
