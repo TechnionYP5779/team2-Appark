@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -72,7 +73,6 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);*/
-
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -145,6 +145,17 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(31.771959, 35.217018)));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
@@ -235,7 +246,6 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
         //stop location updates
     }*/
 
-
     private void getMyLocation() {
 
         LocationListener locationListener = new LocationListener() {
@@ -248,16 +258,21 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
                 LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
 
 
-                if(mCurrLocationMarker!=null){
+                /*if(mCurrLocationMarker!=null){
                     mCurrLocationMarker.setPosition(latLng);
                 }else{
                     mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                             .title("I am here"));
-                }
+                }*/
 
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
+                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(new LatLng(location.getLatitude(), location.getLongitude()))
+                        .tilt(65).bearing(location.getBearing()).build();
+
+                Log.d("OMER",Float.toString(location.getBearing()));
+                CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                //CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoomLevel);
                 mMap.animateCamera(yourLocation);
 
             }
@@ -289,7 +304,7 @@ public class ExperimentsActivity extends AppCompatActivity implements OnMapReady
             return;
         }
         //locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1L,(float)0.001,locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
 
     }
 }
