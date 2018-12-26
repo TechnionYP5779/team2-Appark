@@ -13,14 +13,15 @@ public class Offer {
     public double lat;
     public double lng;
     public double price;
+    public boolean show;
 
 
     public Offer(){
-
+        this.show = true;
     }
 
     public Offer(String id,String parkingSpotId, String userId
-            , long startCalenderInMillis, long endCalenderInMillis, double lat, double lng,double price) {
+            , long startCalenderInMillis, long endCalenderInMillis, double lat, double lng, double price) {
         this.id = id;
         this.parkingSpotId = parkingSpotId;
         this.userId = userId;
@@ -29,6 +30,22 @@ public class Offer {
         this.lat = lat;
         this.lng = lng;
         this.price = price;
+        this.show = true;
+    }
+
+    public Offer(String id,String parkingSpotId, String userId
+            , long startCalenderInMillis, long endCalenderInMillis, double lat, double lng,double price,
+                 boolean show) {
+        this.id = id;
+        this.parkingSpotId = parkingSpotId;
+        this.userId = userId;
+        this.startCalenderInMillis = startCalenderInMillis;
+        this.endCalenderInMillis = endCalenderInMillis;
+        this.lat = lat;
+        this.lng = lng;
+        this.price = price;
+        this.show = true;
+        this.show = show;
     }
 
     public Calendar startTime(){
@@ -43,4 +60,39 @@ public class Offer {
         return cal;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getParkingSpotId() {
+        return parkingSpotId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public long getStartCalenderInMillis() {
+        return startCalenderInMillis;
+    }
+
+    public long getEndCalenderInMillis() {
+        return endCalenderInMillis;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public boolean isShow() {
+        return show;
+    }
 }

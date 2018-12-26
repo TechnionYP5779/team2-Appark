@@ -46,7 +46,7 @@ public class EditParkingSpotActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
     private ListView mListView;
     private ParkingSpotsOfferAdapter mAdapter;
-    private Integer parkingSpotIndex;
+    private String parkingSpotId;
     private ParkingSpot parkingSpot;
     private FloatingActionButton mFab;
     private TextView editTextAddress, editTextPrice;
@@ -72,12 +72,18 @@ public class EditParkingSpotActivity extends AppCompatActivity {
         editTextAddress = findViewById(R.id.ps_address);
         editTextPrice = findViewById(R.id.ps_price);
 
-        parkingSpotIndex = getIntent().getIntExtra("parking_spot_index", -1);
+        parkingSpotId = getIntent().getStringExtra("parking_spot_id");
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
-                parkingSpot = u.parkingSpots.get(parkingSpotIndex);
+                List<ParkingSpot> parkingSpotsList = u.parkingSpots;
+                for(ParkingSpot ps: parkingSpotsList){
+                    if(ps.getId().equals(parkingSpotId)){
+                        parkingSpot = ps;
+                        break;
+                    }
+                }
                 //TODO: make sure it should not happen
                 if (parkingSpot == null) {
                     Toast.makeText(getApplicationContext(), "Should not happen!", Toast.LENGTH_SHORT).show();
@@ -123,7 +129,16 @@ public class EditParkingSpotActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User u = dataSnapshot.getValue(User.class);
-                        u.parkingSpots.set(parkingSpotIndex, mParkingSpot);
+                        List<ParkingSpot> parkingSpotsList = u.parkingSpots;
+                        Integer index = 0;
+                        for(ParkingSpot ps: parkingSpotsList){
+                            if(ps.getId().equals(parkingSpotId)){
+                                parkingSpot = ps;
+                                break;
+                            }
+                            index++;
+                        }
+                        u.parkingSpots.set(index, mParkingSpot);
                         mDB.child("Users").child(mUser.getUid()).setValue(u);
                     }
 

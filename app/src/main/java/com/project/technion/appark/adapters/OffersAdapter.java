@@ -263,4 +263,17 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
 //        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, locationListener);
 
     }
+
+    @Override
+
+    public int getViewTypeCount() {
+
+        return getCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
+    }
 }
