@@ -30,7 +30,7 @@
 
     <Button
         android:id="@+id/button_make_offer"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -40,12 +40,12 @@
 
     <Button
         android:id="@+id/button_edit_parking_spot"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="58dp"
-        android:layout_marginEnd="17dp"
+        android:layout_marginEnd="10dp"
         android:text="Edit" />
 
     <TextView
@@ -53,9 +53,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_make_offer"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="253dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="30dp"
+        android:layout_toStartOf="@+id/button_edit_parking_spot"
+        android:layout_toEndOf="@+id/imageView"
         android:text="Price" />
 
 </RelativeLayout>
