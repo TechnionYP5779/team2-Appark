@@ -61,6 +61,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     GPSTracker gps;
 
     private float x1,x2;
+    private float y1;
     static final int MIN_DISTANCE = 150;
 
     @Override
@@ -101,16 +102,20 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
+                y1 = event.getY();
+
                 break;
             case MotionEvent.ACTION_UP:
                 x2 = event.getX();
-                if(java.lang.System.currentTimeMillis()-timeFromLastSwipe > 700) {
+                if(java.lang.System.currentTimeMillis()-timeFromLastSwipe > 700 && (y1 < 960 || y1 > 1160)) {
                     timeFromLastSwipe = java.lang.System.currentTimeMillis();
                     float deltaX = x2 - x1;
+                    int sign = y1 < 960 ? -1 : 1;
 
                     int normalized = (int) deltaX / 6;
                     normalized = normalized < -180 ? -179 : normalized;
                     normalized = normalized > 180 ? 179 : normalized;
+                    normalized *= sign;
                     currentBearing = (currentBearing + normalized) % 360;
                     if (currentBearing < 0) {
                         currentBearing += 360;
