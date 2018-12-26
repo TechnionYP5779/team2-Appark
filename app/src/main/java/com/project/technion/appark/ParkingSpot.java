@@ -10,7 +10,7 @@ public class ParkingSpot {
     public double lng;
     public String id;
     public ArrayList<String> offers;
-    private boolean show;
+    public boolean show;
 
     public ParkingSpot() {
         offers = new ArrayList<>();

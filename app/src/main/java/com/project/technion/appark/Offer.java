@@ -13,7 +13,7 @@ public class Offer {
     public double lat;
     public double lng;
     public double price;
-    private boolean show;
+    public boolean show;
 
 
     public Offer(){
