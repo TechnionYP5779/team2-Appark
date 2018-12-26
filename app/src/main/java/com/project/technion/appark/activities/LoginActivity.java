@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -88,6 +89,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pd.setMessage("Processing...");
         pd.show();
 
+//        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+//        mAuth.getCurrentUser().linkWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            finish();
+//                            completeSignIn();
+//                        } else {
+//                            Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
+//                            finish();
+//                        }
+//
+//                        // ...
+//                    }
+//                });
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -116,6 +133,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+//        if (mAuth.getCurrentUser() != null) {
+//            mAuth.getCurrentUser().linkWithCredential(credential)
+//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            if (task.isSuccessful()) {
+//                                // Sign in success, update UI with the signed-in user's information
+//                                Log.d(TAG, "signInWithCredential:success");
+//                                boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+//                                if (isNewUser) {
+//                                    FirebaseUser user = mAuth.getCurrentUser();
+//                                    String phone = "0546536925"; //user.getPhoneNumber()
+//                                    mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
+//                                            .setValue(new User(user.getDisplayName(), phone));
+//                                }
+//                                finish();
+//                                completeSignIn();
+//                            } else {
+//                                // If sign in fails, display a message to the user.
+//                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            // ...
+//                        }
+//                    });
+//        } else {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -143,6 +188,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // ...
                     }
                 });
+      //  }
     }
 
     @Override
@@ -219,7 +265,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+//        if (mAuth.getCurrentUser() != null) {
+//            mAuth.getCurrentUser().linkWithCredential(credential)
+//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            if (task.isSuccessful()) {
+//                                // Sign in success, update UI with the signed-in user's information
+//                                Log.d(TAG, "signInWithCredential:success");
+//                                boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+//                                if (isNewUser) {
+//                                    FirebaseUser user = mAuth.getCurrentUser();
+//                                    String phone = "0546536925"; //user.getPhoneNumber()
+//                                    mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
+//                                            .setValue(new User(user.getDisplayName(), phone));
+//                                }
+//                                finish();
+//                                completeSignIn();
+//                            } else {
+//                                // If sign in fails, display a message to the user.
+//                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            // ...
+//                        }
+//                    });
+//        } else{
+            mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -245,6 +319,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // ...
                     }
                 });
+        //}
+
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.d(TAG, "signInWithCredential:success");
+//                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+//                            if(isNewUser) {
+//                                FirebaseUser user = mAuth.getCurrentUser();
+//                                String phone = "0546536925"; //user.getPhoneNumber()
+//                                mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
+//                                        .setValue(new User(user.getDisplayName(), phone));
+//                            }
+//                            finish();
+//                            completeSignIn();
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        // ...
+//                    }
+//                });
     }
 
     @Override
