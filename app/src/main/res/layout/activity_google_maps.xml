@@ -19,26 +19,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/buttons_layout"
-        android:layout_alignParentBottom="true">
-
-        <ImageButton
-            android:id="@+id/LeftBearing"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_back_icon" />
-
-        <ImageButton
-            android:id="@+id/RightBearing"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_forward_icon" />
-    </LinearLayout>
 </RelativeLayout>

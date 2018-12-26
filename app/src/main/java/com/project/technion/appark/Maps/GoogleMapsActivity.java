@@ -6,20 +6,28 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -46,13 +54,14 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private SupportMapFragment mapFrag = null;
     private final int zoomLevel = 16;
     private int currentBearing = 0;
+    private long timeFromLastSwipe;
 
     private LocationManager locationManager;
-    ImageButton leftBearingButton;
-    ImageButton rightBearingButton;
-
     // GPSTracker class
     GPSTracker gps;
+
+    private float x1,x2;
+    static final int MIN_DISTANCE = 150;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +71,12 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
         mapFrag.getMapAsync(this);
+        /*((View)findViewById(R.id.fisheye_map)).setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                //Toast.makeText(GoogleMapsActivity.this, scrollX - oldScrollX, Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -76,41 +91,38 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         gps = new GPSTracker(GoogleMapsActivity.this);
 
-        leftBearingButton = (ImageButton) findViewById(R.id.LeftBearing);
-        // Show location button click event
-        leftBearingButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View arg0) {
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event)
+    {
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                if(java.lang.System.currentTimeMillis()-timeFromLastSwipe > 500) {
+                    timeFromLastSwipe = java.lang.System.currentTimeMillis();
+                    float deltaX = x2 - x1;
 
-                currentBearing = (currentBearing - 30)%360;
-                if(currentBearing < 0){
-                    currentBearing += 360;
+                    int normalized = (int) deltaX / 6;
+                    normalized = normalized < -180 ? -179 : normalized;
+                    normalized = normalized > 180 ? 179 : normalized;
+                    currentBearing = (currentBearing + normalized) % 360;
+                    if (currentBearing < 0) {
+                        currentBearing += 360;
+                    }
+
+                    CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
+                            .tilt(90).bearing(currentBearing).build();
+                    CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                    mMap.animateCamera(yourLocation);
                 }
-
-                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
-                        .tilt(90).bearing(currentBearing).build();
-                CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                mMap.animateCamera(yourLocation);
-            }
-        });
-
-        rightBearingButton = (ImageButton) findViewById(R.id.RightBearing);
-        rightBearingButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                currentBearing = (currentBearing + 30)%360;
-
-                CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(mMap.getCameraPosition().target)
-                        .tilt(90).bearing(currentBearing).build();
-                CameraUpdate yourLocation = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                mMap.animateCamera(yourLocation);
-            }
-        });
-
-
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -267,4 +279,51 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
 
     }
+
+    /*@Override
+    public boolean onTouchEvent(MotionEvent eve) {
+        Point touchPoint = new Point();  //first point on screen the user's finger touches
+        final GoogleMap map;
+        final int action = MotionEventCompat.getActionMasked(eve);
+        int pointerIndex = MotionEventCompat.getActionIndex(eve);
+        GestureDetector g = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener());
+        g.onTouchEvent(eve);
+        switch (action){
+            case MotionEvent.ACTION_DOWN:
+                // get the point the user's finger touches
+                touchPoint.x =(int) MotionEventCompat.getX(eve,pointerIndex);
+                touchPoint.y =(int) MotionEventCompat.getY(eve,pointerIndex);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(eve.getPointerCount()<2) {   // leave two finger gestures for other actions
+                    final Point newTouchPoint = new Point();  // the new position of user's finger on screen after movement is detected
+                    newTouchPoint.x = (int) MotionEventCompat.getX(eve, pointerIndex);
+                    newTouchPoint.y = (int) MotionEventCompat.getY(eve, pointerIndex);
+                    Point centerOfMap = getCenterOfMapAsPoint();   // center of map(as Point object) for calculation of angle
+                    // now you need to calculate the angle betwwen 2 lines with centerOfMap as center:
+                    //line 1: imaginary line between first touch detection on screen - and the center of the map
+                    //line 2: imaginary line between last place finger moved on screen - and the center of the map
+                    final float angle = angleBetweenLines(centerOfMap, touchPoint, centerOfMap, newTouchPoint);
+                    final LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());  //set camera movement to that position
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // move the camera (NOT animateCamera() ) to new position with "bearing" updated
+                            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(latlng).tilt(67.5f).zoom(map.getCameraPosition().zoom).bearing(map.getCameraPosition().bearing - angle).build()));
+                        }
+                    });
+                    touchPoint = newTouchPoint; // update touchPoint value
+                    return true;
+                }else{
+                    break;
+                }
+        }
+        return true;
+    }
+
+    // convert center of map from Latln object to Point object
+    public Point getCurrentLocation(){
+        Projection projection = mMap.getProjection();
+        return projection.toScreenLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+    }*/
 }
