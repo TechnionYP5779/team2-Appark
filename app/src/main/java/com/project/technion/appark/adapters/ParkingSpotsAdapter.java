@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,9 +80,50 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
 
         Button edit_button = convertView.findViewById(R.id.button_edit_parking_spot);
         edit_button.setOnClickListener(view -> {
-            Intent i = new Intent(getContext(), EditParkingSpotActivity.class);
-            i.putExtra("parking_spot_index", position);
-            getContext().startActivity(i);
+            AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+            builder.setTitle("Edit or Delete?");
+            builder.setMessage("Do you want to EDIT or DELETE this parking spot?");
+            builder.setPositiveButton("EDIT", (dialog, which) -> mDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Intent i = new Intent(getContext(), EditParkingSpotActivity.class);
+                    i.putExtra("parking_spot_index", position);
+                    getContext().startActivity(i);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            }));
+            builder.setNegativeButton("DELETE", (dialog, which) -> mDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+                            builder.setTitle("Delete?");
+                            builder.setMessage("Are you sure you want to DELETE this parking spot?");
+                            builder.setPositiveButton("YES", (dialog, which) -> mDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Intent i = new Intent(getContext(), EditParkingSpotActivity.class);
+                                    i.putExtra("parking_spot_index", position);
+                                    getContext().startActivity(i);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            }));
+                            builder.setNegativeButton("NO", null);
+                            builder.show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    })
+            );
+            builder.show();
         });
 
         final ImageView imageView = convertView.findViewById(R.id.imageView);
