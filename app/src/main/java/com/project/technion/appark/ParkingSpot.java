@@ -12,7 +12,7 @@ public class ParkingSpot {
     public ArrayList<String> offers;
     private boolean show;
 
-    public ParkingSpot(){
+    public ParkingSpot() {
         offers = new ArrayList<>();
         this.show = true;
     }
@@ -23,7 +23,7 @@ public class ParkingSpot {
         this.address = address;
         this.lat = lat;
         this.lng = lng;
-        this.id=id;
+        this.id = id;
         offers = new ArrayList<>();
         this.show = true;
 
@@ -35,7 +35,7 @@ public class ParkingSpot {
         this.address = address;
         this.lat = lat;
         this.lng = lng;
-        this.id=id;
+        this.id = id;
         offers = new ArrayList<>();
         this.show = show;
 
