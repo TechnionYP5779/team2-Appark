@@ -183,4 +183,6 @@ public class ViewAllOffersFragment extends Fragment {
         }
         return offers;
     }
+
+
 }
