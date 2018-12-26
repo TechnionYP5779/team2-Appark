@@ -104,9 +104,13 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
                             builder.setPositiveButton("YES", (dialog, which) -> mDB.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Intent i = new Intent(getContext(), EditParkingSpotActivity.class);
-                                    i.putExtra("parking_spot_index", position);
-                                    getContext().startActivity(i);
+                                    User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
+                                    ParkingSpot parkingSpot = u.parkingSpots.get(position);
+                                    ParkingSpot newParkingSpot = new ParkingSpot(mUser.getUid(), parkingSpot.getPrice(),
+                                            parkingSpot.getAddress(), parkingSpot.getLat(), parkingSpot.getLng(),
+                                            parkingSpot.getId(), false);
+                                    u.parkingSpots.set(position, newParkingSpot);
+                                    mDB.child("Users").child(mUser.getUid()).setValue(u);
                                 }
 
                                 @Override
