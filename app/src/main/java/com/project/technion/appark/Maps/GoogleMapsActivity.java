@@ -104,7 +104,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 break;
             case MotionEvent.ACTION_UP:
                 x2 = event.getX();
-                if(java.lang.System.currentTimeMillis()-timeFromLastSwipe > 500) {
+                if(java.lang.System.currentTimeMillis()-timeFromLastSwipe > 700) {
                     timeFromLastSwipe = java.lang.System.currentTimeMillis();
                     float deltaX = x2 - x1;
 
@@ -122,7 +122,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     mMap.animateCamera(yourLocation);
                 }
         }
-        return super.onTouchEvent(event);
+        //findViewById(R.id.map_layout).onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     @Override
