@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -34,7 +35,7 @@ public class ParkingSpotActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
     private ListView mListView;
     private ParkingSpotsOfferAdapter mAdapter;
-    private Integer parkingSpotIndex;
+    private String parkingSpotId;
     private ParkingSpot parkingSpot;
     private FloatingActionButton mFab;
     private TextView tvAddress, tvPrice;
@@ -49,13 +50,19 @@ public class ParkingSpotActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        parkingSpotIndex = getIntent().getIntExtra("parking_spot_index",-1);
+        parkingSpotId = getIntent().getStringExtra("parking_spot_id");
         mListView = findViewById(R.id.list_view);
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
-                parkingSpot = u.parkingSpots.get(parkingSpotIndex);
+                List<ParkingSpot> parkingSpotsList = u.parkingSpots;
+                for(ParkingSpot ps: parkingSpotsList){
+                    if(ps.getId().equals(parkingSpotId)){
+                        parkingSpot = ps;
+                        break;
+                    }
+                }
                 //TODO: make sure it should not happen
                 if (parkingSpot == null) {
                     Toast.makeText(ParkingSpotActivity.this, "Should not happen!", Toast.LENGTH_SHORT).show();
@@ -83,7 +90,7 @@ public class ParkingSpotActivity extends AppCompatActivity {
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), OfferPopActivity.class);
-            i.putExtra("parking_spot_index", parkingSpotIndex);
+            i.putExtra("parking_spot_index", parkingSpotId);
             startActivity(i);
         });
 
