@@ -125,6 +125,7 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
                                             psToDelete.getAddress(), psToDelete.getLat(), psToDelete.getLng(),
                                             psToDelete.getId(), false);
                                     u.parkingSpots.set(index, newParkingSpot);
+                                    markOffersAsDeleted(psToDelete.getId());
                                     mDB.child("Users").child(mUser.getUid()).setValue(u);
                                 }
 
@@ -177,4 +178,31 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
 
         return convertView;
     }
+
+
+    private void markOffersAsDeleted(String psID) {
+        mDB.child("Offers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot offer : dataSnapshot.getChildren()) {
+                    Offer offerItem = offer.getValue(Offer.class);
+                    if (offerItem.getParkingSpotId().equals(psID)) {
+                        Offer o = new Offer(offerItem.getId(), offerItem.getParkingSpotId(), offerItem.getUserId(),
+                                offerItem.getStartCalenderInMillis(), offerItem.getEndCalenderInMillis(),
+                                offerItem.getLat(), offerItem.getLng(), offerItem.getPrice(), false);
+
+                        mDB.child("Offers").child(offer.getKey()).setValue(o);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 }
+

@@ -90,7 +90,7 @@ public class ParkingSpotActivity extends AppCompatActivity {
         mFab = findViewById(R.id.fab);
         mFab.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), OfferPopActivity.class);
-            i.putExtra("parking_spot_index", parkingSpotId);
+            i.putExtra("parking_spot_id", parkingSpotId);
             startActivity(i);
         });
 
