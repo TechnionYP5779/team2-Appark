@@ -90,42 +90,20 @@ public class ViewAllOffersFragment extends Fragment {
         lastSortMethod = sortingMethod;
         final View rootView = mRootView;
         mListView = rootView.findViewById(R.id.list_view);
-//        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//
-//                if(masterActivity.tabPosition == 0) {
-//                    int lastItem = firstVisibleItem + visibleItemCount;
-//                    if (lastItem == totalItemCount) {
-//
-//                        masterActivity.searchFab.hide();
-//                    } else {
-//                        masterActivity.searchFab.show();
-//                    }
-//                }
-//                else{
-//                    masterActivity.searchFab.hide();
-//                }
-//            }
-//        });
+
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Offer> offers = new ArrayList<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
-                    Offer o =offer.getValue(Offer.class);
-                    if(Calendar.getInstance().getTimeInMillis() < o.startCalenderInMillis)
-                        offers.add(o);
+                    Offer offerItem = offer.getValue(Offer.class);
+                    if (offerItem.isShow()  && Calendar.getInstance().getTimeInMillis() < offerItem.startCalenderInMillis) {
+                        offers.add(offerItem);
+                    }
                 }
 
 
-                offers = sortOffers(sortingMethod,offers);
+                offers = sortOffers(sortingMethod, offers);
 
                 if (getContext() != null) {
                     mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
@@ -146,13 +124,14 @@ public class ViewAllOffersFragment extends Fragment {
             }
         });
     }
-    private List<Offer> sortOffers(SortingBy sortingMethod, List<Offer> offers){
+
+    private List<Offer> sortOffers(SortingBy sortingMethod, List<Offer> offers) {
         LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return offers;
         }
         Location locationCurrent = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if(locationCurrent==null) return offers;
+        if (locationCurrent == null) return offers;
         switch (sortingMethod) {
             case DISTANCE_LOWEST:
                 return offers = offers.stream().sorted((offer1, offer2) -> {
