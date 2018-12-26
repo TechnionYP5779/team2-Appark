@@ -34,6 +34,7 @@ import com.project.technion.appark.adapters.OffersAdapter;
 import com.project.technion.appark.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -118,7 +119,9 @@ public class ViewAllOffersFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Offer> offers = new ArrayList<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
-                    offers.add(offer.getValue(Offer.class));
+                    Offer o =offer.getValue(Offer.class);
+                    if(Calendar.getInstance().getTimeInMillis() < o.startCalenderInMillis)
+                        offers.add(o);
                 }
 
 
@@ -165,7 +168,7 @@ public class ViewAllOffersFragment extends Fragment {
                 }).collect(Collectors.toList());
 
             case DISTANCE_HIGHEST:
-                return offers = offers.stream().sorted((offer1, offer2) -> {
+                return offers.stream().sorted((offer1, offer2) -> {
                     Location locationOffer1 = new Location("");
                     locationOffer1.setLatitude(offer1.lat);
                     locationOffer1.setLongitude(offer1.lng);
@@ -177,9 +180,9 @@ public class ViewAllOffersFragment extends Fragment {
                     return (int) (dist2 - dist1);
                 }).collect(Collectors.toList());
             case PRICE_LOWEST:
-                return offers = offers.stream().sorted((offer1, offer2) -> (int) (offer1.price - offer2.price)).collect(Collectors.toList());
+                return offers.stream().sorted((offer1, offer2) -> (int) (offer1.price - offer2.price)).collect(Collectors.toList());
             case PRICE_HiGHEST:
-                return offers = offers.stream().sorted((offer1, offer2) -> (int) (offer2.price - offer1.price)).collect(Collectors.toList());
+                return offers.stream().sorted((offer1, offer2) -> (int) (offer2.price - offer1.price)).collect(Collectors.toList());
         }
         return offers;
     }
