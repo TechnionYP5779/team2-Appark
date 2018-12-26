@@ -103,6 +103,10 @@ public class OfferPopActivity extends Activity implements AdapterView.OnItemSele
                 Toast.makeText(OfferPopActivity.this, "End time must be later than start time", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (delta < TimeUnit.MINUTES.toMillis(30)) {
+                Toast.makeText(OfferPopActivity.this, "You can't offer a parking spot for less then 30 minutes", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (mRepeatEvery != RepeatEvery.NO_REPEAT) {
                 long maxDelta = mRepeatEvery.getDaysNumber() * TimeUnit.DAYS.toMillis(1);
@@ -161,7 +165,11 @@ public class OfferPopActivity extends Activity implements AdapterView.OnItemSele
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-                Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
+                if (mRepeatEvery == RepeatEvery.NO_REPEAT) {
+                    Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(OfferPopActivity.this, "the offers were published", Toast.LENGTH_SHORT).show();
+                }
                 finish();
             });
             builder.setNegativeButton("NO", (dialog, which) -> {
