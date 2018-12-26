@@ -9,8 +9,14 @@ import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,18 +30,27 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
+import com.project.technion.appark.RepeatEvery;
 import com.project.technion.appark.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-public class OfferPopActivity extends Activity {
+public class OfferPopActivity extends Activity implements AdapterView.OnItemSelectedListener {
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
     private String parkingSpotId;
     private Time startTime = null, endTime = null;
     private TextView startText, endText;
-
+    private String mRepeatTimes = "1";
+    private int mTimesToRepeat = 1;
+    private RadioGroup radioGroup;
+    private Spinner mSpinner;
+    private RepeatEvery mRepeatEvery = RepeatEvery.NO_REPEAT; // default
+    private TextView mRepeatText;
+    private ParkingSpot p = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,27 +64,84 @@ public class OfferPopActivity extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-        getWindow().setLayout((int) (width * 0.6), (int) (height * 0.5));
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
         params.y = -20;
         getWindow().setAttributes(params);
 
+        radioGroup = findViewById(R.id.radioGroup);
+        radioGroup.check(R.id.radioButton_noRepeat); // by default noRepeat is selected
+
+        mSpinner = findViewById(R.id.times_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.repeat_times, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(this);
+        mSpinner.setVisibility(View.GONE);
+        mRepeatText = findViewById(R.id.textView_repeatNumber);
+        mRepeatText.setVisibility(View.GONE);
+
         Button bOffer = findViewById(R.id.make_offer_button);
-        bOffer.setOnClickListener(v -> {
+        bOffer.setOnClickListener(getOnClickListener());
+        addStartTime();
+        addFinishTime();
+
+    }
+
+    @NonNull
+    private View.OnClickListener getOnClickListener() {
+        return v -> {
+            if (startTime == null || endTime == null) {
+                Toast.makeText(OfferPopActivity.this, "Fill start & end time!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            long delta = endTime.getInMillis() - startTime.getInMillis();
+            if (delta <= 0) {
+                Toast.makeText(OfferPopActivity.this, "End time must be later than start time", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (mRepeatEvery != RepeatEvery.NO_REPEAT) {
+                long maxDelta = mRepeatEvery.getDaysNumber() * TimeUnit.DAYS.toMillis(1);
+                if (delta > maxDelta) {
+                    Toast.makeText(OfferPopActivity.this, "The offers are overlapping", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            mTimesToRepeat = Integer.valueOf(mRepeatTimes);
+            String[] startTimesStrings = new String[mTimesToRepeat];
+            String[] endTimesStrings = new String[mTimesToRepeat];
+            Calendar start = startTime.getCalendar();
+            Calendar end = endTime.getCalendar();
+            for (int i = 0; i < mTimesToRepeat; i++) {
+                startTimesStrings[i] = new Time(start).asString();
+                endTimesStrings[i] = new Time(end).asString();
+                start.add(Calendar.DAY_OF_YEAR, mRepeatEvery.getDaysNumber());
+                end.add(Calendar.DAY_OF_YEAR, mRepeatEvery.getDaysNumber());
+            }
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Make offer?");
-            builder.setMessage("Are you sure you want to offer this parking spot\n" +
-                    "from " + startTime.asString() + "\n" +
-                    "to " + endTime.asString() + "?");
+            builder.setTitle("Offer Confirmation");
+            String rangesMessage = "Are you sure you want to offer this parking spot\n";
+            for (int i = 0; i < mTimesToRepeat - 1; i++) {
+                rangesMessage += "from  " + startTimesStrings[i] + "\n" +
+                        "to       " + endTimesStrings[i] + ",\n";
+            }
+            rangesMessage += "from  " + startTimesStrings[mTimesToRepeat - 1] + "\n" +
+                    "to       " + endTimesStrings[mTimesToRepeat - 1] + "?";
+
+            builder.setMessage(rangesMessage);
+
             builder.setPositiveButton("YES", (dialog, which) -> {
                 mDatabaseReference.child("Users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User u = dataSnapshot.getValue(User.class);
                         parkingSpotId = getIntent().getStringExtra("parking_spot_id");
-                        ParkingSpot p = null;
+
                         for (ParkingSpot ps : Objects.requireNonNull(u).parkingSpots) {
                             if (ps.getId().equals(parkingSpotId)) {
                                 p = ps;
@@ -82,12 +154,7 @@ public class OfferPopActivity extends Activity {
                             return;
                         }
 
-                        String offerId = mDatabaseReference.push().getKey();
-                        long start_time = startTime.getInMillis();
-                        long end_time = endTime.getInMillis();
-                        mDatabaseReference.child("Offers").child(Objects.requireNonNull(offerId)).setValue(new Offer(offerId, p.id, mUser.getUid(), start_time, end_time, p.lat, p.lng, p.price));
-                        p.offers.add(offerId);
-                        mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
+                        addRecurringOffers(u);
                     }
 
                     @Override
@@ -97,11 +164,24 @@ public class OfferPopActivity extends Activity {
                 Toast.makeText(OfferPopActivity.this, "the offer was published", Toast.LENGTH_SHORT).show();
                 finish();
             });
-            builder.setNegativeButton("NO", (dialog, which) -> finish());
+            builder.setNegativeButton("NO", (dialog, which) -> {
+            });
             builder.show();
-        });
-        addStartTime();
-        addFinishTime();
+        };
+    }
+
+    private void addRecurringOffers(User u) {
+        Calendar start = startTime.getCalendar();
+        Calendar end = endTime.getCalendar();
+        for (int i = 1; i <= mTimesToRepeat; i++) {
+            String offerId = mDatabaseReference.push().getKey();
+            mDatabaseReference.child("Offers").child(Objects.requireNonNull(offerId)).setValue(new Offer(offerId, p.id, mUser.getUid(), start.getTimeInMillis(), end.getTimeInMillis(), p.lat, p.lng, p.price));
+            p.offers.add(offerId);
+            mDatabaseReference.child("Users").child(mUser.getUid()).setValue(u);
+
+            start.add(Calendar.DAY_OF_YEAR, mRepeatEvery.getDaysNumber());
+            end.add(Calendar.DAY_OF_YEAR, mRepeatEvery.getDaysNumber());
+        }
     }
 
     public void addStartTime() {
@@ -149,27 +229,63 @@ public class OfferPopActivity extends Activity {
         });
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        mRepeatTimes = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        mRepeatTimes = "1";
+    }
+
+    public void checkButton(View view) {
+        int radioId = radioGroup.getCheckedRadioButtonId();
+        RadioButton mRadioButton = findViewById(radioId);
+        if (mRadioButton.getText().equals("No Repeat")) {
+            mRepeatTimes = "1";
+            mSpinner.setVisibility(View.GONE);
+            mRepeatText.setVisibility(View.GONE);
+            mRepeatEvery = RepeatEvery.NO_REPEAT;
+        }
+        if (mRadioButton.getText().equals("Days")) {
+            mSpinner.setVisibility(View.VISIBLE);
+            mRepeatText.setVisibility(View.VISIBLE);
+            mRepeatEvery = RepeatEvery.DAY;
+        }
+        if (mRadioButton.getText().equals("Weeks")) {
+            mSpinner.setVisibility(View.VISIBLE);
+            mRepeatText.setVisibility(View.VISIBLE);
+            mRepeatEvery = RepeatEvery.WEEK;
+        }
+    }
+
+
     private class Time {
-        private int year, month, day, hour, minute;
+        private Calendar calendar;
+        private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY, HH:mm");
 
         Time(int year, int month, int day, int hour, int minute) {
-            this.year = year;
-            this.month = month;
-            this.day = day;
-            this.hour = hour;
-            this.minute = minute;
+            this.calendar = Calendar.getInstance();
+            this.calendar.set(year, month, day, hour, minute);
+        }
+
+        Time(Calendar c) {
+            this.calendar = c;
         }
 
         String asString() {
-            String minuteString = ((minute < 10) ? "0" : "") + minute;
-            String hourString = ((hour < 10) ? "0" : "") + hour;
-            return day + "/" + (month + 1) + "/" + year + " , " + hourString + ":" + minuteString;
+            return dateFormat.format(this.calendar.getTime());
         }
 
         long getInMillis() {
-            Calendar c = Calendar.getInstance();
-            c.set(year, month, day, hour, minute);
-            return c.getTimeInMillis();
+            return this.calendar.getTimeInMillis();
+        }
+
+        Calendar getCalendar() {
+            Calendar newC = Calendar.getInstance();
+            newC.setTimeInMillis(this.getInMillis());
+            return newC;
         }
     }
 }
