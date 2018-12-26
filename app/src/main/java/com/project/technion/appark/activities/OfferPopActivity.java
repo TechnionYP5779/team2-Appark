@@ -32,7 +32,7 @@ import java.util.Objects;
 public class OfferPopActivity extends Activity {
     private FirebaseUser mUser;
     private DatabaseReference mDatabaseReference;
-    private Integer parkingSpotIndex;
+    private String parkingSpotId;
     private Time startTime = null, endTime = null;
     private TextView startText, endText;
 
@@ -68,8 +68,20 @@ public class OfferPopActivity extends Activity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User u = dataSnapshot.getValue(User.class);
-                        parkingSpotIndex = getIntent().getIntExtra("parking_spot_index", -1);
-                        ParkingSpot p = Objects.requireNonNull(u).parkingSpots.get(parkingSpotIndex);
+                        parkingSpotId = getIntent().getStringExtra("parking_spot_id");
+                        ParkingSpot p = null;
+                        for (ParkingSpot ps : Objects.requireNonNull(u).parkingSpots) {
+                            if (ps.getId().equals(parkingSpotId)) {
+                                p = ps;
+                                break;
+                            }
+                        }
+
+                        if (p == null) {
+                            Toast.makeText(getApplicationContext(), "Should not happen!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         String offerId = mDatabaseReference.push().getKey();
                         long start_time = startTime.getInMillis();
                         long end_time = endTime.getInMillis();

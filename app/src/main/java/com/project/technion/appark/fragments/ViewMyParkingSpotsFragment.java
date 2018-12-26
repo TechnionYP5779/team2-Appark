@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.activities.MasterActivity;
 import com.project.technion.appark.adapters.ParkingSpotsAdapter;
 import com.project.technion.appark.R;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 
 public class ViewMyParkingSpotsFragment extends Fragment {
 
-    private static final String  TAG = "ViewMyParkingSpotsFragment";
+    private static final String TAG = "ViewMyParkingSpotsFragment";
     private ListView mListView;
     private ParkingSpotsAdapter mAdapter;
 
@@ -53,7 +54,7 @@ public class ViewMyParkingSpotsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG,"onCreateView");
+        Log.d(TAG, "onCreateView");
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -64,40 +65,21 @@ public class ViewMyParkingSpotsFragment extends Fragment {
         return rootView;
     }
 
-    public void setup(final View rootView){
+    public void setup(final View rootView) {
         mListView = rootView.findViewById(R.id.list_view);
-
-//        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                if(masterActivity.tabPosition == 2) {
-//
-//                    int lastItem = firstVisibleItem + visibleItemCount;
-//                    if (lastItem == totalItemCount) {
-//
-//                        masterActivity.mFab.hide();
-//                    } else {
-//                        masterActivity.mFab.show();
-//                    }
-//                }
-//                else{
-//                    masterActivity.mFab.hide();
-//                }
-//            }
-//        });
 
         mDatabaseReference.child("Users").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.getValue(User.class);
-                if(getContext() != null) {
-                    mAdapter = new ParkingSpotsAdapter(getContext(), new ArrayList<>(u.parkingSpots));
+                ArrayList<ParkingSpot> psToShow = new ArrayList<>();
+                for (ParkingSpot ps : u.parkingSpots) {
+                    if (ps.isShow()) {
+                        psToShow.add(ps);
+                    }
+                }
+                if (getContext() != null) {
+                    mAdapter = new ParkingSpotsAdapter(getContext(), psToShow);
                     Log.d(TAG, u.parkingSpots.toString());
                     mListView.setAdapter(mAdapter);
                     TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
@@ -110,12 +92,12 @@ public class ViewMyParkingSpotsFragment extends Fragment {
 
 //                Toast.makeText(MasterActivity.this, u.getName() +" "+u.getContactInfo(), Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
 
 
     }
