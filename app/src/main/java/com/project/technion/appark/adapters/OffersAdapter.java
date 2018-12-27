@@ -42,7 +42,7 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
 import com.project.technion.appark.activities.OfferActivity;
-import com.project.technion.appark.activities.OfferPopActivity;
+import com.project.technion.appark.utils.Constants;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -102,7 +102,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                 for (ParkingSpot p : u.parkingSpots) {
                     if (p.id.equals(offer.parkingSpotId)) {
                         textViewLocation.setText(p.address);
-                        textViewPrice.setText(p.price + " $");
+                        textViewPrice.setText(p.price + " "+Constants.CURRENCY);
                     }
                 }
             }

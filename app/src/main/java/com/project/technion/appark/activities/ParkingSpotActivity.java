@@ -24,6 +24,8 @@ import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 import com.project.technion.appark.adapters.ParkingSpotsOfferAdapter;
+import com.project.technion.appark.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +73,7 @@ public class ParkingSpotActivity extends AppCompatActivity {
                 List<Offer> offersList = parkingSpot.offers.stream()
                         .map(offerID -> dataSnapshot.child("Offers").child(offerID).getValue(Offer.class)).collect(Collectors.toList());
                 tvAddress.setText(parkingSpot.address);
-                tvPrice.setText(parkingSpot.price + " $");
+                tvPrice.setText(parkingSpot.price + " "+ Constants.CURRENCY);
                 mAdapter = new ParkingSpotsOfferAdapter(getApplicationContext(), new ArrayList<>(offersList));
                 mListView.setAdapter(mAdapter);
                 TextView noOffers = findViewById(R.id.textView_no_offers);

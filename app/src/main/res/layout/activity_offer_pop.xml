@@ -12,9 +12,10 @@
         android:id="@+id/tnd_start_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tnd_end_text"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="77dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="16dp"
         android:text="choose start time"
         android:textSize="20sp" />
 
@@ -25,7 +26,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="44dp"
         android:text="select start time" />
 
     <TextView
@@ -34,9 +35,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="161dp"
+        android:layout_marginTop="100dp"
         android:text="choose end time"
         android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/textView_repeatNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/times_spinner"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-84dp"
+        android:layout_marginTop="210dp"
+        android:text="repeat"
+        android:textSize="20sp" />
+
 
     <Button
         android:id="@+id/choose_end_tnd"
@@ -45,7 +58,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="197dp"
+        android:layout_marginTop="136dp"
         android:text="select end time" />
 
     <Button
@@ -55,7 +68,56 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="274dp"
         android:text="Make Offer" />
+
+    <Spinner
+        android:id="@+id/times_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/tnd_end_text"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="210dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="123dp"
+        android:layout_height="81dp"
+        android:layout_below="@+id/choose_end_tnd"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="214dp"
+        android:layout_marginTop="2dp">
+
+        <RadioButton
+            android:id="@+id/radioButton_noRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="checkButton"
+            android:text="No Repeat" />
+
+        <RadioButton
+            android:id="@+id/radioButton_daily"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="checkButton"
+            android:text="Days" />
+
+        <RadioButton
+            android:id="@+id/radioButton_weekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="checkButton"
+            android:text="Weeks" />
+
+    </RadioGroup>
 
 </RelativeLayout>

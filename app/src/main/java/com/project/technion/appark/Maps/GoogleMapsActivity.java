@@ -44,6 +44,7 @@ import com.google.maps.android.ui.IconGenerator;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
 import com.project.technion.appark.activities.OfferActivity;
+import com.project.technion.appark.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,8 +85,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         });*/
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -169,7 +168,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         getMyLocation();
 
         mMap.setOnMarkerClickListener(marker -> {
-            Offer offer = (Offer)marker.getTag();
+            Offer offer = (Offer) marker.getTag();
             Intent i = new Intent(GoogleMapsActivity.this, OfferActivity.class);
             i.putExtra("lat", offer.lat);
             i.putExtra("lng", offer.lng);
@@ -233,12 +232,12 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         dollar += "$";
                     }
 
-                    Bitmap bm = icg.makeIcon(dollar);
+
+                    Bitmap bm = icg.makeIcon(currency);
 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
                     marker.showInfoWindow();
                     marker.setTag(offer);*/
-
 
 
                 }
@@ -264,8 +263,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    public Bitmap resizeMapIcons(String iconName,int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+    public Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
     }
@@ -278,7 +277,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onLocationChanged(Location location) {
 
                 //Place current location marker
-                LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(latLng)
                         .tilt(90).bearing(currentBearing).build();
@@ -313,7 +312,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
     }
 

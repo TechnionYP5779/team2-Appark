@@ -18,7 +18,6 @@ public class Offer {
 
     public Offer(){
         this.show = true;
-
     }
 
     public Offer(String id,String parkingSpotId, String userId
