@@ -69,10 +69,12 @@ public class ViewMyReservationFragment extends Fragment {
                 User u = dataSnapshot.getValue(User.class);
                 if(getContext() != null) {
                     if (u.reservations.size() == 0) {
+                        mListView.setVisibility(View.INVISIBLE);
                         rootView.findViewById(R.id.textView_no_orders).setVisibility(View.VISIBLE);
                     } else {
                         rootView.findViewById(R.id.textView_no_orders).setVisibility(View.INVISIBLE);
                         mAdapter = new ReservationsAdapter(getContext(), new ArrayList<>(u.reservations));
+                        mListView.setVisibility(View.VISIBLE);
                         mListView.setAdapter(mAdapter);
                     }
                 }
