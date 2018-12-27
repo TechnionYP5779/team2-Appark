@@ -148,7 +148,6 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                         Reservation reservation = new Reservation(rid, offer.userId,
                                 mAuth.getUid(), offer.parkingSpotId, offer.startCalenderInMillis, offer.endCalenderInMillis);
 
-                        Objects.requireNonNull(seller).reservations.add(reservation);
                         Objects.requireNonNull(buyer).reservations.add(reservation);
 
                         seller.removeOfferById(offer.id);

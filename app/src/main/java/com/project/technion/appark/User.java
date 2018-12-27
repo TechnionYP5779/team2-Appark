@@ -57,8 +57,12 @@ public class User {
     }
 
     public boolean addOffer(Offer offer) {
-        Optional<ParkingSpot> ops = parkingSpots.stream().filter(ps -> ps.id.equals(offer.id)).findFirst();
-        ops.ifPresent(ps -> ps.offers.add(offer.id));
-        return ops.isPresent();
+        for(ParkingSpot ps : parkingSpots){
+            if (ps.id.equals(offer.parkingSpotId)){
+                ps.offers.add(offer.id);
+                return true;
+            }
+        }
+        return false;
     }
 }
