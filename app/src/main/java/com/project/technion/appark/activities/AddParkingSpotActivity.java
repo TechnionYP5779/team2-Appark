@@ -158,9 +158,9 @@ public class AddParkingSpotActivity extends AppCompatActivity {
 
 
                 }
-                else{
-                    offerButton.setEnabled(true);
-                }
+//                else{
+//                    offerButton.setEnabled(true);
+//                }
             }
             Toast.makeText(AddParkingSpotActivity.this, "Parking Spot Added!", Toast.LENGTH_SHORT).show();
             finish();

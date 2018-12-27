@@ -158,9 +158,10 @@ public class EditParkingSpotActivity extends AppCompatActivity {
                     }
 
 
-                } else {
-                    updateButton.setEnabled(true);
                 }
+//                else {
+//                    updateButton.setEnabled(true);
+//                }
             }
             Toast.makeText(getApplicationContext(), "Parking Spot info updated!", Toast.LENGTH_SHORT).show();
             finish();
