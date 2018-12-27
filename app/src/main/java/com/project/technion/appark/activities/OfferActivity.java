@@ -40,7 +40,7 @@ public class OfferActivity extends AppCompatActivity {
 
         double lat = getIntent().getDoubleExtra("lat", 0);
         double lng = getIntent().getDoubleExtra("lng", 0);
-        double price = getIntent().getDoubleExtra("Price", -1.0);
+        double price = getIntent().getDoubleExtra("price", -1.0);
         String userId = getIntent().getStringExtra("userId");
         String offerId = getIntent().getStringExtra("offerId");
         String psId = getIntent().getStringExtra("PSID");
