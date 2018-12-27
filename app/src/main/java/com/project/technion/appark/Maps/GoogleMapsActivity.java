@@ -77,12 +77,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
         mapFrag.getMapAsync(this);
-        /*((View)findViewById(R.id.fisheye_map)).setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                //Toast.makeText(GoogleMapsActivity.this, scrollX - oldScrollX, Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -94,8 +88,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         }
 
         gps = new GPSTracker(GoogleMapsActivity.this);
-
-
     }
 
     @Override
@@ -130,7 +122,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     mMap.animateCamera(yourLocation);
                 }
         }
-        //findViewById(R.id.map_layout).onTouchEvent(event);
         return super.dispatchTouchEvent(event);
     }
 
@@ -200,8 +191,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         double offerLat = gotOffer.getLat();
                         double offerLng = gotOffer.getLng();
 
-
-
                         double dist = (offerLat-lat)*(offerLat-lat) + (offerLng - lon)*(offerLng - lon);
 
                         double dist2 = gotOffer.price*gotOffer.price;
@@ -212,43 +201,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         }
                     }
                 }
-
-
-
-
-
-
-
-                    /*BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
-                    if(offer.price <= 10){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
-                    }else if(offer.price <= 25){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
-                    }
-
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
-                    marker.showInfoWindow();
-                    marker.setTag(offer);*/
-
-
-
-                    /*IconGenerator icg = new IconGenerator(GoogleMapsActivity.this);
-                    String dollar = "$";
-                    if(offer.price > 10) {
-                        dollar += "$";
-                    }
-                    if(offer.price > 25){
-                        dollar += "$";
-                    }
-
-
-                    Bitmap bm = icg.makeIcon(currency);
-
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
-                    marker.showInfoWindow();
-                    marker.setTag(offer);*/
-
-
 
                 int size = map.size();
                 int greenBarier = size/3;
@@ -328,53 +280,5 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
     }
-
-    /*@Override
-    public boolean onTouchEvent(MotionEvent eve) {
-        Point touchPoint = new Point();  //first point on screen the user's finger touches
-        final GoogleMap map;
-        final int action = MotionEventCompat.getActionMasked(eve);
-        int pointerIndex = MotionEventCompat.getActionIndex(eve);
-        GestureDetector g = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener());
-        g.onTouchEvent(eve);
-        switch (action){
-            case MotionEvent.ACTION_DOWN:
-                // get the point the user's finger touches
-                touchPoint.x =(int) MotionEventCompat.getX(eve,pointerIndex);
-                touchPoint.y =(int) MotionEventCompat.getY(eve,pointerIndex);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if(eve.getPointerCount()<2) {   // leave two finger gestures for other actions
-                    final Point newTouchPoint = new Point();  // the new position of user's finger on screen after movement is detected
-                    newTouchPoint.x = (int) MotionEventCompat.getX(eve, pointerIndex);
-                    newTouchPoint.y = (int) MotionEventCompat.getY(eve, pointerIndex);
-                    Point centerOfMap = getCenterOfMapAsPoint();   // center of map(as Point object) for calculation of angle
-                    // now you need to calculate the angle betwwen 2 lines with centerOfMap as center:
-                    //line 1: imaginary line between first touch detection on screen - and the center of the map
-                    //line 2: imaginary line between last place finger moved on screen - and the center of the map
-                    final float angle = angleBetweenLines(centerOfMap, touchPoint, centerOfMap, newTouchPoint);
-                    final LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());  //set camera movement to that position
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            // move the camera (NOT animateCamera() ) to new position with "bearing" updated
-                            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(latlng).tilt(67.5f).zoom(map.getCameraPosition().zoom).bearing(map.getCameraPosition().bearing - angle).build()));
-                        }
-                    });
-                    touchPoint = newTouchPoint; // update touchPoint value
-                    return true;
-                }else{
-                    break;
-                }
-        }
-        return true;
-    }
-
-    // convert center of map from Latln object to Point object
-    public Point getCurrentLocation(){
-        Projection projection = mMap.getProjection();
-        return projection.toScreenLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-    }*/
 }
