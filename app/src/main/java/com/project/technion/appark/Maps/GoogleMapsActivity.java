@@ -185,19 +185,39 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Offer> offers = new ArrayList<>();
+                //List<Offer> offers = new ArrayList<>();
+                GPSTracker gps = new GPSTracker(GoogleMapsActivity.this);
+                double lat = gps.getLatitude();
+                double lon = gps.getLongitude();
+
+                Map<Integer,Offer> map = new TreeMap<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
                     long currentTimeMillis = System.currentTimeMillis();
                     Offer gotOffer = offer.getValue(Offer.class);
                     if(gotOffer.isShow() && gotOffer.startCalenderInMillis <= currentTimeMillis &&
                             gotOffer.endCalenderInMillis >= currentTimeMillis) {
-                        offers.add(offer.getValue(Offer.class));
+
+                        double offerLat = gotOffer.getLat();
+                        double offerLng = gotOffer.getLng();
+
+
+
+                        double dist = (offerLat-lat)*(offerLat-lat) + (offerLng - lon)*(offerLng - lon);
+
+                        double dist2 = gotOffer.price*gotOffer.price;
+
+                        if(dist*100000 <= 100) {
+
+                            map.put((int) (dist * 100000 + dist2), gotOffer);
+                        }
                     }
                 }
 
-                Map<Integer,Offer> map = new TreeMap<>();
 
-                for(Offer offer : offers){
+
+
+
+
 
                     /*BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
                     if(offer.price <= 10){
@@ -210,17 +230,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     marker.showInfoWindow();
                     marker.setTag(offer);*/
 
-                    double offerLat = offer.getLat();
-                    double offerLng = offer.getLng();
-
-                    double lat = mMap.getCameraPosition().target.latitude;
-                    double lon = mMap.getCameraPosition().target.longitude;
-
-                    double dist = (offerLat-lat)*(offerLat-lat) + (offerLng - lon)*(offerLng - lon);
-
-                    double dist2 = offer.price*offer.price;
-
-                    map.put((int)(dist+dist2),offer);
 
 
                     /*IconGenerator icg = new IconGenerator(GoogleMapsActivity.this);
@@ -240,14 +249,20 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     marker.setTag(offer);*/
 
 
-                }
 
-                for(Offer offer: map.values()){
+                int size = map.size();
+                int greenBarier = size/3;
+                int yellowBarrier = 2*greenBarier;
+
+                List<Offer> l = new ArrayList<>(map.values());
+
+                for(int i =0; i<map.size(); i ++){
+                    Offer offer = l.get(i);
                     BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
-                    if(offer.price <= 10){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
-                    }else if(offer.price <= 25){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
+                    if(i<=greenBarier){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",150,150));
+                    }else if(i <= yellowBarrier){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",140,140));
                     }
 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
