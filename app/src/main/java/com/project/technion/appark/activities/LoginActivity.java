@@ -222,11 +222,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             if(isNewUser) {
                                 Log.d(TAG, "Google new user:success");
-                                GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-                                //FirebaseUser user = mAuth.getCurrentUser();
+                                FirebaseUser user = mAuth.getCurrentUser();
                                 String phone = "0546536925"; //user.getPhoneNumber()
-                                mDatabaseReference.child("Users").child(acct.getId())
-                                        .setValue(new User(acct.getDisplayName(), phone));
+                                mDatabaseReference.child("Users").child(user.getUid())
+                                        .setValue(new User(user.getDisplayName(), phone));
                             }
                             finish();
                             completeSignIn();
