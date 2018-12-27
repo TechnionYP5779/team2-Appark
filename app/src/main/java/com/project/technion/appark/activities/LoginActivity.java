@@ -2,15 +2,10 @@ package com.project.technion.appark.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,9 +39,6 @@ import com.project.technion.appark.R;
 import com.facebook.FacebookException;
 import com.project.technion.appark.User;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
@@ -89,22 +81,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pd.setMessage("Processing...");
         pd.show();
 
-//        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
-//        mAuth.getCurrentUser().linkWithCredential(credential)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            finish();
-//                            completeSignIn();
-//                        } else {
-//                            Toast.makeText(LoginActivity.this, "Wrong Credentials, try again", Toast.LENGTH_LONG).show();
-//                            finish();
-//                        }
-//
-//                        // ...
-//                    }
-//                });
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -133,34 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-//        if (mAuth.getCurrentUser() != null) {
-//            mAuth.getCurrentUser().linkWithCredential(credential)
-//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            if (task.isSuccessful()) {
-//                                // Sign in success, update UI with the signed-in user's information
-//                                Log.d(TAG, "signInWithCredential:success");
-//                                boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
-//                                if (isNewUser) {
-//                                    FirebaseUser user = mAuth.getCurrentUser();
-//                                    String phone = "0546536925"; //user.getPhoneNumber()
-//                                    mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-//                                            .setValue(new User(user.getDisplayName(), phone));
-//                                }
-//                                finish();
-//                                completeSignIn();
-//                            } else {
-//                                // If sign in fails, display a message to the user.
-//                                Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                                Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                        Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                            // ...
-//                        }
-//                    });
-//        } else {
+
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -182,13 +131,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
 
-                        // ...
                     }
                 });
-      //  }
     }
 
     @Override
@@ -238,8 +184,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-
-
         if(mAuth.getCurrentUser() != null){//user is already logged in
             //profile activity here
             finish();
@@ -265,34 +209,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//        if (mAuth.getCurrentUser() != null) {
-//            mAuth.getCurrentUser().linkWithCredential(credential)
-//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                            if (task.isSuccessful()) {
-//                                // Sign in success, update UI with the signed-in user's information
-//                                Log.d(TAG, "signInWithCredential:success");
-//                                boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
-//                                if (isNewUser) {
-//                                    FirebaseUser user = mAuth.getCurrentUser();
-//                                    String phone = "0546536925"; //user.getPhoneNumber()
-//                                    mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-//                                            .setValue(new User(user.getDisplayName(), phone));
-//                                }
-//                                finish();
-//                                completeSignIn();
-//                            } else {
-//                                // If sign in fails, display a message to the user.
-//                                Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                                Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                        Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                            // ...
-//                        }
-//                    });
-//        } else{
+
             mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -319,34 +236,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // ...
                     }
                 });
-        //}
-
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "signInWithCredential:success");
-//                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
-//                            if(isNewUser) {
-//                                FirebaseUser user = mAuth.getCurrentUser();
-//                                String phone = "0546536925"; //user.getPhoneNumber()
-//                                mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-//                                        .setValue(new User(user.getDisplayName(), phone));
-//                            }
-//                            finish();
-//                            completeSignIn();
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        // ...
-//                    }
-//                });
     }
 
     @Override
