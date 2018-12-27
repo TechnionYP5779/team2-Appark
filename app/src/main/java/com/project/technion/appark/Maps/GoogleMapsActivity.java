@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,7 +46,10 @@ import com.project.technion.appark.R;
 import com.project.technion.appark.activities.OfferActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -186,11 +190,13 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
                     long currentTimeMillis = System.currentTimeMillis();
                     Offer gotOffer = offer.getValue(Offer.class);
-                    if(gotOffer.startCalenderInMillis <= currentTimeMillis &&
+                    if(gotOffer.isShow() && gotOffer.startCalenderInMillis <= currentTimeMillis &&
                             gotOffer.endCalenderInMillis >= currentTimeMillis) {
                         offers.add(offer.getValue(Offer.class));
                     }
                 }
+
+                Map<Integer,Offer> map = new TreeMap<>();
 
                 for(Offer offer : offers){
 
@@ -205,8 +211,20 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     marker.showInfoWindow();
                     marker.setTag(offer);*/
 
+                    double offerLat = offer.getLat();
+                    double offerLng = offer.getLng();
 
-                    IconGenerator icg = new IconGenerator(GoogleMapsActivity.this);
+                    double lat = mMap.getCameraPosition().target.latitude;
+                    double lon = mMap.getCameraPosition().target.longitude;
+
+                    double dist = (offerLat-lat)*(offerLat-lat) + (offerLng - lon)*(offerLng - lon);
+
+                    double dist2 = offer.price*offer.price;
+
+                    map.put((int)(dist+dist2),offer);
+
+
+                    /*IconGenerator icg = new IconGenerator(GoogleMapsActivity.this);
                     String dollar = "$";
                     if(offer.price > 10) {
                         dollar += "$";
@@ -219,10 +237,23 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
                     marker.showInfoWindow();
+                    marker.setTag(offer);*/
+
+
+
+                }
+
+                for(Offer offer: map.values()){
+                    BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
+                    if(offer.price <= 10){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
+                    }else if(offer.price <= 25){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
+                    }
+
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
+                    marker.showInfoWindow();
                     marker.setTag(offer);
-
-
-
                 }
             }
 
