@@ -107,6 +107,7 @@ public class ViewAllOffersFragment extends Fragment {
 
                 offers = sortOffers(sortingMethod, offers);
 
+                progressBar.setVisibility(View.INVISIBLE);
                 if (getContext() != null) {
                     if (offers.size() == 0) {
                         rootView.findViewById(R.id.textView_no_offers).setVisibility(View.VISIBLE);
