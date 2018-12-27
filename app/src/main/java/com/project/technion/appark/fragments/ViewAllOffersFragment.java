@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,6 +92,12 @@ public class ViewAllOffersFragment extends Fragment {
         final View rootView = mRootView;
         mListView = rootView.findViewById(R.id.list_view);
 
+        final ProgressBar progressBar = rootView.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+        noOffers.setVisibility(View.INVISIBLE);
+
+
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -109,6 +116,7 @@ public class ViewAllOffersFragment extends Fragment {
                     mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
                     mListView.setAdapter(mAdapter);
                     TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+                    progressBar.setVisibility(View.INVISIBLE);
                     if (offers.size() == 0) {
                         noOffers.setVisibility(View.VISIBLE);
                     } else {
