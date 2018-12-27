@@ -53,7 +53,6 @@ public class SearchParkingsActivity extends AppCompatActivity {
     private ListView mSearchResList;
     private int dayStart, monthStart, yearStart, hourStart, minuteStart;
     private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
-    private boolean startTimeWasSet, finishTimeWasSet;
     private OffersAdapter mAdapter;
 
     private static final int RENT_PARKING_RETURN_CODE = 0;
@@ -72,16 +71,27 @@ public class SearchParkingsActivity extends AppCompatActivity {
         text_start = findViewById(R.id.chooseStartTnd);
         text_end = findViewById(R.id.chooseEndTnd);
         mSearchResList = findViewById(R.id.lvSearchRes);
+        Calendar calendarStart = Calendar.getInstance();
+        Calendar calendarFinish = Calendar.getInstance();
+
+        dayStart = 30;
+        monthStart = 12;
+        yearStart = 2050;
+        hourStart = 23;
+        minuteStart = 59;
+        calendarStart.set(yearStart, monthStart-1, dayStart, hourStart, minuteStart);
+        dayFinal = 1;
+        monthFinal = 1;
+        yearFinal = 2018;
+        hourFinal = 0;
+        minuteFinal = 0;
+        calendarFinish.set(yearFinal, monthFinal-1,dayFinal,hourFinal, minuteFinal);
+
 
         mSearchButton.setOnClickListener(v -> {
-            if (!startTimeWasSet || !finishTimeWasSet) {
-                Toast.makeText(SearchParkingsActivity.this, "Fill all the fields before you search", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Calendar calendarStart = Calendar.getInstance();
-            Calendar calendarFinish = Calendar.getInstance();
             calendarStart.set(yearStart, monthStart-1, dayStart, hourStart, minuteStart);
             calendarFinish.set(yearFinal, monthFinal-1,dayFinal,hourFinal, minuteFinal);
+
             long calSrtMillis = calendarStart.getTimeInMillis();
             long calEndMillis = calendarFinish.getTimeInMillis();
 
@@ -96,15 +106,18 @@ public class SearchParkingsActivity extends AppCompatActivity {
                     if(gc.isPresent()) {
                         List<Address> list = null;
                         try {
-                            list = gc.getFromLocationName(address, 1);
+                            if(address != "" && address != null)
+                                list = gc.getFromLocationName(address, 1);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            //e.printStackTrace();
                         }
-                        Address found_address = list.get(0);
-                        location = new Location("");
-                        location.setLatitude(found_address.getLatitude());
-                        location.setLongitude(found_address.getLongitude());
-
+                        Address found_address = null;
+                        if (list != null){
+                            location = new Location("");
+                            found_address = list.get(0);
+                            location.setLatitude(found_address.getLatitude());
+                            location.setLongitude(found_address.getLongitude());
+                        }
                     }
                     for(DataSnapshot offer : dataSnapshot.getChildren()){
                         Offer o = offer.getValue(Offer.class);
@@ -117,21 +130,15 @@ public class SearchParkingsActivity extends AppCompatActivity {
                             Location thisLocation = new Location("");
                             thisLocation.setLatitude(o.lat);
                             thisLocation.setLongitude(o.lng);
-                            if(location == null || thisLocation.distanceTo(location) <= delta)
+                            if(location == null || thisLocation.distanceTo(location) <= delta) {
                                 offers.add(offer.getValue(Offer.class));
+                            }
                         }
                     }
                     if(getApplicationContext() != null) {
                         mAdapter = new OffersAdapter(getApplicationContext(), new ArrayList<>(offers));
-                        mSearchResList.setAdapter(mAdapter);
-                        /*
-                        TextView noOffers = findViewById(R.id.textView_no_offers);
-                        if (offers.size() == 0) {
-                            noOffers.setVisibility(View.VISIBLE);
-                        } else {
-                            noOffers.setVisibility(View.INVISIBLE);
-                        }
-                        */
+                        if (offers.size() != 0)
+                            mSearchResList.setAdapter(mAdapter);
                     }
 
                 }
@@ -163,7 +170,6 @@ public class SearchParkingsActivity extends AppCompatActivity {
                     if (minuteStart < 10)
                         add_zero = "0";
                     text_start.setText(dayStart + "/" + monthStart + "/" + yearStart + " , " + hourStart + ":" + add_zero + minuteStart);
-                    startTimeWasSet = true;
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
                 tpg.show();
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -186,7 +192,6 @@ public class SearchParkingsActivity extends AppCompatActivity {
                     if (minuteFinal < 10)
                         add_zero = "0";
                     text_end.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " , " + hourFinal + ":" + add_zero + minuteFinal);
-                    finishTimeWasSet = true;
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getApplicationContext()));
                 tpg.show();
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
