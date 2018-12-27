@@ -45,21 +45,16 @@ public class ViewAllOffersFragment extends Fragment {
 
     private static final String TAG = "ViewAllOffersFragment";
     private ListView mListView;
-    private OffersAdapter mAdapter;
 
     private DatabaseReference mDatabaseReference;
-    private FirebaseUser mUser;
-    private FirebaseAuth mAuth;
     private View mRootView;
     private static SortingBy lastSortMethod = SortingBy.DISTANCE_LOWEST; // default sorting method
     private static MasterActivity masterActivity;
     // Declare Context variable at class level in Fragment
     private Context mContext;
 
-
     public ViewAllOffersFragment() {
     }
-
 
     public static ViewAllOffersFragment newInstance(MasterActivity masterActivity) {
         ViewAllOffersFragment fragment = new ViewAllOffersFragment();
@@ -72,8 +67,8 @@ public class ViewAllOffersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         View rootView = inflater.inflate(R.layout.fragment_view_all_offers, container, false);
         mRootView = rootView;
@@ -101,30 +96,27 @@ public class ViewAllOffersFragment extends Fragment {
 
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Offer> offers = new ArrayList<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
                     Offer offerItem = offer.getValue(Offer.class);
-                    if (offerItem.isShow() && Calendar.getInstance().getTimeInMillis() < offerItem.startCalenderInMillis) {
+                    if (Objects.requireNonNull(offerItem).isShow() && Calendar.getInstance().getTimeInMillis() < offerItem.startCalenderInMillis) {
                         offers.add(offerItem);
                     }
                 }
 
-
                 offers = sortOffers(sortingMethod, offers);
 
+                progressBar.setVisibility(View.INVISIBLE);
                 if (getContext() != null) {
-                    mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
-                    mListView.setAdapter(mAdapter);
-                    TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
-                    progressBar.setVisibility(View.INVISIBLE);
                     if (offers.size() == 0) {
-                        noOffers.setVisibility(View.VISIBLE);
+                        rootView.findViewById(R.id.textView_no_offers).setVisibility(View.VISIBLE);
                     } else {
-                        noOffers.setVisibility(View.INVISIBLE);
+                        OffersAdapter mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
+                        mListView.setAdapter(mAdapter);
+                        rootView.findViewById(R.id.textView_no_offers).setVisibility(View.INVISIBLE);
                     }
                 }
-
             }
 
             @Override

@@ -4,7 +4,6 @@ import java.util.Calendar;
 
 public class Offer {
 
-    //    private TimeSlot timeSlot;
     public String id;
     public String parkingSpotId;
     public String userId;
@@ -14,7 +13,6 @@ public class Offer {
     public double lng;
     public double price;
     public boolean show;
-
 
     public Offer(){
         this.show = true;

@@ -208,6 +208,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
 
             mAuth.signInWithCredential(credential)
@@ -219,10 +221,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.d(TAG, "signInWithCredential:success");
                             boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
                             if(isNewUser) {
-                                FirebaseUser user = mAuth.getCurrentUser();
+                                Log.d(TAG, "Google new user:success");
+                                GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+                                //FirebaseUser user = mAuth.getCurrentUser();
                                 String phone = "0546536925"; //user.getPhoneNumber()
-                                mDatabaseReference.child("Users").child(mAuth.getCurrentUser().getUid())
-                                        .setValue(new User(user.getDisplayName(), phone));
+                                mDatabaseReference.child("Users").child(acct.getId())
+                                        .setValue(new User(acct.getDisplayName(), phone));
                             }
                             finish();
                             completeSignIn();

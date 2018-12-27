@@ -3,7 +3,6 @@ package com.project.technion.appark.adapters;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -49,6 +48,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 
@@ -56,9 +56,7 @@ import static android.support.v4.app.ActivityCompat.requestPermissions;
 public class OffersAdapter extends ArrayAdapter<Offer> {
     private final FirebaseAuth mAuth;
     private DatabaseReference mDB;
-    private Context mContext;
     private StorageReference mStorageRef;
-    private RelativeLayout itemLayout;
 
     private static Location lastLocation;
 
@@ -68,7 +66,6 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mDB = FirebaseDatabase.getInstance().getReference();
-        mContext = context;
     }
 
     @Override
@@ -79,7 +76,7 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
         }
         final TextView textViewLocation = convertView.findViewById(R.id.tvAddress);
         final TextView textViewPrice = convertView.findViewById(R.id.textView_price);
-        itemLayout = convertView.findViewById(R.id.offerItemLayer);
+        RelativeLayout itemLayout = convertView.findViewById(R.id.offerItemLayer);
 
         itemLayout.setOnClickListener(v -> {
             Intent i = new Intent(getContext(), OfferActivity.class);
@@ -139,31 +136,28 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("Book parking spot?");
                     builder.setMessage("Are you sure you want to book this parking spot?");
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (offer.userId.equals(mAuth.getUid())) {
-                                Toast.makeText(getContext(), "You can't book your own offer!", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            User seller = dataSnapshot.child(offer.userId).getValue(User.class);
-                            User buyer = dataSnapshot.child(mAuth.getUid()).getValue(User.class);
-
-                            Reservation reservation = new Reservation(offer.userId, mAuth.getUid(),
-                                    offer.parkingSpotId, offer.startCalenderInMillis, offer.endCalenderInMillis);
-
-                            seller.reservations.add(reservation);
-                            buyer.reservations.add(reservation);
-
-                            seller.removeOfferById(offer.id);
-                            buyer.removeOfferById(offer.id);
-
-                            mDB.child("Offers").child(offer.id).removeValue();
-                            mDB.child("Users").child(offer.userId).setValue(seller);
-                            mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
-
-                            Toast.makeText(getContext(), "You booked this offer!", Toast.LENGTH_SHORT).show();
+                    builder.setPositiveButton("YES", (dialog, which) -> {
+                        if (offer.userId.equals(mAuth.getUid())) {
+                            Toast.makeText(getContext(), "You can't book your own offer!", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+                        User seller = dataSnapshot.child(offer.userId).getValue(User.class);
+                        User buyer = dataSnapshot.child(Objects.requireNonNull(mAuth.getUid())).getValue(User.class);
+
+                        String rid = Objects.requireNonNull(mDB.push().getKey());
+                        Reservation reservation = new Reservation(rid, offer.userId,
+                                mAuth.getUid(), offer.parkingSpotId, offer.startCalenderInMillis, offer.endCalenderInMillis);
+
+                        Objects.requireNonNull(buyer).reservations.add(reservation);
+
+                        seller.removeOfferById(offer.id);
+                        buyer.removeOfferById(offer.id);
+
+                        mDB.child("Offers").child(offer.id).removeValue();
+                        mDB.child("Users").child(offer.userId).setValue(seller);
+                        mDB.child("Users").child(mAuth.getUid()).setValue(buyer);
+
+                        Toast.makeText(getContext(), "You booked this offer!", Toast.LENGTH_SHORT).show();
                     });
                     builder.setNegativeButton("NO", null);
                     builder.show();
@@ -180,7 +174,6 @@ public class OffersAdapter extends ArrayAdapter<Offer> {
 
         StorageReference storageRef = mStorageRef.child("Images").child(offer.userId).child(offer.parkingSpotId);
         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-//            Picasso.with(getContext()).load(uri.toString()).into(imageView);
             Picasso.with(getContext()).load(uri.toString())
                     .resize(100, 100)
                     .into(imageView, new Callback() {
