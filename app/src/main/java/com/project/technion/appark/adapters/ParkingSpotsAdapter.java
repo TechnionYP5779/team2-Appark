@@ -39,11 +39,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
 
-    private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private DatabaseReference mDB;
     private StorageReference mStorageRef;
@@ -52,21 +52,22 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
     public ParkingSpotsAdapter(Context context, ArrayList<ParkingSpot> parkingSpots) {
         super(context, 0, parkingSpots);
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mDB = FirebaseDatabase.getInstance().getReference();
         mUser = mAuth.getCurrentUser();
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ParkingSpot parkingSpot = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.my_parkings_list_item, parent, false);
         }
         TextView textViewLocation = convertView.findViewById(R.id.textView_location);
         TextView textViewPrice = convertView.findViewById(R.id.textView_price);
-        textViewLocation.setText(parkingSpot.address);
-        textViewPrice.setText(parkingSpot.price+" "+ Constants.CURRENCY);
+        textViewLocation.setText(Objects.requireNonNull(parkingSpot).address);
+        textViewPrice.setText(parkingSpot.price + " " + Constants.CURRENCY);
 
         Button button = convertView.findViewById(R.id.button_make_offer);
         button.setOnClickListener(view -> {
@@ -102,7 +103,7 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     User u = dataSnapshot.child("Users").child(mUser.getUid()).getValue(User.class);
-                                    List<ParkingSpot> parkingSpotsList = u.parkingSpots;
+                                    List<ParkingSpot> parkingSpotsList = Objects.requireNonNull(u).parkingSpots;
                                     Integer index = 0;
                                     ParkingSpot psToDelete = null;
                                     for (ParkingSpot ps : parkingSpotsList) {
@@ -117,7 +118,7 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
                                         Toast.makeText(getContext(), "PROBLEM!", Toast.LENGTH_SHORT).show();
                                     }
 
-                                    ParkingSpot newParkingSpot = new ParkingSpot(mUser.getUid(), psToDelete.getPrice(),
+                                    ParkingSpot newParkingSpot = new ParkingSpot(mUser.getUid(), Objects.requireNonNull(psToDelete).getPrice(),
                                             psToDelete.getAddress(), psToDelete.getLat(), psToDelete.getLng(),
                                             psToDelete.getId(), false);
                                     u.parkingSpots.set(index, newParkingSpot);
@@ -168,9 +169,7 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
 
             Log.d("tag", uri.toString());
 
-        }).addOnFailureListener(exception -> {
-            Log.d("tag", "error " + exception.getMessage());
-        });
+        }).addOnFailureListener(exception -> Log.d("tag", "error " + exception.getMessage()));
 
         return convertView;
     }
@@ -179,15 +178,15 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
     private void markOffersAsDeleted(String psID) {
         mDB.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
                     Offer offerItem = offer.getValue(Offer.class);
-                    if (offerItem.getParkingSpotId().equals(psID)) {
+                    if (Objects.requireNonNull(offerItem).getParkingSpotId().equals(psID)) {
                         Offer o = new Offer(offerItem.getId(), offerItem.getParkingSpotId(), offerItem.getUserId(),
                                 offerItem.getStartCalenderInMillis(), offerItem.getEndCalenderInMillis(),
                                 offerItem.getLat(), offerItem.getLng(), offerItem.getPrice(), false);
 
-                        mDB.child("Offers").child(offer.getKey()).setValue(o);
+                        mDB.child("Offers").child(Objects.requireNonNull(offer.getKey())).setValue(o);
                     }
                 }
 

@@ -2,6 +2,9 @@ package com.project.technion.appark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class User {
     private String name;
@@ -14,7 +17,7 @@ public class User {
         reservations = new ArrayList<>();
     }
 
-    public User( String name, String contactInfo) {
+    public User(String name, String contactInfo) {
         this.name = name;
         this.contactInfo = contactInfo;
         parkingSpots = new ArrayList<>();
@@ -38,12 +41,24 @@ public class User {
         return "UserImplementation [ name=" + name + ", contactInfo=" + contactInfo + "]";
     }
 
-    public void removeOfferById(String offerId){
-        for(ParkingSpot p : parkingSpots){
-            if(p.offers.contains(offerId)) {
+    public void removeOfferById(String offerId) {
+        for (ParkingSpot p : parkingSpots) {
+            if (p.offers.contains(offerId)) {
                 p.offers.remove(offerId);
                 return;
             }
         }
+    }
+
+    public void removeReservationById(String reservationId) {
+        reservations = reservations.stream()
+                .filter(r -> !(r.id.equals(reservationId)))
+                .collect(Collectors.toList());
+    }
+
+    public boolean addOffer(Offer offer) {
+        Optional<ParkingSpot> ops = parkingSpots.stream().filter(ps -> ps.id.equals(offer.id)).findFirst();
+        ops.ifPresent(ps -> ps.offers.add(offer.id));
+        return ops.isPresent();
     }
 }

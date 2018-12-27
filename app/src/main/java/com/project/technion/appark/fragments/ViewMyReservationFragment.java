@@ -23,6 +23,7 @@ import com.project.technion.appark.User;
 import com.project.technion.appark.adapters.ReservationsAdapter;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ViewMyReservationFragment extends Fragment {
 
@@ -67,13 +68,12 @@ public class ViewMyReservationFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.getValue(User.class);
                 if(getContext() != null) {
-                    mAdapter = new ReservationsAdapter(getContext(), new ArrayList<>(u.reservations));
-                    mListView.setAdapter(mAdapter);
-                    TextView noOffers = rootView.findViewById(R.id.textView_no_orders);
                     if (u.reservations.size() == 0) {
-                        noOffers.setVisibility(View.VISIBLE);
+                        rootView.findViewById(R.id.textView_no_orders).setVisibility(View.VISIBLE);
                     } else {
-                        noOffers.setVisibility(View.INVISIBLE);
+                        rootView.findViewById(R.id.textView_no_orders).setVisibility(View.INVISIBLE);
+                        mAdapter = new ReservationsAdapter(getContext(), new ArrayList<>(u.reservations));
+                        mListView.setAdapter(mAdapter);
                     }
                 }
             }

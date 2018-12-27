@@ -79,7 +79,8 @@ public class OfferActivity extends AppCompatActivity {
                 User seller = dataSnapshot.child(userId).getValue(User.class);
                 User buyer = dataSnapshot.child(mAuth.getUid()).getValue(User.class);
 
-                Reservation reservation = new Reservation(userId, mAuth.getUid(), psId, startMillis, endMillis);
+                String rid = mDB.push().getKey();
+                Reservation reservation = new Reservation(rid, userId, mAuth.getUid(), psId, startMillis, endMillis);
 
                 seller.reservations.add(reservation);
                 buyer.reservations.add(reservation);
