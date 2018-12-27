@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -19,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,9 +32,8 @@ import com.project.technion.appark.ParkingSpot;
 import com.project.technion.appark.R;
 import com.project.technion.appark.User;
 import com.project.technion.appark.activities.EditParkingSpotActivity;
-import com.project.technion.appark.activities.MasterActivity;
 import com.project.technion.appark.activities.ParkingSpotActivity;
-import com.project.technion.appark.activities.SearchParkingsActivity;
+import com.project.technion.appark.utils.Constants;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -70,7 +66,7 @@ public class ParkingSpotsAdapter extends ArrayAdapter<ParkingSpot> {
         TextView textViewLocation = convertView.findViewById(R.id.textView_location);
         TextView textViewPrice = convertView.findViewById(R.id.textView_price);
         textViewLocation.setText(parkingSpot.address);
-        textViewPrice.setText(parkingSpot.price + " $");
+        textViewPrice.setText(parkingSpot.price+" "+ Constants.CURRENCY);
 
         Button button = convertView.findViewById(R.id.button_make_offer);
         button.setOnClickListener(view -> {

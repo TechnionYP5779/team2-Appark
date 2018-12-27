@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.technion.appark.R;
 import com.project.technion.appark.Reservation;
 import com.project.technion.appark.User;
+import com.project.technion.appark.utils.Constants;
+
 import java.util.Locale;
 
 public class OfferActivity extends AppCompatActivity {
@@ -38,7 +40,7 @@ public class OfferActivity extends AppCompatActivity {
 
         double lat = getIntent().getDoubleExtra("lat", 0);
         double lng = getIntent().getDoubleExtra("lng", 0);
-        double price = getIntent().getDoubleExtra("Price", -1.0);
+        double price = getIntent().getDoubleExtra("price", -1.0);
         String userId = getIntent().getStringExtra("userId");
         String offerId = getIntent().getStringExtra("offerId");
         String psId = getIntent().getStringExtra("PSID");
@@ -53,7 +55,7 @@ public class OfferActivity extends AppCompatActivity {
         mAddress = findViewById(R.id.tvAddress);
         mAddress.setText(getIntent().getStringExtra("Address"));
         mPrice = findViewById(R.id.tvPrice);
-        mPrice.setText(price +" $ per hour");
+        mPrice.setText(String.format("%s %s per hour", price, Constants.CURRENCY));
 
         addressLayer.setOnClickListener(v -> {
             String location = String.format(Locale.getDefault(), "geo:0,0?q=") + android.net.Uri.encode(String.format("%s@%f,%f", "", lat, lng), "UTF-8");

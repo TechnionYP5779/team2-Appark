@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,6 +69,11 @@ public class ViewMyParkingSpotsFragment extends Fragment {
     public void setup(final View rootView) {
         mListView = rootView.findViewById(R.id.list_view);
 
+        final ProgressBar progressBar = rootView.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+        noOffers.setVisibility(View.INVISIBLE);
+
         mDatabaseReference.child("Users").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -83,6 +89,8 @@ public class ViewMyParkingSpotsFragment extends Fragment {
                     Log.d(TAG, u.parkingSpots.toString());
                     mListView.setAdapter(mAdapter);
                     TextView noOffers = rootView.findViewById(R.id.textView_no_offers);
+                    progressBar.setVisibility(View.INVISIBLE);
+
                     if (u.parkingSpots.size() == 0) {
                         noOffers.setVisibility(View.VISIBLE);
                     } else {

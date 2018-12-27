@@ -23,6 +23,13 @@
     <string name="facebook_app_id">269130833765572</string>
     <string name="fb_login_protocol_scheme">fb269130833765572</string>
 
+    <string-array name="repeat_times">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

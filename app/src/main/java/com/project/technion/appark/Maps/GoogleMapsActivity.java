@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,9 +44,13 @@ import com.google.maps.android.ui.IconGenerator;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.R;
 import com.project.technion.appark.activities.OfferActivity;
+import com.project.technion.appark.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -72,16 +77,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fisheye_map);
         mapFrag.getMapAsync(this);
-        /*((View)findViewById(R.id.fisheye_map)).setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                //Toast.makeText(GoogleMapsActivity.this, scrollX - oldScrollX, Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -91,8 +88,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         }
 
         gps = new GPSTracker(GoogleMapsActivity.this);
-
-
     }
 
     @Override
@@ -127,7 +122,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     mMap.animateCamera(yourLocation);
                 }
         }
-        //findViewById(R.id.map_layout).onTouchEvent(event);
         return super.dispatchTouchEvent(event);
     }
 
@@ -165,7 +159,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         getMyLocation();
 
         mMap.setOnMarkerClickListener(marker -> {
-            Offer offer = (Offer)marker.getTag();
+            Offer offer = (Offer) marker.getTag();
             Intent i = new Intent(GoogleMapsActivity.this, OfferActivity.class);
             i.putExtra("lat", offer.lat);
             i.putExtra("lng", offer.lng);
@@ -182,47 +176,50 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         mDatabaseReference.child("Offers").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Offer> offers = new ArrayList<>();
+                //List<Offer> offers = new ArrayList<>();
+                GPSTracker gps = new GPSTracker(GoogleMapsActivity.this);
+                double lat = gps.getLatitude();
+                double lon = gps.getLongitude();
+
+                Map<Integer,Offer> map = new TreeMap<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
                     long currentTimeMillis = System.currentTimeMillis();
                     Offer gotOffer = offer.getValue(Offer.class);
-                    if(gotOffer.startCalenderInMillis <= currentTimeMillis &&
+                    if(gotOffer.isShow() && gotOffer.startCalenderInMillis <= currentTimeMillis &&
                             gotOffer.endCalenderInMillis >= currentTimeMillis) {
-                        offers.add(offer.getValue(Offer.class));
+
+                        double offerLat = gotOffer.getLat();
+                        double offerLng = gotOffer.getLng();
+
+                        double dist = (offerLat-lat)*(offerLat-lat) + (offerLng - lon)*(offerLng - lon);
+
+                        double dist2 = gotOffer.price*gotOffer.price;
+
+                        if(dist*100000 <= 100) {
+
+                            map.put((int) (dist * 100000 + dist2), gotOffer);
+                        }
                     }
                 }
 
-                for(Offer offer : offers){
+                int size = map.size();
+                int greenBarier = size/3;
+                int yellowBarrier = 2*greenBarier;
 
-                    /*BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
-                    if(offer.price <= 10){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",130,130));
-                    }else if(offer.price <= 25){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",130,130));
+                List<Offer> l = new ArrayList<>(map.values());
+
+                for(int i =0; i<map.size(); i ++){
+                    Offer offer = l.get(i);
+                    BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
+                    if(i<=greenBarier){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",150,150));
+                    }else if(i <= yellowBarrier){
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",140,140));
                     }
 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
                     marker.showInfoWindow();
-                    marker.setTag(offer);*/
-
-
-                    IconGenerator icg = new IconGenerator(GoogleMapsActivity.this);
-                    String dollar = "$";
-                    if(offer.price > 10) {
-                        dollar += "$";
-                    }
-                    if(offer.price > 25){
-                        dollar += "$";
-                    }
-
-                    Bitmap bm = icg.makeIcon(dollar);
-
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(BitmapDescriptorFactory.fromBitmap(bm)));
-                    marker.showInfoWindow();
                     marker.setTag(offer);
-
-
-
                 }
             }
 
@@ -233,8 +230,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    public Bitmap resizeMapIcons(String iconName,int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+    public Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
     }
@@ -247,7 +244,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onLocationChanged(Location location) {
 
                 //Place current location marker
-                LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 CameraPosition cameraPosition = CameraPosition.builder().zoom(zoomLevel).target(latLng)
                         .tilt(90).bearing(currentBearing).build();
@@ -282,54 +279,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
-
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
-
-    /*@Override
-    public boolean onTouchEvent(MotionEvent eve) {
-        Point touchPoint = new Point();  //first point on screen the user's finger touches
-        final GoogleMap map;
-        final int action = MotionEventCompat.getActionMasked(eve);
-        int pointerIndex = MotionEventCompat.getActionIndex(eve);
-        GestureDetector g = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener());
-        g.onTouchEvent(eve);
-        switch (action){
-            case MotionEvent.ACTION_DOWN:
-                // get the point the user's finger touches
-                touchPoint.x =(int) MotionEventCompat.getX(eve,pointerIndex);
-                touchPoint.y =(int) MotionEventCompat.getY(eve,pointerIndex);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if(eve.getPointerCount()<2) {   // leave two finger gestures for other actions
-                    final Point newTouchPoint = new Point();  // the new position of user's finger on screen after movement is detected
-                    newTouchPoint.x = (int) MotionEventCompat.getX(eve, pointerIndex);
-                    newTouchPoint.y = (int) MotionEventCompat.getY(eve, pointerIndex);
-                    Point centerOfMap = getCenterOfMapAsPoint();   // center of map(as Point object) for calculation of angle
-                    // now you need to calculate the angle betwwen 2 lines with centerOfMap as center:
-                    //line 1: imaginary line between first touch detection on screen - and the center of the map
-                    //line 2: imaginary line between last place finger moved on screen - and the center of the map
-                    final float angle = angleBetweenLines(centerOfMap, touchPoint, centerOfMap, newTouchPoint);
-                    final LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());  //set camera movement to that position
-                    new Handler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            // move the camera (NOT animateCamera() ) to new position with "bearing" updated
-                            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(latlng).tilt(67.5f).zoom(map.getCameraPosition().zoom).bearing(map.getCameraPosition().bearing - angle).build()));
-                        }
-                    });
-                    touchPoint = newTouchPoint; // update touchPoint value
-                    return true;
-                }else{
-                    break;
-                }
-        }
-        return true;
-    }
-
-    // convert center of map from Latln object to Point object
-    public Point getCurrentLocation(){
-        Projection projection = mMap.getProjection();
-        return projection.toScreenLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-    }*/
 }
