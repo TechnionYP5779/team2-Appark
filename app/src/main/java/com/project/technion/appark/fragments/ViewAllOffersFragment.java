@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.technion.appark.Maps.GPSTracker;
 import com.project.technion.appark.Offer;
 import com.project.technion.appark.SortingBy;
 import com.project.technion.appark.activities.MasterActivity;
@@ -104,7 +105,7 @@ public class ViewAllOffersFragment extends Fragment {
                 List<Offer> offers = new ArrayList<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
                     Offer offerItem = offer.getValue(Offer.class);
-                    if (offerItem.isShow()  && Calendar.getInstance().getTimeInMillis() < offerItem.startCalenderInMillis) {
+                    if (offerItem.isShow() && Calendar.getInstance().getTimeInMillis() < offerItem.startCalenderInMillis) {
                         offers.add(offerItem);
                     }
                 }
@@ -138,41 +139,48 @@ public class ViewAllOffersFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return offers;
         }
-        Location locationCurrent = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (locationCurrent == null) return offers;
+
         switch (sortingMethod) {
             case DISTANCE_LOWEST:
-                return offers = offers.stream().sorted((offer1, offer2) -> {
-                    Location locationOffer1 = new Location("");
-                    locationOffer1.setLatitude(offer1.lat);
-                    locationOffer1.setLongitude(offer1.lng);
-                    float dist1 = locationCurrent.distanceTo(locationOffer1) / 1000;
-                    Location locationOffer2 = new Location("");
-                    locationOffer2.setLatitude(offer2.lat);
-                    locationOffer2.setLongitude(offer2.lng);
-                    float dist2 = locationCurrent.distanceTo(locationOffer2) / 1000;
-                    return (int) (dist1 - dist2);
+                return offers.stream().sorted((offer1, offer2) -> {
+                    int distDiff = calcDistDiffOffers(offer1, offer2);
+                    if (distDiff != 0) return distDiff;
+                    return (int) (offer1.price - offer2.price);
                 }).collect(Collectors.toList());
 
             case DISTANCE_HIGHEST:
                 return offers.stream().sorted((offer1, offer2) -> {
-                    Location locationOffer1 = new Location("");
-                    locationOffer1.setLatitude(offer1.lat);
-                    locationOffer1.setLongitude(offer1.lng);
-                    float dist1 = locationCurrent.distanceTo(locationOffer1) / 1000;
-                    Location locationOffer2 = new Location("");
-                    locationOffer2.setLatitude(offer2.lat);
-                    locationOffer2.setLongitude(offer2.lng);
-                    float dist2 = locationCurrent.distanceTo(locationOffer2) / 1000;
-                    return (int) (dist2 - dist1);
+                    int distDiff = calcDistDiffOffers(offer2, offer1);
+                    if (distDiff != 0) return distDiff;
+                    return (int) (offer2.price - offer1.price);
                 }).collect(Collectors.toList());
             case PRICE_LOWEST:
-                return offers.stream().sorted((offer1, offer2) -> (int) (offer1.price - offer2.price)).collect(Collectors.toList());
+                return offers.stream().sorted((offer1, offer2) -> {
+                    int priceDiff = (int) (offer1.price - offer2.price);
+                    if (priceDiff != 0) return priceDiff;
+                    return calcDistDiffOffers(offer1, offer2);
+                }).collect(Collectors.toList());
             case PRICE_HiGHEST:
-                return offers.stream().sorted((offer1, offer2) -> (int) (offer2.price - offer1.price)).collect(Collectors.toList());
+                return offers.stream().sorted((offer1, offer2) -> {
+                    int priceDiff = (int) (offer2.price - offer1.price);
+                    if (priceDiff != 0) return priceDiff;
+                    return calcDistDiffOffers(offer2, offer1);
+                }).collect(Collectors.toList());
         }
         return offers;
     }
 
+    private int calcDistDiffOffers(Offer offer1, Offer offer2) {
+        Location currentLocation = new GPSTracker(mContext).getLocation();
+        Location locationOffer1 = new Location("");
+        locationOffer1.setLatitude(offer1.lat);
+        locationOffer1.setLongitude(offer1.lng);
+        float dist1 = currentLocation.distanceTo(locationOffer1) / 1000;
+        Location locationOffer2 = new Location("");
+        locationOffer2.setLatitude(offer2.lat);
+        locationOffer2.setLongitude(offer2.lng);
+        float dist2 = currentLocation.distanceTo(locationOffer2) / 1000;
+        return (int) (dist1 - dist2);
+    }
 
 }
