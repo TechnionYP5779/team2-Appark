@@ -47,6 +47,7 @@ import com.project.technion.appark.activities.OfferActivity;
 import com.project.technion.appark.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,12 +179,18 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //List<Offer> offers = new ArrayList<>();
                 GPSTracker gps = new GPSTracker(GoogleMapsActivity.this);
-                double lat = gps.getLatitude();
-                double lon = gps.getLongitude();
+                double lat, lon;
+                if(gps != null) {
+                    lat = gps.getLatitude();
+                    lon = gps.getLongitude();
+                }else{
+                    lat = 32.7768;
+                    lon = 35.0231;
+                }
 
                 Map<Integer,Offer> map = new TreeMap<>();
                 for (DataSnapshot offer : dataSnapshot.getChildren()) {
-                    long currentTimeMillis = System.currentTimeMillis();
+                    long currentTimeMillis = Calendar.getInstance().getTimeInMillis();
                     Offer gotOffer = offer.getValue(Offer.class);
                     if(gotOffer.isShow() && gotOffer.startCalenderInMillis <= currentTimeMillis &&
                             gotOffer.endCalenderInMillis >= currentTimeMillis) {
@@ -210,11 +217,11 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
                 for(int i =0; i<map.size(); i ++){
                     Offer offer = l.get(i);
-                    BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_red_dollar",130,130));
+                    BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_parking_red",130,130));
                     if(i<=greenBarier){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_green_dollar",150,150));
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_parking_green",150,150));
                     }else if(i <= yellowBarrier){
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_yellow_dollar",140,140));
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_parking_orange",140,140));
                     }
 
                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.lng)).icon(bitmapDescriptor));
