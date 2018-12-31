@@ -83,9 +83,6 @@ public class MasterActivity extends AppCompatActivity {
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            String name = dataSnapshot.child("name").getValue().toString();
-                            Toast.makeText(getApplicationContext(), "Hello " + name + "!",
-                                    Toast.LENGTH_LONG).show();
                         }
 
                         @Override

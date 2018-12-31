@@ -82,7 +82,6 @@ public class OfferActivity extends AppCompatActivity {
                 String rid = mDB.push().getKey();
                 Reservation reservation = new Reservation(rid, userId, mAuth.getUid(), psId, startMillis, endMillis);
 
-                seller.reservations.add(reservation);
                 buyer.reservations.add(reservation);
 
                 seller.removeOfferById(offerId);
