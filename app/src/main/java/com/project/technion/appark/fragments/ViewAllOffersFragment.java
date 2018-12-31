@@ -110,9 +110,11 @@ public class ViewAllOffersFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
                 if (getContext() != null) {
                     if (offers.size() == 0) {
+                        mListView.setVisibility(View.INVISIBLE);
                         rootView.findViewById(R.id.textView_no_offers).setVisibility(View.VISIBLE);
                     } else {
                         OffersAdapter mAdapter = new OffersAdapter(getContext(), new ArrayList<>(offers));
+                        mListView.setVisibility(View.VISIBLE);
                         mListView.setAdapter(mAdapter);
                         rootView.findViewById(R.id.textView_no_offers).setVisibility(View.INVISIBLE);
                     }
